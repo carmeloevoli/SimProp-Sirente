@@ -3,17 +3,19 @@
 
 #include <string>
 
-#include "include/simprop.h"
-
-//#include "simprop/Units.h"
+#include "simprop/Units.h"
+#include "simprop/logging.h"
 
 namespace SimProp {
+
+using namespace units;
 
 class Params {
  private:
   std::string m_simName = "fiducial";
-  // QEnergy minEnergy = 1e9_GeV;
-  // QEnergy maxEnergy = 1e20_GeV;
+  QEnergy m_minEnergy = 1e9_eV;
+  QEnergy m_maxEnergy = 1e20_eV;
+  double m_maxRedshift = 2.0;
 
  public:
   Params();
@@ -24,9 +26,9 @@ class Params {
   //   void set_params(const std::string& key, const double& value);
 
   const std::string& simName = m_simName;
-  // const Wavenumber& kMin = m_kMin;
-  // const Wavenumber& kMax = m_kMax;
-  // const Length& H = m_haloSize;
+  const QEnergy& minEnergy = m_minEnergy;
+  const QEnergy& maxEnergy = m_maxEnergy;
+  const double& maxRedshift = m_maxRedshift;
 };
 
 }  // namespace SimProp
