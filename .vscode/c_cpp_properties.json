@@ -1,0 +1,41 @@
+{
+    "env": {
+        "myDefaultIncludePath": [
+            "${workspaceFolder}",
+            "${workspaceFolder}/include"
+        ],
+        "myCompilerPath": "/usr/local/bin/"
+    },
+    "configurations": [
+        {
+            "name": "Mac",
+            "intelliSenseMode": "macos-gcc-x64",
+            "includePath": [
+                "${myDefaultIncludePath}",
+                "${workspaceFolder}/external/plog/include/**",
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include/**"
+            ],
+            "defines": [
+                "EVOLI2019",
+                "BAR=100"
+            ],
+            "forcedInclude": [
+                "${workspaceFolder}/include/simprop.h"
+            ],
+            "compilerPath": "/usr/local/bin/gcc-10",
+            "cStandard": "gnu17",
+            "cppStandard": "c++17",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
