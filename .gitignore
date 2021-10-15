@@ -1,2 +1,4 @@
+build*/
+
 # VSCODE
 *.code-workspace
