@@ -93,6 +93,7 @@ include_directories(include)
 set(SIMPROP_SRCS 
 	src/logging.cpp
  	src/params.cpp
+    src/simprop.cpp
     src/timer.cpp
     "${git_revision_cpp}"
     )

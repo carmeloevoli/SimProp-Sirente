@@ -17,7 +17,6 @@ int main(int argc, char* argv[]) {
       // OutputManager output(simprop);
       // output.save();
 
-      //   SOFIA::Sofia sofia(params);
     } else {
       throw std::runtime_error("please provide an input file as './simprop params.ini'");
     }
