@@ -1,5 +1,5 @@
-#ifndef INCLUDE_SIMPROP_UNITSDERIVED_H
-#define INCLUDE_SIMPROP_UNITSDERIVED_H
+#ifndef SIMPROP_UNITSDERIVED_H
+#define SIMPROP_UNITSDERIVED_H
 
 #include <array>
 
@@ -131,4 +131,4 @@ typedef std::array<QAngle, 2> QDirection;
 }  // namespace units
 }  // namespace SimProp
 
-#endif  // INCLUDE_SIMPROP_UNITSDERIVED_H
+#endif  // SIMPROP_UNITSDERIVED_H

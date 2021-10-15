@@ -4,9 +4,9 @@
 
 namespace SimProp {
 
-Params::Params() {}  //  LOGD << "Params constructor"; }
+Params::Params() { LOGD << "Params constructor"; }
 
-Params::~Params() {}  // LOGD << "Params destructor"; }
+Params::~Params() { LOGD << "Params destructor"; }
 
 // void Params::set_params(const std::string& key, const double& value) {
 //   if (key == "H")
@@ -40,10 +40,10 @@ Params::~Params() {}  // LOGD << "Params destructor"; }
 // }
 
 void Params::print() {
-  LOGI << "model name : " << simName;
-  //   LOGI << "halo Size : " << H / cgs::kpc << " kpc";
-  //   LOGI << "k min     : " << kMin / cgs::inverse_pc << " pc-1";
-  //   LOGI << "k max     : " << kMax / cgs::inverse_pc << " pc-1";
+  LOGI << "model name   : " << simName;
+  LOGI << "min Energy   : " << minEnergy / 1_GeV << " GeV";
+  LOGI << "max Energy   : " << maxEnergy / 1_GeV << " GeV";
+  LOGI << "max redshift : " << maxRedshift;
 }
 
 }  // namespace SimProp

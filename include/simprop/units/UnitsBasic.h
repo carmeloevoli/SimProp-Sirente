@@ -1,5 +1,5 @@
-#ifndef INCLUDE_SIMPROP_UNITSBASIC_H
-#define INCLUDE_SIMPROP_UNITSBASIC_H
+#ifndef SIMPROP_UNITSBASIC_H
+#define SIMPROP_UNITSBASIC_H
 
 #include <cmath>
 #include <ostream>
@@ -65,4 +65,4 @@ constexpr double eulerGamma = M_E;
 }  // namespace units
 }  // namespace SimProp
 
-#endif  // INCLUDE_SIMPROP_UNITSBASIC_H
+#endif  // SIMPROP_UNITSBASIC_H
