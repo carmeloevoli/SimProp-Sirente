@@ -1,1 +1,1 @@
-# SimProp3
+# SimProp - a new beta version
