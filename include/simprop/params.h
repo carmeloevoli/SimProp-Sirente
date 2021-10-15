@@ -6,7 +6,7 @@
 #include "simprop/Units.h"
 #include "simprop/logging.h"
 
-namespace SimProp {
+namespace simprop {
 
 using namespace units;
 
@@ -31,6 +31,6 @@ class Params {
   const double& maxRedshift = m_maxRedshift;
 };
 
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif /* INCLUDE_SIMPROP_PARAMS_H */

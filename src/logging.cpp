@@ -1,6 +1,6 @@
 #include "simprop/logging.h"
 
-namespace SimProp {
+namespace simprop {
 namespace log {
 
 void startup_information() {
@@ -18,4 +18,4 @@ void startup_information() {
 }
 
 }  // namespace log
-}  // namespace SimProp
+}  // namespace simprop

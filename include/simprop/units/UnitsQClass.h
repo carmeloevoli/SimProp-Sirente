@@ -8,7 +8,7 @@
 #include <ostream>
 #include <ratio>
 
-namespace SimProp {
+namespace simprop {
 namespace units {
 /**
  * \addtogroup Units

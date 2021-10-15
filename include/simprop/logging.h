@@ -11,12 +11,12 @@
 
 #include "simprop/git_revision.h"
 
-namespace SimProp {
+namespace simprop {
 namespace log {
 
 void startup_information();
 
 }  // namespace log
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif  // INCLUDE_SIMPROP_LOGGING_H

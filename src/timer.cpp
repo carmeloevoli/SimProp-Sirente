@@ -2,7 +2,7 @@
 
 #include "simprop/logging.h"
 
-namespace SimProp {
+namespace simprop {
 namespace utils {
 
 Timer::Timer() { m_start = AwesomeClock::now(); }
@@ -14,4 +14,4 @@ Timer::~Timer() {
 }
 
 }  // namespace utils
-}  // namespace SimProp
+}  // namespace simprop

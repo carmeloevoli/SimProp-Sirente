@@ -2,7 +2,7 @@
 
 //#include <plog/Log.h>
 
-namespace SimProp {
+namespace simprop {
 
 Params::Params() { LOGD << "Params constructor"; }
 
@@ -46,4 +46,4 @@ void Params::print() {
   LOGI << "max redshift : " << maxRedshift;
 }
 
-}  // namespace SimProp
+}  // namespace simprop

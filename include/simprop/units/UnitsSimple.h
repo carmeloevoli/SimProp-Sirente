@@ -8,7 +8,7 @@
 
 #include "UnitsSIPrefixes.h"
 
-namespace SimProp {
+namespace simprop {
 namespace units {
 
 typedef double QAMomentum;
@@ -57,6 +57,6 @@ typedef double QVolume;
 constexpr double squared(const QNumber &num) { return num * num; }
 
 }  // namespace units
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif  // SIMPROP_UNITSSIMPLE_H

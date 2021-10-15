@@ -1,15 +1,21 @@
 #include "simprop.h"
 
-using namespace SimProp;
+using namespace simprop;
 
 int main(int argc, char* argv[]) {
   try {
-    SimProp::log::startup_information();
+    log::startup_information();
     if (argc == 2) {
       utils::Timer timer;
 
       Params params;
       params.print();
+
+      SimProp simprop(params);
+      simprop.run();
+
+      // OutputManager output(simprop);
+      // output.save();
 
       //   SOFIA::Sofia sofia(params);
     } else {

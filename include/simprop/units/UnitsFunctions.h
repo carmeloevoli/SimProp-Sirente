@@ -6,7 +6,7 @@
 #include "UnitsBasic.h"
 #include "UnitsSIPrefixes.h"
 
-namespace SimProp {
+namespace simprop {
 namespace units {
 /**
  * \addtogroup Units
@@ -54,6 +54,6 @@ int stepFunction(const Q &quantity) {
 
 /** @}*/
 }  // namespace units
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif  // SIMPROP_UNITSFUNCTIONS_H

@@ -6,7 +6,7 @@
 #include "UnitsBasic.h"
 #include "UnitsFunctions.h"
 
-namespace SimProp {
+namespace simprop {
 namespace units {
 /**
  * \addtogroup Units
@@ -129,6 +129,6 @@ typedef std::array<QAngle, 2> QDirection;
 
 /** @}*/
 }  // namespace units
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif  // SIMPROP_UNITSDERIVED_H

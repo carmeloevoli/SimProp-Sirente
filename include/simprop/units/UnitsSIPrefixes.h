@@ -1,7 +1,7 @@
 #ifndef SIMPROP_UNITSSIPREFIXES_H
 #define SIMPROP_UNITSSIPREFIXES_H
 
-namespace SimProp {
+namespace simprop {
 namespace units {
 
 // SI prefixes
@@ -70,6 +70,6 @@ constexpr double yotta = 1e24;
   constexpr auto Y##_SHORTUNIT = yotta * _UNIT;
 
 }  // namespace units
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif  // SIMPROP_UNITSSIPREFIXES_H

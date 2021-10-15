@@ -3,7 +3,7 @@
 
 #include <chrono>
 
-namespace SimProp {
+namespace simprop {
 namespace utils {
 
 using AwesomeClock = std::chrono::high_resolution_clock;
@@ -20,6 +20,6 @@ class Timer {
 };
 
 }  // namespace utils
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif  // INCLUDE_SIMPROP_TIMING_H

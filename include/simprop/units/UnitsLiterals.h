@@ -7,7 +7,7 @@
 #include "UnitsSimple.h"
 #endif
 
-namespace SimProp {
+namespace simprop {
 namespace units {
 /**
  * \addtogroup Units
@@ -127,6 +127,6 @@ LITERAL(QPressure, _psi, psi)
 
 /** @}*/
 }  // namespace units
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif  // SIMPROP_UNITSLITERALS_H

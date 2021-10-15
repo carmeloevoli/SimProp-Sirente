@@ -13,7 +13,7 @@
 
 #include "UnitsSIPrefixes.h"
 
-namespace SimProp {
+namespace simprop {
 namespace units {
 /**
  * \addtogroup Units
@@ -63,6 +63,6 @@ constexpr double eulerGamma = M_E;
 /** @}*/
 
 }  // namespace units
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif  // SIMPROP_UNITSBASIC_H

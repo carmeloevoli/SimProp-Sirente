@@ -3,7 +3,7 @@
 
 #include "UnitsDerived.h"
 
-namespace SimProp {
+namespace simprop {
 namespace units {
 
 // SIMPROP specific types
@@ -13,6 +13,6 @@ QUANTITY_TYPE(2, 0, 0, 1, 0, 0, 0, 0, 0, QSynchroConstant);
 QUANTITY_TYPE(-5, 1, -1, 0, 0, 0, 0, 0, 0, QGREmissivity);
 
 }  // namespace units
-}  // namespace SimProp
+}  // namespace simprop
 
 #endif  // SIMPROP_UNITSSIMPROP_H

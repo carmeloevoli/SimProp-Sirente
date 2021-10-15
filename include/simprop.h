@@ -4,6 +4,7 @@
 #include "simprop/Units.h"
 #include "simprop/logging.h"
 #include "simprop/params.h"
+#include "simprop/simprop.h"
 #include "simprop/timer.h"
 
 #endif  // INCLUDE_SIMPROP_H
