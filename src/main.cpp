@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
     if (argc == 2) {
       utils::Timer timer;
 
-      Params params;
+      Params params(argv[1]);
       params.print();
 
       SimProp simprop(params);

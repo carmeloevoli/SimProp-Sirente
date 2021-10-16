@@ -1,10 +1,14 @@
 #include "simprop/params.h"
 
-//#include <plog/Log.h>
+#include <fstream>
 
+#include "simprop/utils.h"
 namespace simprop {
 
-Params::Params() { LOGD << "Params constructor"; }
+Params::Params(const char* inputFilename) {
+  LOGD << "Params constructor";
+  m_simName = utils::removeExtensionIniFilename(inputFilename);
+}
 
 Params::~Params() { LOGD << "Params destructor"; }
 
@@ -39,11 +43,19 @@ Params::~Params() { LOGD << "Params destructor"; }
 //   }
 // }
 
+#define PFILE(NAME, VALUE) \
+  (pfile << std::left << std::setw(20) << std::setfill('_') << NAME << VALUE << std::endl)
+
 void Params::print() {
-  LOGI << "model name   : " << simName;
-  LOGI << "min Energy   : " << energyRange.first / SI::GeV << " GeV";
-  LOGI << "max Energy   : " << energyRange.second / SI::GeV << " GeV";
-  LOGI << "max redshift : " << maxRedshift;
+  std::ofstream pfile;
+  pfile.open(simName + ".params");
+  PFILE("model name", simName);
+  PFILE("seed", seed);
+  PFILE("N Particles", nParticles);
+  PFILE("min Energy [GeV]", energyRange.first / SI::GeV);
+  PFILE("max Energy [GeV]", energyRange.second / SI::GeV);
+  PFILE("max redshift []", maxRedshift);
+  pfile.close();
 }
 
 }  // namespace simprop

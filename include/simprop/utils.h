@@ -1,6 +1,8 @@
 #ifndef SIMPROP_UTILS_H
 #define SIMPROP_UTILS_H
 
+#include <string>
+
 namespace simprop {
 namespace utils {
 
@@ -14,6 +16,9 @@ template <>
 inline double pow<0>(double base) {
   return 1;
 }
+
+// String Utilities
+std::string removeExtensionIniFilename(std::string inputFilename);
 
 }  // namespace utils
 }  // namespace simprop
