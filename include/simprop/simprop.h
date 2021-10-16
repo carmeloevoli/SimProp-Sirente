@@ -5,20 +5,30 @@
 
 #include "simprop/Units.h"
 #include "simprop/params.h"
+#include "simprop/pid.h"
 #include "simprop/random.h"
 
 using RandomNumberGenerator = simprop::utils::RNG<double>;
-using InitialStates = std::pair<double, double>;
-using PID = double;
 
 namespace simprop {
+
+class PrimaryParticle {
+ private:
+  PID m_pid;
+  double m_z;
+  double m_E;
+
+ public:
+  explicit PrimaryParticle(PID pid, double z, double E) : m_pid(pid), m_z(z), m_E(E) {}
+  virtual ~PrimaryParticle(){};
+};
 
 class SimProp {
  private:
   const Params& m_params;
+  size_t m_size;
   RandomNumberGenerator m_rng = utils::RNG<double>(12345);
-  std::vector<InitialStates> m_istates;
-  PID pid;
+  std::vector<PrimaryParticle> m_primaries;
 
  public:
   explicit SimProp(const Params& params);

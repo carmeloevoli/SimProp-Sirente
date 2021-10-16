@@ -51,6 +51,7 @@ void Params::print() {
   pfile.open(simName + ".params");
   PFILE("model name", simName);
   PFILE("seed", seed);
+  PFILE("mass", pid);
   PFILE("N Particles", nParticles);
   PFILE("min Energy [GeV]", energyRange.first / SI::GeV);
   PFILE("max Energy [GeV]", energyRange.second / SI::GeV);
