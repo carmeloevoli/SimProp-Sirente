@@ -41,8 +41,8 @@ Params::~Params() { LOGD << "Params destructor"; }
 
 void Params::print() {
   LOGI << "model name   : " << simName;
-  LOGI << "min Energy   : " << minEnergy / 1_GeV << " GeV";
-  LOGI << "max Energy   : " << maxEnergy / 1_GeV << " GeV";
+  LOGI << "min Energy   : " << energyRange.first / SI::GeV << " GeV";
+  LOGI << "max Energy   : " << energyRange.second / SI::GeV << " GeV";
   LOGI << "max redshift : " << maxRedshift;
 }
 

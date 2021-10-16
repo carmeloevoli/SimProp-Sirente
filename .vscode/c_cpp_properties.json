@@ -23,7 +23,7 @@
             "forcedInclude": [
                 "${workspaceFolder}/include/simprop.h"
             ],
-            "compilerPath": "/usr/local/bin/gcc-10",
+            "compilerPath": "/usr/local/bin/gcc-11",
             "cStandard": "gnu17",
             "cppStandard": "c++17",
             "browse": {

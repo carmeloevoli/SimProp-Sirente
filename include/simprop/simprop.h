@@ -3,24 +3,28 @@
 
 #include <vector>
 
+#include "simprop/Units.h"
 #include "simprop/params.h"
 #include "simprop/random.h"
 
-namespace simprop {
-
+using RandomNumberGenerator = simprop::utils::RNG<double>;
+using InitialStates = std::pair<double, double>;
 using PID = double;
+
+namespace simprop {
 
 class SimProp {
  private:
-  utils::RNG<double> m_rng = utils::RNG<double>(12345);
-  std::vector<double> m_redshifts;
-  std::vector<QEnergy> m_energies;
+  const Params& m_params;
+  RandomNumberGenerator m_rng = utils::RNG<double>(12345);
+  std::vector<InitialStates> m_istates;
   PID pid;
 
  public:
   explicit SimProp(const Params& params);
+  virtual ~SimProp();
 
-  void init();
+  void buildInitialStates();
   void run();
 };
 

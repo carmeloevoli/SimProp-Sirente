@@ -10,7 +10,7 @@ cmake_policy(SET CMP0048 NEW)
 
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-10")
+set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-11")
 set(CMAKE_CXX_FLAGS "-std=c++17 -ftree-vectorize -O3 -DDEBUG")
 set(SIMPROP_INCLUDES)
 set(SIMPROP_LIBRARIES)
@@ -90,7 +90,8 @@ configure_file("src/git_revision.cpp.in" "${git_revision_cpp}" @ONLY)
 include_directories("${CMAKE_SOURCE_DIR}")
 include_directories(include)
 
-set(SIMPROP_SRCS 
+set(SIMPROP_SRCS
+    src/common.cpp
 	src/logging.cpp
  	src/params.cpp
     src/simprop.cpp

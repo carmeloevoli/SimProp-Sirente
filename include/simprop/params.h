@@ -1,22 +1,21 @@
-#ifndef INCLUDE_SIMPROP_PARAMS_H
-#define INCLUDE_SIMPROP_PARAMS_H
+#ifndef SIMPROP_PARAMS_H
+#define SIMPROP_PARAMS_H
 
 #include <string>
 
 #include "simprop/Units.h"
 #include "simprop/logging.h"
 
-namespace simprop {
+using EnergyRange = std::pair<double, double>;
 
-using namespace units;
+namespace simprop {
 
 class Params {
  private:
   std::string m_simName = "fiducial";
   unsigned int m_seed = 12345;
   unsigned int m_nParticles = 1000;
-  QEnergy m_minEnergy = 1e9_eV;
-  QEnergy m_maxEnergy = 1e20_eV;
+  EnergyRange m_energyRange = {1e9 * SI::eV, 1e20 * SI::eV};
   double m_maxRedshift = 2.0;
 
  public:
@@ -30,11 +29,10 @@ class Params {
   const std::string& simName = m_simName;
   const unsigned int& seed = m_seed;
   const unsigned int& nParticles = m_nParticles;
-  const QEnergy& minEnergy = m_minEnergy;
-  const QEnergy& maxEnergy = m_maxEnergy;
+  const EnergyRange& energyRange = m_energyRange;
   const double& maxRedshift = m_maxRedshift;
 };
 
 }  // namespace simprop
 
-#endif /* INCLUDE_SIMPROP_PARAMS_H */
+#endif  // SIMPROP_PARAMS_H

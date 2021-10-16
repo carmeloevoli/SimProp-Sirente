@@ -12,6 +12,7 @@ int main(int argc, char* argv[]) {
       params.print();
 
       SimProp simprop(params);
+      simprop.buildInitialStates();
       simprop.run();
 
       // OutputManager output(simprop);
