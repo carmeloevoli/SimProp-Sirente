@@ -1,5 +1,5 @@
-#ifndef INCLUDE_SIMPROP_TIMING_H
-#define INCLUDE_SIMPROP_TIMING_H
+#ifndef SIMPROP_UTILS_TIMER_H
+#define SIMPROP_UTILS_TIMER_H
 
 #include <chrono>
 
@@ -22,4 +22,4 @@ class Timer {
 }  // namespace utils
 }  // namespace simprop
 
-#endif  // INCLUDE_SIMPROP_TIMING_H
+#endif  // SIMPROP_UTILS_TIMER_H

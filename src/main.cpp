@@ -13,7 +13,8 @@ int main(int argc, char* argv[]) {
 
       SimProp simprop(params);
       simprop.buildInitialStates();
-      simprop.run();
+      simprop.dumpPrimaryParticles("output/initial.txt");
+      // simprop.run();
 
       // OutputManager output(simprop);
       // output.save();

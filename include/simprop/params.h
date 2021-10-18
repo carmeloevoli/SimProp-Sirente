@@ -4,8 +4,8 @@
 #include <string>
 
 #include "simprop/Units.h"
-#include "simprop/logging.h"
 #include "simprop/pid.h"
+#include "simprop/utils/logging.h"
 
 using EnergyRange = std::pair<double, double>;
 

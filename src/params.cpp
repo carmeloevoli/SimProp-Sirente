@@ -2,7 +2,8 @@
 
 #include <fstream>
 
-#include "simprop/utils.h"
+#include "simprop/utils/misc.h"
+
 namespace simprop {
 
 Params::Params(const char* inputFilename) {

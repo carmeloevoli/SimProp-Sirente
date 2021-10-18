@@ -1,5 +1,5 @@
-#ifndef INCLUDE_SIMPROP_LOGGING_H
-#define INCLUDE_SIMPROP_LOGGING_H
+#ifndef SIMPROP_UTILS_LOGGING_H
+#define SIMPROP_UTILS_LOGGING_H
 
 #include <plog/Appenders/ColorConsoleAppender.h>
 #include <plog/Appenders/ConsoleAppender.h>
@@ -9,7 +9,7 @@
 #include <plog/Init.h>
 #include <plog/Log.h>
 
-#include "simprop/git_revision.h"
+#include "simprop/utils/git_revision.h"
 
 namespace simprop {
 namespace log {
@@ -19,4 +19,4 @@ void startup_information();
 }  // namespace log
 }  // namespace simprop
 
-#endif  // INCLUDE_SIMPROP_LOGGING_H
+#endif  // SIMPROP_UTILS_LOGGING_H

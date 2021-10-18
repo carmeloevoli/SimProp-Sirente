@@ -1,6 +1,6 @@
-#include "simprop/timer.h"
+#include "simprop/utils/timer.h"
 
-#include "simprop/logging.h"
+#include "simprop/utils/logging.h"
 
 namespace simprop {
 namespace utils {

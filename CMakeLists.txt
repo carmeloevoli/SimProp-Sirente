@@ -80,7 +80,7 @@ include(GetGitRevisionDescription)
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 git_local_changes(GIT_HAS_LOCAL_CHANGES)
 set(git_revision_cpp "${CMAKE_CURRENT_BINARY_DIR}/git_revision.cpp")
-configure_file("src/git_revision.cpp.in" "${git_revision_cpp}" @ONLY)
+configure_file("src/utils/git_revision.cpp.in" "${git_revision_cpp}" @ONLY)
 
 
 # ----------------------------------------------------------------------------
@@ -92,11 +92,11 @@ include_directories(include)
 
 set(SIMPROP_SRCS
     src/common.cpp
-	src/logging.cpp
  	src/params.cpp
     src/simprop.cpp
-    src/timer.cpp
-    src/utils.cpp
+	src/utils/logging.cpp
+    src/utils/misc.cpp
+    src/utils/timer.cpp
     "${git_revision_cpp}"
     )
 

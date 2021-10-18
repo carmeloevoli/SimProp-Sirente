@@ -1,12 +1,13 @@
-#ifndef SIMPROP_RANDOM_H
-#define SIMPROP_RANDOM_H
+#ifndef SIMPROP_UTILS_RANDOM_H
+#define SIMPROP_UTILS_RANDOM_H
 
 #include <random>
 
 namespace simprop {
 namespace utils {
 
-template <class FloatType = double, class = std::enable_if_t<std::is_floating_point<FloatType>::value> >
+template <class FloatType = double,
+          class = std::enable_if_t<std::is_floating_point<FloatType>::value> >
 class RNG {
  public:
   typedef FloatType result_type;
@@ -33,4 +34,4 @@ class RNG {
 }  // namespace utils
 }  // namespace simprop
 
-#endif  // SIMPROP_RANDOM_H
+#endif  // SIMPROP_UTILS_RANDOM_H

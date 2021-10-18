@@ -1,4 +1,4 @@
-#include "simprop/logging.h"
+#include "simprop/utils/logging.h"
 
 namespace simprop {
 namespace log {
