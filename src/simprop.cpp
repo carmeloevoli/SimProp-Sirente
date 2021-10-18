@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "simprop/common.h"
+#include "simprop/utils/timer.h"
 #include "simprop/utils/tqdm.h"
 
 namespace simprop {
@@ -31,7 +32,6 @@ void SimProp::buildInitialStates() {
     const auto E_i = GetRndEnergy(m_params.energyRange, m_rng());
     auto p = Particle{m_params.pid, z_i, E_i};
     m_primaries.emplace_back(p);
-    std::cout << m_primaries.back().z << " " << m_primaries.back().E << "\n";
   }
   LOGD << "built primaries with size " << m_primaries.size();
   printRanges();
@@ -49,9 +49,10 @@ void SimProp::dumpPrimaryParticles(std::string filename) {
 }
 
 void SimProp::run() {
-  int N = 2000;
+  int N = 1000;
   tqdm bar;
-  std::cout << "Running SimProp : " << std::endl;
+  LOGI << "Running SimProp : ";
+  utils::Timer timer("SimProp core time");
   bar.set_theme_vertical();
   bar.disable_colors();
   for (int i = 0; i < N; i++) {
@@ -59,7 +60,7 @@ void SimProp::run() {
     usleep(3000);
   }
   bar.finish();
-
+  LOGI << "done!";
   // std::cout << "Line:" << std::endl;
   // bar.reset();
   // bar.set_theme_line();

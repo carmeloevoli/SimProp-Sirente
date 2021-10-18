@@ -2,6 +2,7 @@
 #define SIMPROP_UTILS_TIMER_H
 
 #include <chrono>
+#include <string>
 
 namespace simprop {
 namespace utils {
@@ -10,12 +11,13 @@ using AwesomeClock = std::chrono::high_resolution_clock;
 
 class Timer {
  protected:
+  std::string m_message;
   std::chrono::time_point<AwesomeClock> m_start;
   std::chrono::time_point<AwesomeClock> m_end;
   std::chrono::duration<double> m_duration;
 
  public:
-  Timer();
+  explicit Timer(std::string message);
   ~Timer();
 };
 

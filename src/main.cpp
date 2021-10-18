@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
   try {
     log::startup_information();
     if (argc == 2) {
-      utils::Timer timer;
+      utils::Timer timer("SimProp total time");
 
       Params params(argv[1]);
       params.print();
@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
       SimProp simprop(params);
       simprop.buildInitialStates();
       simprop.dumpPrimaryParticles("output/initial.txt");
-      // simprop.run();
+      simprop.run();
 
       // OutputManager output(simprop);
       // output.save();
