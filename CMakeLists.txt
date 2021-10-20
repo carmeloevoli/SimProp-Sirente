@@ -93,6 +93,7 @@ include_directories(include)
 set(SIMPROP_SRCS
     src/common.cpp
  	src/params.cpp
+    src/pid.cpp
     src/simprop.cpp
 	src/utils/logging.cpp
     src/utils/misc.cpp

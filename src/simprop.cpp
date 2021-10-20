@@ -42,7 +42,7 @@ void SimProp::dumpPrimaryParticles(std::string filename) {
   std::ofstream ofile;
   ofile.open(filename);
   for (auto it = m_primaries.begin(); it != m_primaries.end(); it++) {
-    ofile << it->pid << "\t" << it->z << "\t" << it->E / SI::eV;
+    // ofile << it->pid << "\t" << it->z << "\t" << it->E / SI::eV;
     ofile << std::endl;
   }
   ofile.close();
