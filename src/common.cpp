@@ -19,7 +19,7 @@ double GetRndRedshift(double maxRedshift, int evolutionIndex, double r) {
   assert(evolutionIndex > 1);
 
   const double n = (double)evolutionIndex;
-  const auto C = r * std::pow(1. + maxRedshift, 1. - n) - 1.;
+  const auto C = r * (std::pow(1. + maxRedshift, 1. - n) - 1.);
   return std::pow(C + 1., 1. / (1. - n)) - 1.;
 }
 

@@ -42,7 +42,7 @@ void SimProp::dumpPrimaryParticles(std::string filename) {
   std::ofstream ofile;
   ofile.open(filename);
   for (auto it = m_primaries.begin(); it != m_primaries.end(); it++) {
-    // ofile << it->pid << "\t" << it->z << "\t" << it->E / SI::eV;
+    ofile << *it;
     ofile << std::endl;
   }
   ofile.close();
@@ -61,33 +61,6 @@ void SimProp::run() {
   }
   bar.finish();
   LOGI << "done!";
-  // std::cout << "Line:" << std::endl;
-  // bar.reset();
-  // bar.set_theme_line();
-  // for (int i = 0; i < N; i++) {
-  //   bar.progress(i, N);
-  //   usleep(3000);
-  // }
-  // bar.finish();
-
-  // std::cout << "Circles:" << std::endl;
-  // bar.reset();
-  // bar.set_theme_circle();
-  // for (int i = 0; i < N; i++) {
-  //   bar.progress(i, N);
-  //   usleep(3000);
-  // }
-  // bar.finish();
-
-  // bar.reset();
-  // std::cout << "Vertical bars:" << std::endl;
-  // bar.reset();
-  // bar.set_theme_vertical();
-  // for (int i = 0; i < N; i++) {
-  //   bar.progress(i, N);
-  //   usleep(3000);
-  // }
-  // bar.finish();
 }
 
 }  // namespace simprop

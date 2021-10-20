@@ -1,6 +1,7 @@
 #ifndef SIMPROP_SIMPROP_H
 #define SIMPROP_SIMPROP_H
 
+#include <iostream>
 #include <vector>
 
 #include "simprop/Units.h"
@@ -16,13 +17,18 @@ struct Particle {
   PID pid;
   double z;
   double E;
+
+  friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
+    return os << getPidNames(p.pid) << " " << std::setw(9) << p.z << " " << std::setw(16)
+              << p.E / SI::eV;
+  }
 };
 
 class SimProp {
  private:
   const Params& m_params;
   size_t m_size;
-  RandomNumberGenerator m_rng = utils::RNG<double>(12345);
+  RandomNumberGenerator m_rng = utils::RNG<double>(1234);
   std::vector<Particle> m_primaries;
 
  private:
