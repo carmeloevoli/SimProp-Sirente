@@ -95,6 +95,7 @@ set(SIMPROP_SRCS
  	src/params.cpp
     src/pid.cpp
     src/simprop.cpp
+    src/photonFields/CMB.cpp
 	src/utils/logging.cpp
     src/utils/misc.cpp
     src/utils/timer.cpp

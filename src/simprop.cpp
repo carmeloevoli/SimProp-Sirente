@@ -4,6 +4,8 @@
 #include <fstream>
 
 #include "simprop/common.h"
+#include "simprop/photonFields/CMB.h"
+#include "simprop/utils/misc.h"
 #include "simprop/utils/timer.h"
 #include "simprop/utils/tqdm.h"
 
@@ -19,10 +21,11 @@ SimProp::~SimProp() { LOGD << "SimProp destructor"; }
 void SimProp::printRanges() const {
   auto zrange = std::minmax_element(m_primaries.begin(), m_primaries.end(),
                                     [](const Particle& a, const Particle& b) { return a.z < b.z; });
-  LOGD << "redshift range (" << zrange.first->z << "," << zrange.second->z << ")";
+  LOGD << "z initial range (" << zrange.first->z << "," << zrange.second->z << ")";
   auto Erange = std::minmax_element(m_primaries.begin(), m_primaries.end(),
                                     [](const Particle& a, const Particle& b) { return a.E < b.E; });
-  LOGD << "energy range (" << Erange.first->E / SI::GeV << "," << Erange.second->E / SI::GeV << ")";
+  using SI::GeV;
+  LOGD << "E initial range (" << Erange.first->E / GeV << "," << Erange.second->E / GeV << ")";
 }
 
 void SimProp::buildInitialStates() {
@@ -41,8 +44,27 @@ void SimProp::dumpPrimaryParticles(std::string filename) {
   LOGD << "dumping " << m_primaries.size() << " particles on " << filename;
   std::ofstream ofile;
   ofile.open(filename);
-  for (auto it = m_primaries.begin(); it != m_primaries.end(); it++) {
-    ofile << *it;
+  for (auto& p : m_primaries) {
+    ofile << p;
+    ofile << std::endl;
+  }
+  ofile.close();
+}
+
+void SimProp::buildPhotonFields() { m_photonFields.emplace_back(photonfield::CMB()); }
+
+void SimProp::dumpPhotonFields(std::string filename) {
+  LOGD << "dumping photon fields on " << filename;
+  const auto ePhoton = utils::LogAxis(1. * SI::eV, 100. * SI::eV, 100);
+  std::ofstream ofile;
+  ofile.open(filename);
+  for (auto e : ePhoton) {
+    ofile << e / SI::eV << " ";
+    ofile << std::accumulate(m_photonFields.begin(), m_photonFields.end(), 0.,
+                             [e](double result, const photonfield::AbstractField& field) {
+                               return result + field.getPhotonDensity(e);
+                             })
+          << " ";
     ofile << std::endl;
   }
   ofile.close();

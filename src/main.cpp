@@ -14,10 +14,12 @@ int main(int argc, char* argv[]) {
       SimProp simprop(params);
       simprop.buildInitialStates();
       simprop.dumpPrimaryParticles("output/initial.txt");
-      simprop.run();
+      simprop.buildPhotonFields();
+      simprop.dumpPhotonFields("output/EBL.txt");
+      // simprop.run();
 
-      // OutputManager output(simprop);
-      // output.save();
+      OutputManager output(simprop);
+      output.save();
 
     } else {
       throw std::runtime_error("please provide an input file as './simprop params.ini'");

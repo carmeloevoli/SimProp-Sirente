@@ -2,10 +2,12 @@
 #define SIMPROP_SIMPROP_H
 
 #include <iostream>
+#include <memory>
 #include <vector>
 
 #include "simprop/Units.h"
 #include "simprop/params.h"
+#include "simprop/photonFields/photonField.h"
 #include "simprop/pid.h"
 #include "simprop/utils/random.h"
 
@@ -19,8 +21,8 @@ struct Particle {
   double E;
 
   friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
-    return os << getPidNames(p.pid) << " " << std::setw(9) << p.z << " " << std::setw(16)
-              << p.E / SI::eV;
+    auto n = getPidNames(p.pid);
+    return os << n << " " << std::setw(9) << p.z << " " << std::setw(16) << p.E / SI::eV;
   }
 };
 
@@ -30,6 +32,7 @@ class SimProp {
   size_t m_size;
   RandomNumberGenerator m_rng = utils::RNG<double>(1234);
   std::vector<Particle> m_primaries;
+  std::vector<photonfield::AbstractField> m_photonFields;
 
  private:
   void printRanges() const;
@@ -40,6 +43,10 @@ class SimProp {
 
   void buildInitialStates();
   void dumpPrimaryParticles(std::string filename);
+
+  void buildPhotonFields();
+  void dumpPhotonFields(std::string filename);
+
   void run();
 };
 
