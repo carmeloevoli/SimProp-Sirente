@@ -7,7 +7,7 @@
 
 #include "simprop/Units.h"
 #include "simprop/params.h"
-#include "simprop/photonFields/photonField.h"
+#include "simprop/photonFields/AbstractPhotonField.h"
 #include "simprop/pid.h"
 #include "simprop/utils/random.h"
 

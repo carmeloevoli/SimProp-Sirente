@@ -1,4 +1,4 @@
-#include "simprop/photonFields/CMB.h"
+#include "simprop/photonFields/CmbPhotonField.h"
 
 #include <cmath>
 

@@ -1,6 +1,8 @@
 #include "simprop/utils/misc.h"
 
 #include <cmath>
+#include <fstream>
+#include <sstream>
 #include <stdexcept>
 
 namespace simprop {
@@ -38,6 +40,26 @@ std::vector<double> LogAxis(const double& min, const double& max, const size_t& 
     v[i] = value;
   }
   return v;
+}
+
+size_t countFileLines(const std::string& filename) {
+  size_t count = 0;
+  std::string line;
+  std::ifstream file(filename.c_str());
+  while (getline(file, line)) count++;
+  return count;
+}
+
+bool fileExists(const std::string& filename) {
+  std::ifstream f(filename.c_str());
+  return f.good();
+}
+
+std::vector<std::string> split(std::string s, std::string delimiter) {
+  std::vector<std::string> result;
+  std::istringstream iss(s);
+  for (std::string s; iss >> s;) result.push_back(s);
+  return result;
 }
 
 }  // namespace utils

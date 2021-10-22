@@ -4,7 +4,9 @@
 #include <fstream>
 
 #include "simprop/common.h"
-#include "simprop/photonFields/CMB.h"
+#include "simprop/photonFields/CmbPhotonField.h"
+#include "simprop/photonFields/Dominguez2011PhotonField.h"
+#include "simprop/photonFields/Gilmore2012PhotonField.h"
 #include "simprop/utils/misc.h"
 #include "simprop/utils/timer.h"
 #include "simprop/utils/tqdm.h"
@@ -31,7 +33,7 @@ void SimProp::printRanges() const {
 void SimProp::buildInitialStates() {
   m_primaries.reserve(m_size);
   for (size_t i = 0; i < m_size; ++i) {
-    const auto z_i = GetRndRedshift(m_params.maxRedshift, 2, m_rng());
+    const auto z_i = GetRndRedshift(m_params.redshiftRange.second, 2, m_rng());
     const auto E_i = GetRndEnergy(m_params.energyRange, m_rng());
     auto p = Particle{m_params.pid, z_i, E_i};
     m_primaries.emplace_back(p);
@@ -51,7 +53,13 @@ void SimProp::dumpPrimaryParticles(std::string filename) {
   ofile.close();
 }
 
-void SimProp::buildPhotonFields() { m_photonFields.emplace_back(photonfield::CMB()); }
+void SimProp::buildPhotonFields() {
+  m_photonFields.emplace_back(photonfield::CMB());
+  if (m_params.eblModel == Params::GILMORE2012)
+    m_photonFields.emplace_back(photonfield::Gilmore2012Field());
+  else if (m_params.eblModel == Params::DOMINGUEZ2011)
+    m_photonFields.emplace_back(photonfield::Dominguez2011Field());
+}
 
 void SimProp::dumpPhotonFields(std::string filename) {
   LOGD << "dumping photon fields on " << filename;
@@ -63,8 +71,7 @@ void SimProp::dumpPhotonFields(std::string filename) {
     ofile << std::accumulate(m_photonFields.begin(), m_photonFields.end(), 0.,
                              [e](double result, const photonfield::AbstractField& field) {
                                return result + field.getPhotonDensity(e);
-                             })
-          << " ";
+                             });
     ofile << std::endl;
   }
   ofile.close();

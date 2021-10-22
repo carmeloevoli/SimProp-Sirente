@@ -25,6 +25,11 @@ std::string removeExtensionIniFilename(std::string inputFilename);
 std::vector<double> LinAxis(const double& min, const double& max, const size_t& size);
 std::vector<double> LogAxis(const double& min, const double& max, const size_t& size);
 
+// Files
+size_t countFileLines(const std::string& filename);
+bool fileExists(const std::string& filename);
+std::vector<std::string> split(std::string s, std::string delimiter = " ");
+
 }  // namespace utils
 }  // namespace simprop
 

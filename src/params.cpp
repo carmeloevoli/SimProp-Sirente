@@ -13,6 +13,15 @@ Params::Params(const char* inputFilename) {
 
 Params::~Params() { LOGD << "Params destructor"; }
 
+std::string Params::toString(EblModel model) {
+  if (model == GILMORE2012)
+    return "Gilmore2012";
+  else if (model == DOMINGUEZ2011)
+    return "Dominguez2011";
+  else
+    return "none";
+}
+
 // void Params::set_params(const std::string& key, const double& value) {
 //   if (key == "H")
 //     _H = value * cgs::kpc;
@@ -44,19 +53,26 @@ Params::~Params() { LOGD << "Params destructor"; }
 //   }
 // }
 
-#define PFILE(NAME, VALUE) \
-  (pfile << std::left << std::setw(20) << std::setfill('_') << NAME << VALUE << std::endl)
+template <typename T>
+std::string printElement(T t, const std::string& name) {
+  std::stringstream ss;
+  ss << std::left << std::setw(20) << name;
+  ss << std::left << std::setw(10) << t;
+  ss << "\n";
+  return ss.str();
+}
 
 void Params::print() {
   std::ofstream pfile;
   pfile.open(simName + ".params");
-  PFILE("model name", simName);
-  PFILE("seed", seed);
-  PFILE("mass", getPidNames(pid));
-  PFILE("N Particles", nParticles);
-  PFILE("min Energy [GeV]", energyRange.first / SI::GeV);
-  PFILE("max Energy [GeV]", energyRange.second / SI::GeV);
-  PFILE("max redshift []", maxRedshift);
+  pfile << printElement(simName, "Model name");
+  pfile << printElement(seed, "Seed");
+  pfile << printElement(getPidNames(pid), "Mass");
+  pfile << printElement(nParticles, "Size Particles");
+  pfile << printElement(energyRange.first / SI::GeV, "Min Energy [GeV]");
+  pfile << printElement(energyRange.second / SI::GeV, "Max Energy [GeV]");
+  pfile << printElement(redshiftRange.second, "Max redshift");
+  pfile << printElement(toString(eblModel), "EBL model");
   pfile.close();
 }
 

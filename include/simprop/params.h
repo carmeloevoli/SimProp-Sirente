@@ -7,18 +7,23 @@
 #include "simprop/pid.h"
 #include "simprop/utils/logging.h"
 
-using EnergyRange = std::pair<double, double>;
+using Range = std::pair<double, double>;
 
 namespace simprop {
 
 class Params {
+ public:
+  enum EblModel { GILMORE2012, DOMINGUEZ2011 };
+  std::string toString(EblModel model);
+
  private:
   std::string m_simName = "fiducial";
   unsigned int m_seed = 12345;
   unsigned int m_nParticles = 1000;
-  EnergyRange m_energyRange = {1e9 * SI::eV, 1e20 * SI::eV};
-  double m_maxRedshift = 2.0;
+  Range m_energyRange = {1e9 * SI::eV, 1e20 * SI::eV};
+  Range m_redshiftRange = {0., 2.};
   PID m_pid = Fe56;
+  EblModel m_eblModel = GILMORE2012;
 
  public:
   explicit Params(const char* inputFilename);
@@ -27,9 +32,10 @@ class Params {
   const std::string& simName = m_simName;
   const unsigned int& seed = m_seed;
   const unsigned int& nParticles = m_nParticles;
-  const EnergyRange& energyRange = m_energyRange;
-  const double& maxRedshift = m_maxRedshift;
+  const Range& energyRange = m_energyRange;
+  const Range& redshiftRange = m_redshiftRange;
   const PID& pid = m_pid;
+  const EblModel& eblModel = m_eblModel;
 
  private:
   //   void set_from_file(const std::string& filename);

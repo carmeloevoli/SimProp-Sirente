@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "simprop/photonFields/photonField.h"
+#include "simprop/photonFields/AbstractPhotonField.h"
 
 namespace simprop {
 namespace photonfield {
