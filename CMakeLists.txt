@@ -98,6 +98,7 @@ set(SIMPROP_SRCS
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
     src/photonFields/Gilmore2012PhotonField.cpp
+	src/utils/interpolators.cpp
 	src/utils/logging.cpp
     src/utils/misc.cpp
     src/utils/timer.cpp
@@ -108,7 +109,7 @@ set(SIMPROP_SRCS
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/output)
 
 # copy data files in build
-file(GLOB SIMPROP_DATA "data/EBL_Gilmore_2012/eblflux_fiducial.dat")
+file(GLOB SIMPROP_DATA "data/*.txt")
 file(COPY ${SIMPROP_DATA} DESTINATION ${PROJECT_BINARY_DIR}/data)
 
 # make library

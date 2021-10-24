@@ -19,7 +19,7 @@ std::string Params::toString(EblModel model) {
   else if (model == DOMINGUEZ2011)
     return "Dominguez2011";
   else
-    return "none";
+    return "CmbOnly";
 }
 
 // void Params::set_params(const std::string& key, const double& value) {

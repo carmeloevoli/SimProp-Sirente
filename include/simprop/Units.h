@@ -14,11 +14,14 @@ static constexpr double metre = 1;
 static constexpr double kilogram = 1;
 static constexpr double ampere = 1;
 static constexpr double kelvin = 1;
+static constexpr double teradian = 1;
 
 // SI derived units
 static constexpr double radian = meter / meter;
 static constexpr double hertz = 1 / second;
 static constexpr double joule = kilogram * pow2(meter / second);
+static constexpr double watt = joule / second;
+static constexpr double steradian = pow2(meter / meter);
 
 // prefixes
 static constexpr double peta = 1e15;
@@ -67,6 +70,10 @@ static constexpr double GeV = gigaelectronvolt;
 static constexpr double TeV = teraelectronvolt;
 static constexpr double PeV = petaelectronvolt;
 static constexpr double m2 = meter * meter;
+static constexpr double Hz = hertz;
+static constexpr double GHz = giga * hertz;
+static constexpr double nW = nano * watt;
+static constexpr double sr = steradian;
 
 // PHYSICAL CONSTANTS
 static constexpr double cLight = 2.99792458e8 * meter / second;

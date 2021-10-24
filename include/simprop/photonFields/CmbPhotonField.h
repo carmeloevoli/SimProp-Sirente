@@ -11,7 +11,7 @@ namespace photonfield {
 class BlackbodyPhotonField : public AbstractField {
  public:
   BlackbodyPhotonField(const std::string fieldName, const double blackbodyTemperature);
-  double getPhotonDensity(double ePhoton, double z = 0.) const;
+  double getPhotonDensity(double ePhoton, double z = 0.) const override;
 
  protected:
   double m_blackbodyTemperature;

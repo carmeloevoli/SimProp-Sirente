@@ -32,7 +32,7 @@ class SimProp {
   size_t m_size;
   RandomNumberGenerator m_rng = utils::RNG<double>(1234);
   std::vector<Particle> m_primaries;
-  std::vector<photonfield::AbstractField> m_photonFields;
+  std::vector<std::shared_ptr<photonfield::AbstractField> > m_photonFields;
 
  private:
   void printRanges() const;
@@ -42,10 +42,10 @@ class SimProp {
   virtual ~SimProp();
 
   void buildInitialStates();
-  void dumpPrimaryParticles(std::string filename);
+  void dumpPrimaryParticles();
 
   void buildPhotonFields();
-  void dumpPhotonFields(std::string filename);
+  void dumpPhotonFields();
 
   void run();
 };

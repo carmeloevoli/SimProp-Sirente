@@ -1,7 +1,9 @@
 #include "simprop/utils/misc.h"
 
+#include <algorithm>
 #include <cmath>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 
@@ -56,10 +58,34 @@ bool fileExists(const std::string& filename) {
 }
 
 std::vector<std::string> split(std::string s, std::string delimiter) {
-  std::vector<std::string> result;
-  std::istringstream iss(s);
-  for (std::string s; iss >> s;) result.push_back(s);
-  return result;
+  std::vector<std::string> v;
+  size_t pos = 0;
+  std::string token;
+  while ((pos = s.find(delimiter)) != std::string::npos) {
+    token = s.substr(0, pos);
+    v.push_back(token);
+    s.erase(0, pos + delimiter.length());
+  }
+  v.push_back(s);
+  return v;
+}
+
+std::vector<double> loadRow(std::string filePath, size_t iRow, std::string delimiter) {
+  if (iRow > countFileLines(filePath)) throw std::runtime_error("row index outside file size");
+  std::vector<double> v;
+  size_t count = 0;
+  std::string line;
+  std::ifstream file(filePath.c_str());
+  while (getline(file, line)) {
+    if (iRow == count) {
+      auto s = split(line, delimiter);
+      v.resize(s.size());
+      std::transform(s.begin(), s.end(), v.begin(),
+                     [](const std::string& value) { return stod(value); });
+    }
+    count++;
+  }
+  return v;
 }
 
 }  // namespace utils

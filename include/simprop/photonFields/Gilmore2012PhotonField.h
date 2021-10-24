@@ -16,7 +16,7 @@ class Gilmore2012Field : public AbstractField {
   double getPhotonDensity(double ePhoton, double z = 0.) const;
 
  protected:
-  TabularPhotonField<100, 100> table{"ciccio"};
+  TabularPhotonField<20, 100> table{"data/EBL_Gilmore2012.txt"};
 };
 
 }  // namespace photonfield

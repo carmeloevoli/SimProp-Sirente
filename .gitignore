@@ -1,4 +1,3 @@
 build*/
-
-# VSCODE
 *.code-workspace
+*.DS_Store

@@ -42,7 +42,8 @@ void SimProp::buildInitialStates() {
   printRanges();
 }
 
-void SimProp::dumpPrimaryParticles(std::string filename) {
+void SimProp::dumpPrimaryParticles() {
+  std::string filename = "output/" + m_params.simName + ".primaries";
   LOGD << "dumping " << m_primaries.size() << " particles on " << filename;
   std::ofstream ofile;
   ofile.open(filename);
@@ -54,24 +55,28 @@ void SimProp::dumpPrimaryParticles(std::string filename) {
 }
 
 void SimProp::buildPhotonFields() {
-  m_photonFields.emplace_back(photonfield::CMB());
-  if (m_params.eblModel == Params::GILMORE2012)
-    m_photonFields.emplace_back(photonfield::Gilmore2012Field());
-  else if (m_params.eblModel == Params::DOMINGUEZ2011)
-    m_photonFields.emplace_back(photonfield::Dominguez2011Field());
+  m_photonFields.emplace_back(new photonfield::CMB());
+  // if (m_params.eblModel == Params::GILMORE2012)
+  //   m_photonFields.emplace_back(new photonfield::Gilmore2012Field());
+  // else if (m_params.eblModel == Params::DOMINGUEZ2011)
+  //   m_photonFields.emplace_back(new photonfield::Dominguez2011Field());
 }
 
-void SimProp::dumpPhotonFields(std::string filename) {
+void SimProp::dumpPhotonFields() {
+  std::string filename = "output/" + m_params.simName + ".ebl";
   LOGD << "dumping photon fields on " << filename;
-  const auto ePhoton = utils::LogAxis(1. * SI::eV, 100. * SI::eV, 100);
+  const auto ePhoton = utils::LogAxis(1e-6 * SI::eV, 1e6 * SI::eV, 1200);
+  const auto units = SI::nW / utils::pow<2>(SI::meter) / SI::sr;
   std::ofstream ofile;
   ofile.open(filename);
+  ofile << "# energy [eV] - frequency [GHz] - brightness [nW/m^2/sr]\n";
   for (auto e : ePhoton) {
     ofile << e / SI::eV << " ";
-    ofile << std::accumulate(m_photonFields.begin(), m_photonFields.end(), 0.,
-                             [e](double result, const photonfield::AbstractField& field) {
-                               return result + field.getPhotonDensity(e);
-                             });
+    ofile << energyToFrequency(e) / SI::GHz << " ";
+    auto n_gamma = std::accumulate(
+        m_photonFields.begin(), m_photonFields.end(), 0.,
+        [e](double result, const auto& field) { return result + field->getPhotonDensity(e); });
+    ofile << utils::pow<2>(e) * n_gamma * SI::cLight / (4. * M_PI) / units;
     ofile << std::endl;
   }
   ofile.close();
