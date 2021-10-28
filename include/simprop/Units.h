@@ -63,6 +63,7 @@ static constexpr double sec = second;
 static constexpr double kyr = kiloyear;
 static constexpr double Myr = megayear;
 static constexpr double kpc = kiloparsec;
+static constexpr double Mpc = megaparsec;
 static constexpr double eV = electronvolt;
 static constexpr double keV = kiloelectronvolt;
 static constexpr double MeV = megaelectronvolt;
@@ -70,10 +71,12 @@ static constexpr double GeV = gigaelectronvolt;
 static constexpr double TeV = teraelectronvolt;
 static constexpr double PeV = petaelectronvolt;
 static constexpr double m2 = meter * meter;
+static constexpr double km = kilo * meter;
 static constexpr double Hz = hertz;
 static constexpr double GHz = giga * hertz;
 static constexpr double nW = nano * watt;
 static constexpr double sr = steradian;
+static constexpr double K = kelvin;
 
 // PHYSICAL CONSTANTS
 static constexpr double cLight = 2.99792458e8 * meter / second;
