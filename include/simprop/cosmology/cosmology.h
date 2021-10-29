@@ -14,7 +14,7 @@ double t_H(double z);
 double dtdz(double z);
 
 /* returns the relative energy fraction lost by adiabatic losses */
-double adiabaticLosses(double z_i, double z_f);
+double adiabaticRelativeLoss(double z_i, double z_f);
 
 }  // namespace cosmo
 }  // namespace simprop

@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "simprop/common.h"
+#include "simprop/cosmology/cosmology.h"
 #include "simprop/photonFields/CmbPhotonField.h"
 #include "simprop/photonFields/Dominguez2011PhotonField.h"
 #include "simprop/photonFields/Gilmore2012PhotonField.h"
@@ -20,34 +21,35 @@ SimProp::SimProp(const Params& params)
 
 SimProp::~SimProp() { LOGD << "SimProp destructor"; }
 
-void SimProp::printRanges() const {
-  auto zrange = std::minmax_element(m_primaries.begin(), m_primaries.end(),
-                                    [](const Particle& a, const Particle& b) { return a.z < b.z; });
-  LOGD << "z initial range (" << zrange.first->z << "," << zrange.second->z << ")";
-  auto Erange = std::minmax_element(m_primaries.begin(), m_primaries.end(),
-                                    [](const Particle& a, const Particle& b) { return a.E < b.E; });
+void SimProp::printStateRanges() const {
+  auto zrange =
+      std::minmax_element(m_particles.begin(), m_particles.end(),
+                          [](const Particle& a, const Particle& b) { return a.getZ() < b.getZ(); });
+  LOGD << "z range (" << zrange.first->getZ() << "," << zrange.second->getZ() << ")";
+  auto Erange =
+      std::minmax_element(m_particles.begin(), m_particles.end(),
+                          [](const Particle& a, const Particle& b) { return a.getE() < b.getE(); });
   using SI::GeV;
-  LOGD << "E initial range (" << Erange.first->E / GeV << "," << Erange.second->E / GeV << ")";
+  LOGD << "E range (" << Erange.first->getE() / GeV << "," << Erange.second->getE() / GeV << ")";
 }
 
 void SimProp::buildInitialStates() {
-  m_primaries.reserve(m_size);
+  m_particles.reserve(m_size);
   for (size_t i = 0; i < m_size; ++i) {
     const auto z_i = GetRndRedshift(m_params.redshiftRange.second, 2, m_rng());
     const auto E_i = GetRndEnergy(m_params.energyRange, m_rng());
     auto p = Particle{m_params.pid, z_i, E_i};
-    m_primaries.emplace_back(p);
+    m_particles.emplace_back(p);
   }
-  LOGD << "built primaries with size " << m_primaries.size();
-  printRanges();
+  LOGD << "built primaries with size " << m_particles.size();
+  printStateRanges();
 }
 
-void SimProp::dumpPrimaryParticles() {
-  std::string filename = "output/" + m_params.simName + ".primaries";
-  LOGD << "dumping " << m_primaries.size() << " particles on " << filename;
+void SimProp::dumpParticles(std::string filename) const {
+  LOGD << "dumping " << m_particles.size() << " particles on " << filename;
   std::ofstream ofile;
   ofile.open(filename);
-  for (auto& p : m_primaries) {
+  for (auto& p : m_particles) {
     ofile << p;
     ofile << std::endl;
   }
@@ -62,7 +64,7 @@ void SimProp::buildPhotonFields() {
   //   m_photonFields.emplace_back(new photonfield::Dominguez2011Field());
 }
 
-void SimProp::dumpPhotonFields() {
+void SimProp::dumpPhotonFields() const {  // TODO TO BE REMOVED
   std::string filename = "output/" + m_params.simName + ".ebl";
   LOGD << "dumping photon fields on " << filename;
   const auto ePhoton = utils::LogAxis(1e-6 * SI::eV, 1e6 * SI::eV, 1200);
@@ -82,19 +84,31 @@ void SimProp::dumpPhotonFields() {
   ofile.close();
 }
 
+bool DoPropagate(Particle p) {
+  double minPropagatingEnergy = SI::eV;
+  return (p.getZ() > 1e-20 && p.getE() > minPropagatingEnergy);
+}
+
+void Evolve(ParticleStack::iterator it) {
+  const double dz = 0.01;
+  const auto currentRedshift = it->getNow().z;
+  const auto newRedshift = std::max(currentRedshift - dz, 0.);
+  it->getNow().z = newRedshift;
+  const auto currentEnergy = it->getNow().E;
+  it->getNow().E = currentEnergy * cosmo::adiabaticRelativeLoss(currentRedshift, newRedshift);
+}
+
 void SimProp::run() {
-  int N = 1000;
-  tqdm bar;
+  // TODO add bar?
   LOGI << "Running SimProp : ";
   utils::Timer timer("SimProp core time");
-  bar.set_theme_vertical();
-  bar.disable_colors();
-  for (int i = 0; i < N; i++) {
-    bar.progress(i, N);
-    usleep(3000);
+  ParticleStack::iterator it = m_particles.begin();
+  while (it != m_particles.end()) {
+    it = std::find_if(m_particles.begin(), m_particles.end(), DoPropagate);
+    Evolve(it);
   }
-  bar.finish();
   LOGI << "done!";
+  dumpParticles("output/test.txt");
 }
 
 }  // namespace simprop

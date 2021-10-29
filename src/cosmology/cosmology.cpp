@@ -18,30 +18,16 @@ double H(double z) {
   using std::sqrt;
 
   const auto x = 1. + z;
-  return H0 * sqrt(OmegaM * pow(x, 3.) + OmegaR * pow(x, 4.) + OmegaL);
+  return H0 * sqrt(OmegaM * pow(x, 3.) + OmegaL);
 }
 
 double t_H(double z) { return 1.0 / H(z); }
 
-double dtdz(double z) {
-  assert(!(z < 0));
-  using std::pow;
-  using std::sqrt;
+double dtdz(double z) { return 1. / H(z) / (1. + z); }
 
-  const auto x = sqrt(OmegaL / OmegaM) * pow(1 + z, -3.0 / 2.0);
-  const auto dxdz = sqrt(OmegaL / OmegaM) * pow(1 + z, -5.0 / 2.0) * (-3.0 / 2.0);
-  const auto const1 = 2 * sqrt(1 + OmegaM / OmegaL) / (3.0 * H0);
-
-  const auto numer = dxdz * (1 + x * pow(pow(x, 2) + 1, -0.5));
-  const auto denom = x + sqrt(pow(x, 2) + 1);
-
-  return (const1 * numer / denom);
-}
-
-double adiabaticLossesEnergyFraction(double z_i, double z_f) {
+double adiabaticRelativeLoss(double z_i, double z_f) {
   assert(z_f < z_i);
-  auto result =
-      gsl::QAGIntegration<double>([](double z) { return -H(z) * dtdz(z); }, z_i, z_f, LIMIT);
+  auto result = std::log((z_f + 1.) / (z_i + 1.));
   return std::exp(result);
 }
 

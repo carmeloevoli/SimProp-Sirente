@@ -5,47 +5,35 @@
 #include <memory>
 #include <vector>
 
-#include "simprop/Units.h"
 #include "simprop/params.h"
+#include "simprop/particle.h"
 #include "simprop/photonFields/AbstractPhotonField.h"
-#include "simprop/pid.h"
 #include "simprop/utils/random.h"
 
 using RandomNumberGenerator = simprop::utils::RNG<double>;
 
 namespace simprop {
 
-struct Particle {
-  PID pid;
-  double z;
-  double E;
-
-  friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
-    auto n = getPidNames(p.pid);
-    return os << n << " " << std::setw(9) << p.z << " " << std::setw(16) << p.E / SI::eV;
-  }
-};
-
 class SimProp {
  private:
   const Params& m_params;
   size_t m_size;
   RandomNumberGenerator m_rng = utils::RNG<double>(1234);
-  std::vector<Particle> m_primaries;
+  ParticleStack m_particles;
   std::vector<std::shared_ptr<photonfield::AbstractField> > m_photonFields;
 
  private:
-  void printRanges() const;
+  void printStateRanges() const;
 
  public:
   explicit SimProp(const Params& params);
   virtual ~SimProp();
 
   void buildInitialStates();
-  void dumpPrimaryParticles();
+  void dumpParticles(std::string filename) const;
 
   void buildPhotonFields();
-  void dumpPhotonFields();
+  void dumpPhotonFields() const;
 
   void run();
 };

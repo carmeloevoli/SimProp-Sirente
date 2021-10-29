@@ -13,10 +13,10 @@ int main(int argc, char* argv[]) {
 
       SimProp simprop(params);
       simprop.buildInitialStates();
-      simprop.dumpPrimaryParticles();
+      simprop.dumpParticles("output/initialState.txt");
       simprop.buildPhotonFields();
       simprop.dumpPhotonFields();
-      //  simprop.run();
+      simprop.run();
 
       OutputManager output(simprop);
       output.save();
