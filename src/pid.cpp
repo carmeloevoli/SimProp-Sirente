@@ -4,9 +4,29 @@
 
 namespace simprop {
 
-PID getPidNucleus(int Z, unsigned int A) {
-  assert(A >= 0);
+PID getPidNucleus(const int& Z, const int& A) {
+  if (A < 0 || Z > A) throw std::invalid_argument("invalid arguments for nucleus PID");
   return PID(1000000000 + 10 * Z + 10000 * A);
+}
+
+bool isNucleus(const PID& pid) { return (pid >= PID(1000009990)); }
+
+int getNucleusMass(const PID& pid) {
+  if (not isNucleus(pid)) throw std::invalid_argument(getPidNames(pid) + " is not a nucleus");
+  if (pid == neutron || pid == antiproton)
+    return 1;
+  else
+    return ((int)pid / 10000) % 1000;
+}
+
+int getNucleusCharge(const PID& pid) {
+  if (not isNucleus(pid)) throw std::invalid_argument(getPidNames(pid) + " is not a nucleus");
+  if (pid == neutron)
+    return 0;
+  else if (pid == antiproton)
+    return -1;
+  else
+    return ((int)pid / 10) % 1000;
 }
 
 const std::map<PID, std::string> pidNames = {{photon, "photon"},

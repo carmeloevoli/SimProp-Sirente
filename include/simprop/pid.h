@@ -8,7 +8,11 @@ namespace simprop {
 
 enum class PID : long int {};
 
-PID getPidNucleus(int Z, unsigned int A);
+PID getPidNucleus(const int& Z, const int& A);
+bool isNucleus(const PID& pid);
+int getNucleusMass(const PID& pid);
+int getNucleusCharge(const PID& pid);
+
 std::string getPidNames(const PID& pid);
 
 static const PID photon = PID(0);
