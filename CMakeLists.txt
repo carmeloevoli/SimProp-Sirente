@@ -10,16 +10,20 @@ cmake_policy(SET CMP0048 NEW)
 
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-11")
-set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -pedantic -ftree-vectorize -O3 -DDEBUG")
+set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -pedantic -ftree-vectorize -O3")
 set(SIMPROP_INCLUDES)
 set(SIMPROP_LIBRARIES)
 
 # Set default build-type to release to enable performance improvements
 if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
-    #set(CMAKE_BUILD_TYPE Debug)
+    #set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE Debug)
 endif(NOT CMAKE_BUILD_TYPE)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG")
+endif (CMAKE_BUILD_TYPE STREQUAL "Debug")
+
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math")
@@ -67,10 +71,10 @@ endif(APPLE)
 include_directories(external/plog/include)
 
 # C++ Threads required
-find_package(Threads REQUIRED)
-list(APPEND SIMPROP_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+#find_package(Threads REQUIRED)
+#list(APPEND SIMPROP_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
-# GSL required
+# GSL (required)
 find_package(GSL REQUIRED)
 list(APPEND SIMPROP_INCLUDES ${GSL_INCLUDE_DIR})
 list(APPEND SIMPROP_LIBRARIES ${GSL_LIBRARIES})
@@ -130,5 +134,5 @@ message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")
 message (STATUS "CMAKE_CXX_COMPILER .... = ${CMAKE_CXX_COMPILER}")
 message (STATUS "CMAKE_CXX_FLAGS ....... = ${CMAKE_CXX_FLAGS}")
 message (STATUS "CMAKE_INCLUDE_PATH .... = ${CMAKE_INCLUDE_PATH}")
-message (STATUS "SIMPROP_INCLUDES ........ = ${SIMPROP_INCLUDES}")
-message (STATUS "SIMPROP_LIBRARIES ....... = ${SIMPROP_LIBRARIES}")
+message (STATUS "SIMPROP_INCLUDES ...... = ${SIMPROP_INCLUDES}")
+message (STATUS "SIMPROP_LIBRARIES ..... = ${SIMPROP_LIBRARIES}")
