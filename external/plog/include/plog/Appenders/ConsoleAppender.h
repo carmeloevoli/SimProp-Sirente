@@ -6,35 +6,20 @@
 
 namespace plog
 {
-    enum OutputStream
-    {
-        streamStdOut,
-        streamStdErr
-    };
-
     template<class Formatter>
     class ConsoleAppender : public IAppender
     {
     public:
 #ifdef _WIN32
-#   ifdef _MSC_VER
-#       pragma warning(suppress: 26812) //  Prefer 'enum class' over 'enum'
-#   endif
-        ConsoleAppender(OutputStream outStream = streamStdOut)
-            : m_isatty(!!_isatty(_fileno(outStream == streamStdOut ? stdout : stderr)))
-            , m_outputStream(outStream == streamStdOut ? std::cout : std::cerr)
-            , m_outputHandle()
+        ConsoleAppender() : m_isatty(!!_isatty(_fileno(stdout))), m_stdoutHandle()
         {
             if (m_isatty)
             {
-                m_outputHandle = GetStdHandle(outStream == streamStdOut ? stdHandle::kOutput : stdHandle::kErrorOutput);
+                m_stdoutHandle = GetStdHandle(stdHandle::kOutput);
             }
         }
 #else
-        ConsoleAppender(OutputStream outStream = streamStdOut) 
-            : m_isatty(!!isatty(fileno(outStream == streamStdOut ? stdout : stderr))) 
-            , m_outputStream(outStream == streamStdOut ? std::cout : std::cerr)
-        {}
+        ConsoleAppender() : m_isatty(!!isatty(fileno(stdout))) {}
 #endif
 
         virtual void write(const Record& record)
@@ -51,14 +36,14 @@ namespace plog
 #ifdef _WIN32
             if (m_isatty)
             {
-                WriteConsoleW(m_outputHandle, str.c_str(), static_cast<DWORD>(str.size()), NULL, NULL);
+                WriteConsoleW(m_stdoutHandle, str.c_str(), static_cast<DWORD>(str.size()), NULL, NULL);
             }
             else
             {
-                m_outputStream << util::toNarrow(str, codePage::kActive) << std::flush;
+                std::cout << util::toNarrow(str, codePage::kActive) << std::flush;
             }
 #else
-            m_outputStream << str << std::flush;
+            std::cout << str << std::flush;
 #endif
         }
 
@@ -70,9 +55,8 @@ namespace plog
     protected:
         util::Mutex m_mutex;
         const bool  m_isatty;
-        std::ostream& m_outputStream;
 #ifdef _WIN32
-        HANDLE      m_outputHandle;
+        HANDLE      m_stdoutHandle;
 #endif
     };
 }

@@ -9,25 +9,18 @@ namespace plog
     {
     public:
 #ifdef _WIN32
-#   ifdef _MSC_VER
-#       pragma warning(suppress: 26812) //  Prefer 'enum class' over 'enum'
-#   endif
-        ColorConsoleAppender(OutputStream outStream = streamStdOut) 
-            : ConsoleAppender<Formatter>(outStream)
-            , m_originalAttr()
+        ColorConsoleAppender() : m_originalAttr()
         {
             if (this->m_isatty)
             {
                 CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
-                GetConsoleScreenBufferInfo(this->m_outputHandle, &csbiInfo);
+                GetConsoleScreenBufferInfo(this->m_stdoutHandle, &csbiInfo);
 
                 m_originalAttr = csbiInfo.wAttributes;
             }
         }
 #else
-        ColorConsoleAppender(OutputStream outStream = streamStdOut) 
-            : ConsoleAppender<Formatter>(outStream)
-        {}
+        ColorConsoleAppender() {}
 #endif
 
         virtual void write(const Record& record)
@@ -40,7 +33,7 @@ namespace plog
             resetColor();
         }
 
-    protected:
+    private:
         void setColor(Severity severity)
         {
             if (this->m_isatty)
@@ -49,37 +42,37 @@ namespace plog
                 {
 #ifdef _WIN32
                 case fatal:
-                    SetConsoleTextAttribute(this->m_outputHandle, foreground::kRed | foreground::kGreen | foreground::kBlue | foreground::kIntensity | background::kRed); // white on red background
+                    SetConsoleTextAttribute(this->m_stdoutHandle, foreground::kRed | foreground::kGreen | foreground::kBlue | foreground::kIntensity | background::kRed); // white on red background
                     break;
 
                 case error:
-                    SetConsoleTextAttribute(this->m_outputHandle, static_cast<WORD>(foreground::kRed | foreground::kIntensity | (m_originalAttr & 0xf0))); // red
+                    SetConsoleTextAttribute(this->m_stdoutHandle, static_cast<WORD>(foreground::kRed | foreground::kIntensity | (m_originalAttr & 0xf0))); // red
                     break;
 
                 case warning:
-                    SetConsoleTextAttribute(this->m_outputHandle, static_cast<WORD>(foreground::kRed | foreground::kGreen | foreground::kIntensity | (m_originalAttr & 0xf0))); // yellow
+                    SetConsoleTextAttribute(this->m_stdoutHandle, static_cast<WORD>(foreground::kRed | foreground::kGreen | foreground::kIntensity | (m_originalAttr & 0xf0))); // yellow
                     break;
 
                 case debug:
                 case verbose:
-                    SetConsoleTextAttribute(this->m_outputHandle, static_cast<WORD>(foreground::kGreen | foreground::kBlue | foreground::kIntensity | (m_originalAttr & 0xf0))); // cyan
+                    SetConsoleTextAttribute(this->m_stdoutHandle, static_cast<WORD>(foreground::kGreen | foreground::kBlue | foreground::kIntensity | (m_originalAttr & 0xf0))); // cyan
                     break;
 #else
                 case fatal:
-                    this->m_outputStream << "\x1B[97m\x1B[41m"; // white on red background
+                    std::cout << "\x1B[97m\x1B[41m"; // white on red background
                     break;
 
                 case error:
-                    this->m_outputStream << "\x1B[91m"; // red
+                    std::cout << "\x1B[91m"; // red
                     break;
 
                 case warning:
-                    this->m_outputStream << "\x1B[93m"; // yellow
+                    std::cout << "\x1B[93m"; // yellow
                     break;
 
                 case debug:
                 case verbose:
-                    this->m_outputStream << "\x1B[96m"; // cyan
+                    std::cout << "\x1B[96m"; // cyan
                     break;
 #endif
                 default:
@@ -93,9 +86,9 @@ namespace plog
             if (this->m_isatty)
             {
 #ifdef _WIN32
-                SetConsoleTextAttribute(this->m_outputHandle, m_originalAttr);
+                SetConsoleTextAttribute(this->m_stdoutHandle, m_originalAttr);
 #else
-                this->m_outputStream << "\x1B[0m\x1B[0K";
+                std::cout << "\x1B[0m\x1B[0K";
 #endif
             }
         }

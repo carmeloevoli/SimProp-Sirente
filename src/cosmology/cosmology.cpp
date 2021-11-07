@@ -1,7 +1,7 @@
 #include "simprop/cosmology/cosmology.h"
 
-#include <cassert>
 #include <cmath>
+#include <stdexcept>
 
 #include "simprop/cosmology/Planck2018.h"
 #include "simprop/utils/gsl.h"
@@ -26,7 +26,7 @@ double t_H(double z) { return 1.0 / H(z); }
 double dtdz(double z) { return 1. / H(z) / (1. + z); }
 
 double adiabaticRelativeLoss(double z_i, double z_f) {
-  assert(z_f < z_i);
+  if (z_f < z_i) throw std::invalid_argument("z_f cannot be smaller than z_i");
   auto result = std::log((z_f + 1.) / (z_i + 1.));
   return std::exp(result);
 }

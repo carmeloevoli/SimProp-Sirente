@@ -11,24 +11,6 @@ namespace plog
 {
     namespace detail
     {
-        namespace meta
-        {
-            template<class T>
-            inline T& declval()
-            {
-#ifdef __INTEL_COMPILER
-#    pragma warning(suppress: 327) // NULL reference is not allowed
-#endif
-                return *reinterpret_cast<T*>(0);
-            }
-
-            template<bool B, class T = void>
-            struct enableIf {};
-
-            template<class T>
-            struct enableIf<true, T> { typedef T type; };
-        }
-
         //////////////////////////////////////////////////////////////////////////
         // Stream output operators as free functions
 
@@ -45,23 +27,10 @@ namespace plog
 #endif
         }
 
-        inline void operator<<(util::nostringstream& stream, char* data)
-        {
-            plog::detail::operator<<(stream, const_cast<const char*>(data));
-        }
-
         inline void operator<<(util::nostringstream& stream, const std::string& data)
         {
             plog::detail::operator<<(stream, data.c_str());
         }
-
-#if !defined(__GNUC__) || __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4 // skip for GCC < 4.5 due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=38600
-        template<typename T>
-        inline typename meta::enableIf<!!(sizeof(static_cast<std::basic_string<util::nchar> >(meta::declval<T>())) + sizeof(T*)), void>::type operator<<(util::nostringstream& stream, const T& data)
-        {
-            plog::detail::operator<<(stream, static_cast<std::basic_string<util::nchar> >(data));
-        }
-#endif
 
 #if PLOG_ENABLE_WCHAR_INPUT
         inline void operator<<(util::nostringstream& stream, const wchar_t* data)
@@ -73,11 +42,6 @@ namespace plog
 #   else
             std::operator<<(stream, util::toNarrow(data));
 #   endif
-        }
-
-        inline void operator<<(util::nostringstream& stream, wchar_t* data)
-        {
-            plog::detail::operator<<(stream, const_cast<const wchar_t*>(data));
         }
 
         inline void operator<<(util::nostringstream& stream, const std::wstring& data)
@@ -103,7 +67,10 @@ namespace plog
             template <class T, class Stream>
             struct isStreamable
             {
-                enum { value = sizeof(operator<<(meta::declval<Stream>(), meta::declval<const T>())) != sizeof(char) };
+#ifdef __INTEL_COMPILER
+#    pragma warning(suppress: 327) // NULL reference is not allowed
+#endif
+                enum { value = sizeof(operator<<(*reinterpret_cast<Stream*>(0), *reinterpret_cast<const T*>(0))) != sizeof(char) };
             };
 
             template <class Stream>
@@ -123,6 +90,12 @@ namespace plog
             {
                 enum { value = false };
             };
+
+            template<bool B, class T = void>
+            struct enableIf {};
+
+            template<class T>
+            struct enableIf<true, T> { typedef T type; };
         }
 
         template<class T>

@@ -16,46 +16,22 @@
 #endif
 
 #ifdef _WIN32
-#   if defined(PLOG_EXPORT)
-#       define PLOG_LINKAGE __declspec(dllexport)
-#   elif defined(PLOG_IMPORT)
-#       define PLOG_LINKAGE __declspec(dllimport)
-#   endif
-#   if defined(PLOG_GLOBAL)
-#       error "PLOG_GLOBAL isn't supported on Windows"
-#   endif
-#else
-#   if defined(PLOG_GLOBAL)
-#       define PLOG_LINKAGE __attribute__ ((visibility ("default")))
-#   elif defined(PLOG_LOCAL)
-#       define PLOG_LINKAGE __attribute__ ((visibility ("hidden")))
-#   endif
-#   if defined(PLOG_EXPORT) || defined(PLOG_IMPORT)
-#       error "PLOG_EXPORT/PLOG_IMPORT is supported only on Windows"
-#   endif
-#endif
-
-#ifndef PLOG_LINKAGE
-#   define PLOG_LINKAGE
-#endif
-
-#ifdef _WIN32
 #   include <plog/WinApi.h>
 #   include <time.h>
 #   include <sys/timeb.h>
 #   include <io.h>
 #   include <share.h>
+#elif defined(__rtems__)
+#   include <unistd.h>
+#   include <rtems.h>
+#   if PLOG_ENABLE_WCHAR_INPUT
+#       include <iconv.h>
+#   endif
 #else
 #   include <unistd.h>
+#   include <sys/syscall.h>
 #   include <sys/time.h>
-#   if defined(__linux__) || defined(__FreeBSD__)
-#       include <sys/syscall.h>
-#   elif defined(__rtems__)
-#       include <rtems.h>
-#   endif
-#   if defined(_POSIX_THREADS)
-#       include <pthread.h>
-#   endif
+#   include <pthread.h>
 #   if PLOG_ENABLE_WCHAR_INPUT
 #       include <iconv.h>
 #   endif
@@ -150,33 +126,29 @@ namespace plog
             uint64_t tid64;
             pthread_threadid_np(NULL, &tid64);
             return static_cast<unsigned int>(tid64);
-#else
-            return 0;
 #endif
         }
 
 #ifdef _WIN32
     inline int vasprintf(char** strp, const char* format, va_list ap)
     {
-        int charCount = _vscprintf(format, ap);
-        if (charCount < 0)
+        int len = _vscprintf(format, ap);
+        if (len < 0)
         {
             return -1;
         }
 
-        size_t bufferCharCount = static_cast<size_t>(charCount) + 1;
-
-        char* str = static_cast<char*>(malloc(bufferCharCount));
+        char* str = static_cast<char*>(malloc(len + 1));
         if (!str)
         {
             return -1;
         }
 
 #if defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR)
-        int retval = _vsnprintf(str, bufferCharCount, format, ap);
+        int retval = _vsnprintf(str, len + 1, format, ap);
 #else
-        int retval = _vsnprintf_s(str, bufferCharCount, charCount, format, ap);
-#endif
+        int retval = _vsnprintf_s(str, len + 1, len, format, ap);
+#endif        
         if (retval < 0)
         {
             free(str);
@@ -189,25 +161,23 @@ namespace plog
 
     inline int vaswprintf(wchar_t** strp, const wchar_t* format, va_list ap)
     {
-        int charCount = _vscwprintf(format, ap);
-        if (charCount < 0)
+        int len = _vscwprintf(format, ap);
+        if (len < 0)
         {
             return -1;
         }
 
-        size_t bufferCharCount = static_cast<size_t>(charCount) + 1;
-
-        wchar_t* str = static_cast<wchar_t*>(malloc(bufferCharCount * sizeof(wchar_t)));
+        wchar_t* str = static_cast<wchar_t*>(malloc((len + 1) * sizeof(wchar_t)));
         if (!str)
         {
             return -1;
         }
 
 #if defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR)
-        int retval = _vsnwprintf(str, bufferCharCount, format, ap);
+        int retval = _vsnwprintf(str, len + 1, format, ap);
 #else
-        int retval = _vsnwprintf_s(str, bufferCharCount, charCount, format, ap);
-#endif
+        int retval = _vsnwprintf_s(str, len + 1, len, format, ap);
+#endif         
         if (retval < 0)
         {
             free(str);
@@ -323,7 +293,7 @@ namespace plog
             }
         }
 
-        class PLOG_LINKAGE NonCopyable
+        class NonCopyable
         {
         protected:
             NonCopyable()
@@ -352,48 +322,40 @@ namespace plog
                 close();
             }
 
-            size_t open(const nchar* fileName)
+            off_t open(const nchar* fileName)
             {
 #if defined(_WIN32) && (defined(__BORLANDC__) || defined(__MINGW32__))
-                m_file = ::_wsopen(fileName, _O_CREAT | _O_WRONLY | _O_BINARY | _O_NOINHERIT, SH_DENYWR, _S_IREAD | _S_IWRITE);
+                m_file = ::_wsopen(fileName, _O_CREAT | _O_WRONLY | _O_BINARY, SH_DENYWR, _S_IREAD | _S_IWRITE);
 #elif defined(_WIN32)
-                ::_wsopen_s(&m_file, fileName, _O_CREAT | _O_WRONLY | _O_BINARY | _O_NOINHERIT, _SH_DENYWR, _S_IREAD | _S_IWRITE);
-#elif defined(O_CLOEXEC)
-                m_file = ::open(fileName, O_CREAT | O_WRONLY | O_CLOEXEC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                ::_wsopen_s(&m_file, fileName, _O_CREAT | _O_WRONLY | _O_BINARY, _SH_DENYWR, _S_IREAD | _S_IWRITE);
 #else
                 m_file = ::open(fileName, O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 #endif
                 return seek(0, SEEK_END);
             }
 
-            size_t write(const void* buf, size_t count)
+            int write(const void* buf, size_t count)
             {
-                return m_file != -1 ? static_cast<size_t>(
 #ifdef _WIN32
-                    ::_write(m_file, buf, static_cast<unsigned int>(count))
+                return m_file != -1 ? ::_write(m_file, buf, static_cast<unsigned int>(count)) : -1;
 #else
-                    ::write(m_file, buf, count)
+                return m_file != -1 ? static_cast<int>(::write(m_file, buf, count)) : -1;
 #endif
-                    ) : static_cast<size_t>(-1);
             }
 
             template<class CharType>
-            size_t write(const std::basic_string<CharType>& str)
+            int write(const std::basic_string<CharType>& str)
             {
                 return write(str.data(), str.size() * sizeof(CharType));
             }
 
-            size_t seek(size_t offset, int whence)
+            off_t seek(off_t offset, int whence)
             {
-                return m_file != -1 ? static_cast<size_t>(
-#if defined(_WIN32) && (defined(__BORLANDC__) || defined(__MINGW32__))
-                    ::_lseek(m_file, static_cast<off_t>(offset), whence)
-#elif defined(_WIN32)
-                    ::_lseeki64(m_file, static_cast<off_t>(offset), whence)
+#ifdef _WIN32
+                return m_file != -1 ? ::_lseek(m_file, offset, whence) : -1;
 #else
-                    ::lseek(m_file, static_cast<off_t>(offset), whence)
+                return m_file != -1 ? ::lseek(m_file, offset, whence) : -1;
 #endif
-                    ) : static_cast<size_t>(-1);
             }
 
             void close()
@@ -443,7 +405,7 @@ namespace plog
                             RTEMS_PRIORITY |
                             RTEMS_BINARY_SEMAPHORE |
                             RTEMS_INHERIT_PRIORITY, 1, &m_sync);
-#elif defined(_POSIX_THREADS)
+#else
                 ::pthread_mutex_init(&m_sync, 0);
 #endif
             }
@@ -454,7 +416,7 @@ namespace plog
                 DeleteCriticalSection(&m_sync);
 #elif defined(__rtems__)
                 rtems_semaphore_delete(m_sync);
-#elif defined(_POSIX_THREADS)
+#else
                 ::pthread_mutex_destroy(&m_sync);
 #endif
             }
@@ -468,7 +430,7 @@ namespace plog
                 EnterCriticalSection(&m_sync);
 #elif defined(__rtems__)
                 rtems_semaphore_obtain(m_sync, RTEMS_WAIT, RTEMS_NO_TIMEOUT);
-#elif defined(_POSIX_THREADS)
+#else
                 ::pthread_mutex_lock(&m_sync);
 #endif
             }
@@ -479,7 +441,7 @@ namespace plog
                 LeaveCriticalSection(&m_sync);
 #elif defined(__rtems__)
                 rtems_semaphore_release(m_sync);
-#elif defined(_POSIX_THREADS)
+#else
                 ::pthread_mutex_unlock(&m_sync);
 #endif
             }
@@ -487,9 +449,7 @@ namespace plog
         private:
 #ifdef _WIN32
             CRITICAL_SECTION m_sync;
-#elif defined(__rtems__)
-            rtems_id m_sync;
-#elif defined(_POSIX_THREADS)
+#else
             pthread_mutex_t m_sync;
 #endif
         };
@@ -512,18 +472,9 @@ namespace plog
         };
 
         template<class T>
-#ifdef _WIN32
         class Singleton : NonCopyable
-#else
-        class PLOG_LINKAGE Singleton : NonCopyable
-#endif
         {
         public:
-#if defined(__clang__) || __GNUC__ >= 8
-            // This constructor is called before the `T` object is fully constructed, and
-            // pointers are not dereferenced anyway, so UBSan shouldn't check vptrs.
-            __attribute__((no_sanitize("vptr")))
-#endif
             Singleton()
             {
                 assert(!m_instance);

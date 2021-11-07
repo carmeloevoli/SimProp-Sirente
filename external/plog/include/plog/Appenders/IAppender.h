@@ -1,10 +1,9 @@
 #pragma once
 #include <plog/Record.h>
-#include <plog/Util.h>
 
 namespace plog
 {
-    class PLOG_LINKAGE IAppender
+    class IAppender
     {
     public:
         virtual ~IAppender()

@@ -87,10 +87,9 @@ namespace plog
         const DWORD kDword = 4;
     }
 
-     namespace stdHandle
+    namespace stdHandle
     {
         const DWORD kOutput = static_cast<DWORD>(-11);
-        const DWORD kErrorOutput = static_cast<DWORD>(-12);
     }
 
     namespace foreground

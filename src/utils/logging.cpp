@@ -4,13 +4,13 @@ namespace simprop {
 namespace log {
 
 void startup_information() {
-  static plog::RollingFileAppender<plog::CsvFormatter> fileAppender("simproplog.csv", 8000, 3);
-  static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
+  static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
 #ifdef DEBUG
-  plog::init(plog::debug, &fileAppender).addAppender(&consoleAppender);
+  plog::init(plog::debug, &consoleAppender);
 #else
-  plog::init(plog::info, &fileAppender).addAppender(&consoleAppender);
+  plog::init(plog::info, &fileAppender);
 #endif
+
   LOGI << "Welcome to SimProp version " << get_version();
   LOGI << "was built on " << __DATE__ << " at " << __TIME__;
   LOGI << "git version is " << git_sha1();
