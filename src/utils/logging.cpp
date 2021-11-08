@@ -8,7 +8,7 @@ void startup_information() {
 #ifdef DEBUG
   plog::init(plog::debug, &consoleAppender);
 #else
-  plog::init(plog::info, &fileAppender);
+  plog::init(plog::info, &consoleAppender);
 #endif
 
   LOGI << "Welcome to SimProp version " << get_version();
