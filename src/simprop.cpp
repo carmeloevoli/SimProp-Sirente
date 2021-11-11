@@ -5,7 +5,7 @@
 
 #include "simprop/common.h"
 #include "simprop/cosmology/cosmology.h"
-#include "simprop/energyLosses/continuousLosses.h"
+#include "simprop/energyLosses/BGG2002ContinuousLosses.h"
 #include "simprop/photonFields/CmbPhotonField.h"
 #include "simprop/photonFields/Dominguez2011PhotonField.h"
 #include "simprop/photonFields/Gilmore2012PhotonField.h"
@@ -66,7 +66,7 @@ void SimProp::buildPhotonFields() {
 }
 
 void SimProp::buildContinuousLosses() {
-  m_continuousLosses = std::make_shared<losses::ContinuousLosses>();
+  m_continuousLosses = std::make_shared<losses::BGG2002ContinuousLosses>();
 }
 
 bool isActive(Particle p) {
