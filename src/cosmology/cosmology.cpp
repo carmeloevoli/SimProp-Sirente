@@ -25,11 +25,5 @@ double t_H(double z) { return 1.0 / H(z); }
 
 double dtdz(double z) { return 1. / H(z) / (1. + z); }
 
-double adiabaticRelativeLoss(double z_i, double z_f) {
-  if (z_f < z_i) throw std::invalid_argument("z_f cannot be smaller than z_i");
-  auto result = std::log((z_f + 1.) / (z_i + 1.));
-  return std::exp(result);
-}
-
 }  // namespace cosmo
 }  // namespace simprop

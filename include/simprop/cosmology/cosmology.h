@@ -13,9 +13,6 @@ double t_H(double z);
 /* returns the value of dt/dz at the redshift parameter z. */
 double dtdz(double z);
 
-/* returns the relative energy fraction lost by adiabatic losses */
-double adiabaticRelativeLoss(double z_i, double z_f);
-
 }  // namespace cosmo
 }  // namespace simprop
 
