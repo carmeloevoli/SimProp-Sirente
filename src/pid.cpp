@@ -11,16 +11,16 @@ PID getPidNucleus(const int& Z, const int& A) {
 
 bool isNucleus(const PID& pid) { return (pid >= PID(1000009990)); }
 
-int getNucleusMass(const PID& pid) {
-  if (not isNucleus(pid)) throw std::invalid_argument(getPidNames(pid) + " is not a nucleus");
+int getNucleusMassNumber(const PID& pid) {
+  if (!isNucleus(pid)) throw std::invalid_argument(getPidNames(pid) + " is not a nucleus");
   if (pid == neutron || pid == antiproton)
     return 1;
   else
     return ((int)pid / 10000) % 1000;
 }
 
-int getNucleusCharge(const PID& pid) {
-  if (not isNucleus(pid)) throw std::invalid_argument(getPidNames(pid) + " is not a nucleus");
+int getNucleusChargeNumber(const PID& pid) {
+  if (!isNucleus(pid)) throw std::invalid_argument(getPidNames(pid) + " is not a nucleus");
   if (pid == neutron)
     return 0;
   else if (pid == antiproton)

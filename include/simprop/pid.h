@@ -10,9 +10,8 @@ enum class PID : long int {};
 
 PID getPidNucleus(const int& Z, const int& A);
 bool isNucleus(const PID& pid);
-int getNucleusMass(const PID& pid);
-int getNucleusCharge(const PID& pid);
-
+int getNucleusMassNumber(const PID& pid);
+int getNucleusChargeNumber(const PID& pid);
 std::string getPidNames(const PID& pid);
 
 static const PID photon = PID(0);
