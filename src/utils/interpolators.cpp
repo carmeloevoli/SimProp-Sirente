@@ -10,20 +10,20 @@ namespace utils {
 
 double interpolate(double x, const std::vector<double> &X, const std::vector<double> &Y) {
   std::vector<double>::const_iterator it = std::upper_bound(X.begin(), X.end(), x);
-  if (it == X.begin()) return Y.front();
-  if (it == X.end()) return Y.back();
+  if (it == X.begin()) return 0;
+  if (it == X.end()) return 0;
 
-  size_t i = it - X.begin() - 1;
+  const size_t i = it - X.begin() - 1;
   return Y[i] + (x - X[i]) * (Y[i + 1] - Y[i]) / (X[i + 1] - X[i]);
 }
 
 double interpolateEquidistant(double x, double lo, double hi, const std::vector<double> &Y) {
-  if (x <= lo) return Y.front();
-  if (x >= hi) return Y.back();
+  if (x <= lo) return 0;
+  if (x >= hi) return 0;
 
-  double dx = (hi - lo) / (Y.size() - 1);
-  double p = (x - lo) / dx;
-  size_t i = std::floor(p);
+  const double dx = (hi - lo) / (Y.size() - 1);
+  const double p = (x - lo) / dx;
+  const size_t i = std::floor(p);
   return Y[i] + (p - i) * (Y[i + 1] - Y[i]);
 }
 
@@ -38,16 +38,18 @@ double interpolate2d(double x, double y, const std::vector<double> &X, const std
   if (itx == X.begin() && ity == Y.begin()) return Z.front();
   if (itx == X.end() && ity == Y.end()) return Z.back();
 
-  size_t i = itx - X.begin() - 1;
-  size_t j = ity - Y.begin() - 1;
+  const size_t i = itx - X.begin() - 1;
+  const size_t j = ity - Y.begin() - 1;
 
-  double Q11 = Z[index(i, j)];
-  double Q12 = Z[index(i, j + 1)];
-  double Q21 = Z[index(i + 1, j)];
-  double Q22 = Z[index(i + 1, j + 1)];
+  const double Q11 = Z[index(i, j)];
+  const double Q12 = Z[index(i, j + 1)];
+  const double Q21 = Z[index(i + 1, j)];
+  const double Q22 = Z[index(i + 1, j + 1)];
 
-  double R1 = ((X[i + 1] - x) / (X[i + 1] - X[i])) * Q11 + ((x - X[i]) / (X[i + 1] - X[i])) * Q21;
-  double R2 = ((X[i + 1] - x) / (X[i + 1] - X[i])) * Q12 + ((x - X[i]) / (X[i + 1] - X[i])) * Q22;
+  const double R1 =
+      ((X[i + 1] - x) / (X[i + 1] - X[i])) * Q11 + ((x - X[i]) / (X[i + 1] - X[i])) * Q21;
+  const double R2 =
+      ((X[i + 1] - x) / (X[i + 1] - X[i])) * Q12 + ((x - X[i]) / (X[i + 1] - X[i])) * Q22;
 
   return ((Y[j + 1] - y) / (Y[j + 1] - Y[j])) * R1 + ((y - Y[j]) / (Y[j + 1] - Y[j])) * R2;
 }
