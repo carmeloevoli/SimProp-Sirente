@@ -81,7 +81,7 @@ std::vector<double> loadRow(std::string filePath, size_t iRow, std::string delim
       auto s = split(line, delimiter);
       v.resize(s.size());
       std::transform(s.begin(), s.end(), v.begin(),
-                     [](const std::string& value) { return stod(value); });
+                     [](const std::string& value) { return std::stod(value); });
     }
     count++;
   }
