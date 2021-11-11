@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 
+#include "simprop/energyLosses/ContinuousLosses.h"
 #include "simprop/params.h"
 #include "simprop/particle.h"
 #include "simprop/photonFields/AbstractPhotonField.h"
@@ -21,6 +22,7 @@ class SimProp {
   RandomNumberGenerator m_rng = utils::RNG<double>(1234);
   ParticleStack m_particles;
   std::vector<std::shared_ptr<photonfield::AbstractField> > m_photonFields;
+  std::shared_ptr<losses::ContinuousLosses> m_continuousLosses;
 
  private:
   void printStateRanges() const;
@@ -30,12 +32,14 @@ class SimProp {
   virtual ~SimProp();
 
   void buildInitialStates();
+  void buildContinuousLosses();
+  void buildPhotonFields();
+  void run();
+
   void dumpParticles(std::string filename) const;
 
-  void buildPhotonFields();
-  void dumpPhotonFields() const;
-
-  void run();
+  // In Evolutor
+  void Evolve(ParticleStack::iterator it);
 };
 
 }  // namespace simprop
