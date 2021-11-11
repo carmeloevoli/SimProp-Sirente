@@ -23,8 +23,9 @@ class Particle {
   const State getNow() const { return m_now; }
   State& getNow() { return m_now; }
 
-  const double getZ() const { return m_now.z; }
-  const double getE() const { return m_now.E; }
+  const double getRedshift() const { return m_now.z; }
+  const double getEnergy() const { return m_now.E; }
+  const PID getPid() const { return m_pid; }
 
   friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
     auto n = getPidNames(p.m_pid);
