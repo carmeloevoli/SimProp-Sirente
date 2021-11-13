@@ -68,6 +68,7 @@ static constexpr double eV = electronvolt;
 static constexpr double keV = kiloelectronvolt;
 static constexpr double MeV = megaelectronvolt;
 static constexpr double GeV = gigaelectronvolt;
+static constexpr double GeV2 = GeV * GeV;
 static constexpr double TeV = teraelectronvolt;
 static constexpr double PeV = petaelectronvolt;
 static constexpr double m2 = meter * meter;
@@ -88,10 +89,16 @@ static constexpr double neutronMass = 1.67492735e-24 * gram;
 static constexpr double neutronMassC2 = neutronMass * cLight2;
 static constexpr double electronMass = 9.10938291e-28 * gram;
 static constexpr double electronMassC2 = electronMass * cLight2;
+static constexpr double pionMassC2 = 134.9768 * MeV;
+static constexpr double muonMassC2 = 105.6583755 * MeV;
 static constexpr double sunMass = 1.989e33 * gram;
 static constexpr double hPlanck = 6.62607015e-34 * joule * second;
 static constexpr double kBoltzmann = 1.3806488e-23 * joule / kelvin;
 static constexpr double electronRadius = 2.8179403227e-15 * meter;
+static constexpr double pionProductionThreshold =
+    pionMassC2 + pow2(pionMassC2) / (2 * protonMassC2);
+static constexpr double barn = 1e-28 * m2;
+static constexpr double mbarn = 1e-3 * barn;
 
 }  // namespace SI
 
