@@ -2,6 +2,7 @@
 #define INCLUDE_SIMPROP_H
 
 #include "simprop/Units.h"
+#include "simprop/interactions/photopion.h"
 #include "simprop/output/outputManager.h"
 #include "simprop/params.h"
 #include "simprop/pid.h"

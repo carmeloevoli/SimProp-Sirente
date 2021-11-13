@@ -129,6 +129,10 @@ target_link_libraries (simprop SIMPROP_LIB ${SIMPROP_LIBRARIES})
 add_executable(sandbox src/sandbox.cpp)
 target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
+# make tests
+add_executable(printSigmas tests/printSigmas.cpp)
+target_link_libraries (printSigmas SIMPROP_LIB ${SIMPROP_LIBRARIES})
+
 # Show summary.
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
 message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")
