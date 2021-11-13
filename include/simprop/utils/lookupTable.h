@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <stdexcept>
 
 #include "simprop/utils/interpolators.h"
 #include "simprop/utils/misc.h"
@@ -28,7 +29,10 @@ class LookupTable {
 
   double get(double x) const { return utils::interpolate(x, m_xAxis, m_table); }
 
+  double spline(double x) const { return utils::cspline(x, m_xAxis, m_table); }
+
   bool isWithinXRange(double x) const { return x >= m_xAxis.front() && x <= m_xAxis.back(); }
+  bool isWithinYRange(double y) const { return y >= m_yAxis.front() && y <= m_yAxis.back(); }
 
  protected:
   void loadXAxis() {

@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "simprop/utils/spline.h"
+
 namespace simprop {
 namespace utils {
 
@@ -25,6 +27,11 @@ double interpolateEquidistant(double x, double lo, double hi, const std::vector<
   const double p = (x - lo) / dx;
   const size_t i = std::floor(p);
   return Y[i] + (p - i) * (Y[i + 1] - Y[i]);
+}
+
+double cspline(double x, const std::vector<double> &X, const std::vector<double> &Y) {
+  tk::spline s(X, Y, tk::spline::cspline);
+  return s(x);
 }
 
 double interpolate2d(double x, double y, const std::vector<double> &X, const std::vector<double> &Y,
