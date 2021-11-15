@@ -1,5 +1,5 @@
-#ifndef SIMPROP_ENERGYLOSSES_CONTINUOUS_H
-#define SIMPROP_ENERGYLOSSES_CONTINUOUS_H
+#ifndef SIMPROP_ENERGYLOSSES_BGG2002_CONTINUOUS_H
+#define SIMPROP_ENERGYLOSSES_BGG2002_CONTINUOUS_H
 
 #include "simprop/cosmology/cosmology.h"
 #include "simprop/energyLosses/AbstractContinuousLosses.h"

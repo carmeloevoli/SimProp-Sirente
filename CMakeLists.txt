@@ -100,6 +100,7 @@ set(SIMPROP_SRCS
     src/pid.cpp
     src/simprop.cpp
     src/cosmology/cosmology.cpp
+    src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2002ContinuousLosses.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
