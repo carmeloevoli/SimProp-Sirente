@@ -12,3 +12,14 @@
 
    *Rows 3..20:* brightness values, 50 x 18 items, units are in `log10(B / (nW m^{-2} sr^{-1}))`
 
+#### Energy Losses
+
+2. `losses_pair_BGG2002.txt`
+
+3. `losses_pair+pion_BGG2002.txt`
+
+#### Interactions
+
+4. `sigma_photopion_highs.txt`
+
+5. `sigma_photopion_SOFIA.txt`
