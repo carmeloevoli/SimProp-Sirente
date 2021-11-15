@@ -1,9 +1,14 @@
-### Table provided in SimProp
+## SimProp data folder
 
-- `EBL_Dominguez2011.txt`
+#### ExtraGalactic Background models
 
-*Row 1:* wavelenghts, 50 steps from ... to ...., units are log10(\lambda/micron)
+1. `EBL_Dominguez2011.txt`
 
-*Row 2:* 18 redshift positions
+EBL intensities from the paper [A. Dominguez et al., 2011, MNRAS, 410, 2556](https://ui.adsabs.harvard.edu/abs/2011MNRAS.410.2556D/abstract), table downloaded from [here](http://side.iaa.es/EBL/files/ebl_dominguez11.out)
 
-*Rows 3...20:* brightness in log10(I / (nW m^{-2} sr^{-1}))
+*Row 1:* wavelenght values, 50 items, units are in `log10(\lambda/micron)`
+
+*Row 2:* redshift values, 18 items
+
+*Rows 3..20:* brightness values, 50 x 18 items, units are in `log10(B / (nW m^{-2} sr^{-1}))`
+
