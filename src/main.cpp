@@ -29,5 +29,5 @@ int main(int argc, char* argv[]) {
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
-  return 0;
+  return EXIT_SUCCESS;
 }

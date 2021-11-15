@@ -1,6 +1,8 @@
 #ifndef INCLUDE_SIMPROP_UNITS_H
 #define INCLUDE_SIMPROP_UNITS_H
 
+#include <cmath>
+
 #define pow2(A) (A * A)
 #define pow3(A) (A * A * A)
 
@@ -42,6 +44,7 @@ static constexpr double megayear = mega * year;
 static constexpr double gigayear = giga * year;
 
 // LENGTH UNITS
+static constexpr double micron = micro * meter;
 static constexpr double parsec = 3.086e16 * meter;
 static constexpr double kiloparsec = kilo * parsec;
 static constexpr double megaparsec = mega * parsec;
@@ -72,6 +75,7 @@ static constexpr double GeV2 = GeV * GeV;
 static constexpr double TeV = teraelectronvolt;
 static constexpr double PeV = petaelectronvolt;
 static constexpr double m2 = meter * meter;
+static constexpr double m3 = meter * meter * meter;
 static constexpr double km = kilo * meter;
 static constexpr double Hz = hertz;
 static constexpr double GHz = giga * hertz;
@@ -82,6 +86,7 @@ static constexpr double K = kelvin;
 // PHYSICAL CONSTANTS
 static constexpr double cLight = 2.99792458e8 * meter / second;
 static constexpr double cLight2 = pow2(cLight);
+static constexpr double cOver4pi = cLight / 4. / M_PI;
 static constexpr double protonMass = 1.67262158e-24 * gram;
 static constexpr double protonMassC = protonMass * cLight;
 static constexpr double protonMassC2 = protonMass * cLight2;
@@ -93,10 +98,9 @@ static constexpr double pionMassC2 = 134.9768 * MeV;
 static constexpr double muonMassC2 = 105.6583755 * MeV;
 static constexpr double sunMass = 1.989e33 * gram;
 static constexpr double hPlanck = 6.62607015e-34 * joule * second;
+static constexpr double hc = hPlanck * cLight;
 static constexpr double kBoltzmann = 1.3806488e-23 * joule / kelvin;
 static constexpr double electronRadius = 2.8179403227e-15 * meter;
-static constexpr double pionProductionThreshold =
-    pionMassC2 + pow2(pionMassC2) / (2 * protonMassC2);
 static constexpr double barn = 1e-28 * m2;
 static constexpr double mbarn = 1e-3 * barn;
 

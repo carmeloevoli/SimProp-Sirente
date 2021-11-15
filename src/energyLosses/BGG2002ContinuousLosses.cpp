@@ -5,18 +5,25 @@
 namespace simprop {
 namespace losses {
 
-double BGG2002ContinuousLosses::dlnGamma_dz(double z, double E, PID pid) const {
-  const auto b_a = 1. / (1. + z);
-  const auto redshiftedEnergy = E * (1. + z);
+double BGG2002ContinuousLosses::dlnGamma_dt_0(double E, PID pid) const {
   double b_l = 0;
-  if (m_totalLosses.isWithinXRange(redshiftedEnergy)) {
-    auto b_l = std::pow(10., m_totalLosses.get(std::log10(redshiftedEnergy / SI::eV)));
+  const auto logE = std::log10(E / SI::eV);
+  if (m_totalLosses.isWithinXRange(logE)) {
+    b_l = std::pow(10., m_totalLosses.get(logE));
     b_l *= 1. / SI::year;
-    b_l *= utils::pow<3>(1. + z);
-    b_l *= cosmo::dtdz(z);
     const double Z = (double)getNucleusChargeNumber(pid);
     const double A = (double)getNucleusChargeNumber(pid);
     b_l *= utils::pow<2>(Z) / A;
+  }
+  return b_l;
+}
+double BGG2002ContinuousLosses::dlnGamma_dz(double z, double E, PID pid) const {
+  const auto b_a = 1. / (1. + z);
+  const auto redshiftedEnergy = E * (1. + z);
+  double b_l = dlnGamma_dt_0(redshiftedEnergy, pid);
+  if (b_l > 0.) {
+    b_l *= utils::pow<3>(1. + z);
+    b_l *= cosmo::dtdz(z);
   }
   return b_a + b_l;
 }

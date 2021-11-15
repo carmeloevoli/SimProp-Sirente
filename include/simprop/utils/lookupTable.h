@@ -18,13 +18,14 @@ class LookupTable {
     if (!utils::fileExists(filePath))
       throw std::runtime_error("file data for lookup table does not exist");
     if (xSize < 2) throw std::runtime_error("x-axis size must be > 1");
+    if (ySize == 0) throw std::runtime_error("x-axis size must be > 0");
     loadXAxis();
     if (ySize > 1) loadYAxis();
     loadTable();
   }
 
   double get(double x, double y) const {
-    return utils::interpolate2d(x, y, m_xAxis, m_yAxis, m_table);
+    return utils::interpolate2d(y, x, m_yAxis, m_xAxis, m_table);
   }
 
   double get(double x) const { return utils::interpolate(x, m_xAxis, m_table); }
@@ -45,6 +46,7 @@ class LookupTable {
   void loadYAxis() {
     auto v = utils::loadRow(m_filePath, 1, ",");
     if (v.size() != ySize) throw std::runtime_error("error in reading y-axis");
+    if (!std::is_sorted(v.begin(), v.end())) throw std::runtime_error("y-axis in not sorted");
     m_yAxis.reserve(ySize);
     std::copy(v.begin(), v.end(), std::back_inserter(m_yAxis));
   }

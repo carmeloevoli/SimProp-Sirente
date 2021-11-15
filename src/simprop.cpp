@@ -8,7 +8,6 @@
 #include "simprop/energyLosses/BGG2002ContinuousLosses.h"
 #include "simprop/photonFields/CmbPhotonField.h"
 #include "simprop/photonFields/Dominguez2011PhotonField.h"
-#include "simprop/photonFields/Gilmore2012PhotonField.h"
 #include "simprop/utils/misc.h"
 #include "simprop/utils/timer.h"
 #include "simprop/utils/tqdm.h"

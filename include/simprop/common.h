@@ -11,6 +11,7 @@ double GetRndEnergy(std::pair<double, double> energyRange, double slope, double 
 double GetRndRedshift(std::pair<double, double> redshiftRange, int evolutionIndex, double r);
 
 inline double energyToFrequency(double energy) { return energy / SI::hPlanck; }
+inline double energyToWavelenght(double energy) { return SI::hc / energy; }
 
 }  // namespace simprop
 

@@ -103,7 +103,6 @@ set(SIMPROP_SRCS
     src/energyLosses/BGG2002ContinuousLosses.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
-    src/photonFields/Gilmore2012PhotonField.cpp
 	src/utils/interpolators.cpp
 	src/utils/logging.cpp
     src/utils/misc.cpp
@@ -130,8 +129,14 @@ add_executable(sandbox src/sandbox.cpp)
 target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
 # make tests
+add_executable(printLosses tests/printLosses.cpp)
+target_link_libraries (printLosses SIMPROP_LIB ${SIMPROP_LIBRARIES})
+
 add_executable(printSigmas tests/printSigmas.cpp)
 target_link_libraries (printSigmas SIMPROP_LIB ${SIMPROP_LIBRARIES})
+
+add_executable(printEbl tests/printEbl.cpp)
+target_link_libraries (printEbl SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
 # Show summary.
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")

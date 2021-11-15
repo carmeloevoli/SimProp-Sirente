@@ -1,8 +1,11 @@
 #ifndef SIMPROP_UTILS_H
 #define SIMPROP_UTILS_H
 
+#include <fstream>
 #include <string>
 #include <vector>
+
+#include "simprop/utils/logging.h"
 
 namespace simprop {
 namespace utils {
@@ -30,6 +33,24 @@ size_t countFileLines(const std::string& filename);
 bool fileExists(const std::string& filename);
 std::vector<std::string> split(std::string s, std::string delimiter = " ");
 std::vector<double> loadRow(std::string filePath, size_t iRow, std::string delimiter = " ");
+
+// Output file
+class OutputFile {
+ protected:
+  std::string filename;
+  std::ofstream out;
+
+ public:
+  explicit OutputFile(std::string filename) {
+    this->filename = filename;
+    out.open("output/" + filename);
+  }
+  ~OutputFile() {
+    out.close();
+    LOGD << "created output file " << filename;
+  }
+  std::ofstream& operator()() { return out; }
+};
 
 }  // namespace utils
 }  // namespace simprop

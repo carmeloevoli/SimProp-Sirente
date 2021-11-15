@@ -9,6 +9,9 @@
 namespace simprop {
 namespace interactions {
 
+static constexpr double pionProductionThreshold =
+    SI::pionMassC2 + pow2(SI::pionMassC2) / (2 * SI::protonMassC2);
+
 class PhotoPion {
  protected:
   const std::string pionLowSigmaFilename = "data/sigma_photopion_SOFIA.txt";
@@ -21,19 +24,23 @@ class PhotoPion {
   PhotoPion() {}
   virtual ~PhotoPion() = default;
 
-  double sigma(double E) {
-    // E = photon energy in NRF (MeV)
-    if (E < SI::pionProductionThreshold) return 0;
+  double sigma_of_s(double s) const {
     double value = 0;
-    const auto s = utils::pow<2>(SI::protonMassC2) + 2 * SI::protonMassC2 * E;
     if (s <= 5. * SI::GeV2) {
-      value = pionSigmaLowS.spline(s / SI::GeV2);
+      value = pionSigmaLowS.get(s / SI::GeV2);
     } else {
       const auto logsqrts = std::log10(std::sqrt(s / SI::GeV2));
       const auto logsigma = pionSigmaHighS.spline(std::min(logsqrts, 4.54));
       value = (logsigma < 0.) ? std::pow(10., logsigma) : 0.;
     }
     return std::max(value, 0.) * SI::mbarn;
+  }
+
+  double sigma(double E) const {
+    // E = photon energy in NRF (MeV)
+    if (E < pionProductionThreshold) return 0;
+    const auto s = utils::pow<2>(SI::protonMassC2) + 2 * SI::protonMassC2 * E;
+    return sigma_of_s(s);
   }
 };
 

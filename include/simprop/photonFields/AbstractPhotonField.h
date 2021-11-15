@@ -4,10 +4,10 @@
 namespace simprop {
 namespace photonfield {
 
-class AbstractField {
+class AbstractPhotonField {
  public:
-  AbstractField() {}
-  virtual ~AbstractField() = default;
+  AbstractPhotonField() {}
+  virtual ~AbstractPhotonField() = default;
 
   virtual double getPhotonDensity(double ePhoton, double z = 0.) const = 0;  // comoving
   std::string getFieldName() const { return m_fieldName; }

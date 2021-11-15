@@ -5,13 +5,17 @@
 #include <vector>
 
 #include "simprop/photonFields/AbstractPhotonField.h"
+#include "simprop/utils/lookupTable.h"
 
 namespace simprop {
 namespace photonfield {
 
-class Dominguez2011Field : public AbstractField {
+class Dominguez2011PhotonField : public AbstractPhotonField {
+ protected:
+  utils::LookupTable<50, 18> m_field{"data/EBL_Dominguez2011.txt"};
+
  public:
-  Dominguez2011Field();
+  Dominguez2011PhotonField();
   double getPhotonDensity(double ePhoton, double z = 0.) const;
 };
 

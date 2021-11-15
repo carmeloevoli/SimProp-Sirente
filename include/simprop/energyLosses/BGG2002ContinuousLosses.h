@@ -18,6 +18,7 @@ class BGG2002ContinuousLosses : public AbstractContinuousLosses {
   BGG2002ContinuousLosses() {}
   virtual ~BGG2002ContinuousLosses() = default;
 
+  double dlnGamma_dt_0(double E, PID pid) const;
   double dlnGamma_dz(double z, double E, PID pid) const override;
   double evolve(double E_i, double z_i, double z_f, PID pid) const override;
   // double evolve_rk4(double E_i, double z_i, double z_f, PID pid) const;

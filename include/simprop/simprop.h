@@ -21,7 +21,7 @@ class SimProp {
   size_t m_size;
   RandomNumberGenerator m_rng = utils::RNG<double>(1234);
   ParticleStack m_particles;
-  std::vector<std::shared_ptr<photonfield::AbstractField> > m_photonFields;
+  std::vector<std::shared_ptr<photonfield::AbstractPhotonField> > m_photonFields;
   std::shared_ptr<losses::AbstractContinuousLosses> m_continuousLosses;
 
  private:
