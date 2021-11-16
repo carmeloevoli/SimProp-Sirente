@@ -4,7 +4,7 @@ This folder contains data tables of the physical ingredients implemented in the 
 
 ---
 
-- `EBL_Dominguez2011.txt`: EBL intensities from the paper [A. Dominguez et al., 2011, MNRAS, 410, 2556](https://ui.adsabs.harvard.edu/abs/2011MNRAS.410.2556D/abstract), table downloaded from [here](http://side.iaa.es/EBL/files/ebl_dominguez11.out)
+- `EBL_Dominguez2011.txt`: Extragalactic background light model from [A. Dominguez et al., 2011, MNRAS, 410, 2556](https://ui.adsabs.harvard.edu/abs/2011MNRAS.410.2556D/abstract). The original table is obtained from [here](http://side.iaa.es/EBL/files/ebl_dominguez11.out).
 
    * *Row 1:* wavelenght values, 50 items, units are in `log10(\lambda/micron)`
 
