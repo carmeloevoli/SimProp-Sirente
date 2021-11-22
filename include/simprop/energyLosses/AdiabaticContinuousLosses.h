@@ -19,7 +19,6 @@ class AdiabaticContinuousLosses : public AbstractContinuousLosses {
 };
 
 }  // namespace losses
-
 }  // namespace simprop
 
 #endif
