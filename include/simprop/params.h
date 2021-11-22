@@ -13,7 +13,7 @@ namespace simprop {
 
 class Params {
  public:
-  enum EblModel { GILMORE2012, DOMINGUEZ2011, CMBONLY };
+  enum EblModel { GILMORE2012, DOMINGUEZ2011, DOMINGUEZ2011UPPER, DOMINGUEZ2011LOWER, CMBONLY };
   std::string toString(EblModel model);
 
  private:
@@ -23,7 +23,7 @@ class Params {
   Range m_energyRange = {1e17 * SI::eV, 1e21 * SI::eV};
   Range m_redshiftRange = {0., 2.};
   PID m_pid = Fe56;
-  EblModel m_eblModel = GILMORE2012;
+  EblModel m_eblModel = DOMINGUEZ2011;
 
  public:
   explicit Params(const char* inputFilename);
