@@ -1,25 +1,25 @@
 #ifndef SIMPROP_PHOTONFIELDS_CMB_H
 #define SIMPROP_PHOTONFIELDS_CMB_H
 
+#include <cmath>
 #include <string>
 
+#include "simprop/Units.h"
 #include "simprop/photonFields/AbstractPhotonField.h"
+#include "simprop/utils/misc.h"
 
 namespace simprop {
 namespace photonfield {
 
-class BlackbodyPhotonField : public AbstractPhotonField {
+class CMB : public AbstractPhotonField {
  public:
-  BlackbodyPhotonField(const std::string fieldName, const double blackbodyTemperature);
+  CMB() : AbstractPhotonField("CMB", 1e-10 * SI::eV, 1e-1 * SI::eV) {}
   double getPhotonDensity(double ePhoton, double z = 0.) const override;
+  double I_gamma(double ePhoton, double z = 0.) const override;
 
  protected:
-  double m_blackbodyTemperature;
-};
-
-class CMB : public BlackbodyPhotonField {
- public:
-  CMB() : BlackbodyPhotonField("CMB", 2.73) {}
+  const double m_blackbodyTemperature = 2.73 * SI::K;
+  const double m_factor = 1. / utils::pow<2>(M_PI) / utils::pow<3>(SI::hbarC);
 };
 
 }  // namespace photonfield

@@ -6,19 +6,21 @@
 namespace simprop {
 namespace photonfield {
 
-Dominguez2011PhotonField::Dominguez2011PhotonField() {}
+Dominguez2011PhotonField::Dominguez2011PhotonField()
+    : AbstractPhotonField("Dominguez2011", 1.240e-3 * SI::eV, 1.227 * SI::eV) {}
 
 double Dominguez2011PhotonField::getPhotonDensity(double ePhoton, double z) const {
-  const auto w = energyToWavelenght(ePhoton);
-  const auto logw = std::log10(w / SI::micron);
-  if (m_field.isWithinXRange(logw) && m_field.isWithinYRange(z)) {
-    const auto value = m_field.get(logw, z);
-    const auto power = std::pow(10., value) * SI::nW / SI::m2 / SI::sr;
-    return power / ePhoton / ePhoton / SI::cOver4pi;
+  const auto loge = std::log10(ePhoton / SI::eV);
+  if (m_field.isWithinXRange(loge) && m_field.isWithinYRange(z)) {
+    const auto value = m_field.get(loge, z);
+    const auto power = std::pow(10., value) / SI::eV / SI::m3;
+    return power;
   } else {
     return 0;
   }
 };
+
+double Dominguez2011PhotonField::I_gamma(double ePhoton, double) const { return 0; }
 
 }  // namespace photonfield
 }  // namespace simprop

@@ -16,7 +16,8 @@ class Dominguez2011PhotonField : public AbstractPhotonField {
 
  public:
   Dominguez2011PhotonField();
-  double getPhotonDensity(double ePhoton, double z = 0.) const;
+  double getPhotonDensity(double ePhoton, double z = 0.) const override;
+  double I_gamma(double ePhoton, double z = 0.) const override;
 };
 
 }  // namespace photonfield

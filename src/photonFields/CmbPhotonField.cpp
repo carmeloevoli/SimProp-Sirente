@@ -1,22 +1,20 @@
 #include "simprop/photonFields/CmbPhotonField.h"
 
-#include <cmath>
-
-#include "simprop/Units.h"
-#include "simprop/utils/misc.h"
-
 namespace simprop {
 namespace photonfield {
 
-BlackbodyPhotonField::BlackbodyPhotonField(std::string fieldName, double blackbodyTemperature) {
-  m_blackbodyTemperature = blackbodyTemperature;
-  m_fieldName = fieldName;
+double CMB::getPhotonDensity(double ePhoton, double z) const {
+  if (ePhoton < m_ePhotonMin || ePhoton > m_ePhotonMax) return 0;
+  const auto kT = SI::kBoltzmann * m_blackbodyTemperature * (1. + z);
+  const auto density = m_factor * utils::pow<2>(ePhoton) / std::expm1(ePhoton / kT);
+  return density;
 }
 
-double BlackbodyPhotonField::getPhotonDensity(double ePhoton, double z) const {
-  auto density = 8 * M_PI * utils::pow<3>(ePhoton / (SI::hPlanck * SI::cLight)) /
-                 std::expm1(ePhoton / SI::kBoltzmann / m_blackbodyTemperature / (1. + z));
-  return density / ePhoton;
+double CMB::I_gamma(double ePhoton, double z) const {
+  if (ePhoton < m_ePhotonMin || ePhoton > m_ePhotonMax) return 0;
+  const auto kT = SI::kBoltzmann * m_blackbodyTemperature * (1. + z);
+  const auto I = kT * m_factor * (-std::log(1. - std::exp(-ePhoton / kT)));
+  return std::fabs(I);
 }
 
 }  // namespace photonfield
