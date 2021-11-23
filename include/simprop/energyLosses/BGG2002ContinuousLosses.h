@@ -11,8 +11,8 @@ namespace losses {
 
 class BGG2002ContinuousLosses : public AbstractContinuousLosses {
  protected:
-  const std::string totalLossesFilename = "data/losses_pair+pion_BGG2002.txt";
-  utils::LookupTable<81, 1> m_totalLosses{totalLossesFilename};
+  const std::string totalLossesFilename = "data/losses_pair_BGG2002.txt";
+  utils::LookupTable<501, 1> m_totalLosses{totalLossesFilename};
 
  public:
   BGG2002ContinuousLosses() {}

@@ -1,5 +1,4 @@
 #include "simprop.h"
-#include "simprop/utils/misc.h"
 
 using namespace simprop;
 
@@ -7,7 +6,7 @@ int main() {
   try {
     log::startup_information();
     const auto losses = losses::BGG2002ContinuousLosses();
-    const auto energyAxis = utils::LogAxis(1e16 * SI::eV, 1e24 * SI::eV, 100);
+    const auto energyAxis = utils::LogAxis(1e16 * SI::eV, 1e24 * SI::eV, 1000);
     utils::OutputFile out("test_losses.txt");
     out() << std::scientific;
     for (auto E : energyAxis) {

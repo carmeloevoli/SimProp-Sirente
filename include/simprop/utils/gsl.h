@@ -3,6 +3,7 @@
 
 #include <gsl/gsl_integration.h>
 
+#include <cassert>
 #include <functional>
 
 namespace simprop {
@@ -29,6 +30,27 @@ T QAGIntegration(std::function<T(T)> f, T start, T stop, int LIMIT, double rel_e
   gsl_integration_workspace_free(workspace_ptr);
 
   return T(result);
+}
+
+template <typename T>
+T simpsonIntegration(std::function<T(T)> f, T start, T stop, int N = 100) {
+  const T a = start;
+  const T b = stop;
+
+  const T h = (b - a) / N;
+  const T XI0 = f(a) + f(b);
+
+  T XI1 = 0, XI2 = 0;
+
+  for (int i = 1; i < N; ++i) {
+    const T X = a + i * h;
+    if (i % 2 == 0)
+      XI2 = XI2 + f(X);
+    else
+      XI1 = XI1 + f(X);
+  }
+
+  return h * (XI0 + 2 * XI2 + 4 * XI1) / 3.0;
 }
 
 }  // namespace gsl

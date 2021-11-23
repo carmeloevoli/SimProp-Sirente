@@ -139,6 +139,9 @@ target_link_libraries (printSigmas SIMPROP_LIB ${SIMPROP_LIBRARIES})
 add_executable(printEbl tests/printEbl.cpp)
 target_link_libraries (printEbl SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
+add_executable(printRates tests/printRates.cpp)
+target_link_libraries (printRates SIMPROP_LIB ${SIMPROP_LIBRARIES})
+
 # Show summary.
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
 message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")

@@ -30,6 +30,8 @@ double interpolateEquidistant(double x, double lo, double hi, const std::vector<
 }
 
 double cspline(double x, const std::vector<double> &X, const std::vector<double> &Y) {
+  if (x < X.front()) return 0;
+  if (x > X.back()) return 0;
   tk::spline s(X, Y, tk::spline::cspline);
   return s(x);
 }

@@ -8,7 +8,7 @@
 #include "simprop/energyLosses/AbstractContinuousLosses.h"
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
 #include "simprop/energyLosses/BGG2002ContinuousLosses.h"
-#include "simprop/interactions/photopion.h"
+#include "simprop/interactions/PhotoPionProduction.h"
 #include "simprop/output/outputManager.h"
 #include "simprop/params.h"
 #include "simprop/particle.h"

@@ -77,15 +77,36 @@ std::vector<double> loadRow(std::string filePath, size_t iRow, std::string delim
   std::string line;
   std::ifstream file(filePath.c_str());
   while (getline(file, line)) {
-    if (iRow == count) {
+    if (line.at(0) != '#') {
+      if (iRow == count) {
+        auto s = split(line, delimiter);
+        v.resize(s.size());
+        std::transform(s.begin(), s.end(), v.begin(),
+                       [](const std::string& value) { return std::stod(value); });
+      }
+      count++;
+    }
+  }
+  return v;
+}
+
+std::vector<std::vector<double> > loadFileByRow(std::string filePath, std::string delimiter) {
+  std::vector<std::vector<double> > rows;
+  size_t count = 0;
+  std::string line;
+  std::ifstream file(filePath.c_str());
+  while (getline(file, line)) {
+    if (line.at(0) != '#') {
+      std::vector<double> v;
       auto s = split(line, delimiter);
       v.resize(s.size());
       std::transform(s.begin(), s.end(), v.begin(),
                      [](const std::string& value) { return std::stod(value); });
+      rows.push_back(v);
     }
     count++;
   }
-  return v;
+  return rows;
 }
 
 }  // namespace utils
