@@ -102,6 +102,7 @@ set(SIMPROP_SRCS
     src/cosmology/cosmology.cpp
     src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2002ContinuousLosses.cpp
+    src/interactions/PsbPhotoDisintegration.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
 	src/utils/interpolators.cpp

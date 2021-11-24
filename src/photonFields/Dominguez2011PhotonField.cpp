@@ -12,7 +12,7 @@ Dominguez2011PhotonField::Dominguez2011PhotonField()
 
 double Dominguez2011PhotonField::getPhotonDensity(double ePhoton, double z) const {
   const auto loge = std::log10(ePhoton / SI::eV);
-  if (m_field.isWithinXRange(loge) && m_field.isWithinYRange(z)) {
+  if (m_field.isWithinXRange(z) && m_field.isWithinYRange(loge)) {
     const auto value = m_field.get(z, loge);
     const auto power = std::pow(10., value) / SI::eV / SI::m3;
     return power;

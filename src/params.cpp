@@ -67,7 +67,7 @@ void Params::print() {
   pfile.open(simName + ".params");
   pfile << printElement(simName, "Model name");
   pfile << printElement(seed, "Seed");
-  pfile << printElement(getPidNames(pid), "Mass");
+  pfile << printElement(getPidName(pid), "Mass");
   pfile << printElement(nParticles, "Size Particles");
   pfile << printElement(energyRange.first / SI::GeV, "Min Energy [GeV]");
   pfile << printElement(energyRange.second / SI::GeV, "Max Energy [GeV]");

@@ -12,7 +12,7 @@ namespace photonfield {
 
 class Dominguez2011PhotonField : public AbstractPhotonField {
  protected:
-  utils::LookupTable<50, 18> m_field{"data/EBL_Dominguez2011.txt"};
+  utils::LookupTable<18, 50> m_field{"data/EBL_Dominguez2011.txt"};
 
  public:
   Dominguez2011PhotonField();

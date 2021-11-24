@@ -28,7 +28,7 @@ class Particle {
   const PID getPid() const { return m_pid; }
 
   friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
-    auto n = getPidNames(p.m_pid);
+    auto n = getPidName(p.m_pid);
     auto z = p.m_now.z;
     auto E = p.m_now.E / SI::eV;
     return os << n << "\t" << std::scientific << z << "\t" << E;

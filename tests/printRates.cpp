@@ -2,7 +2,7 @@
 
 using namespace simprop;
 
-double rate_cmb(double Gamma) {
+double rate_cmb(double Gamma, double z = 0) {
   const auto cmb = photonfield::CMB();
   const auto sigma = interactions::PhotoPionProduction();
   auto value = SI::cLight / 2. / utils::pow<2>(Gamma);
@@ -37,7 +37,7 @@ double rate_cmb(double Gamma) {
   return value;
 }
 
-double rate_ebl(double Gamma) {
+double rate_ebl(double Gamma, double z = 0) {
   const auto ebl = photonfield::Dominguez2011PhotonField();
   const auto sigma = interactions::PhotoPionProduction();
   auto value = SI::cLight / 2. / utils::pow<2>(Gamma);
@@ -47,12 +47,12 @@ double rate_ebl(double Gamma) {
   const double epsPrimeMax = 2. * Gamma * ebl.getMaxPhotonEnergy();
 
   value *= gsl::simpsonIntegration<double>(
-      [Gamma, &ebl, &sigma](double logEpsPrime) {
+      [Gamma, z, &ebl, &sigma](double logEpsPrime) {
         auto epsPrime = std::exp(logEpsPrime);
         return epsPrime * epsPrime * sigma.getAtPhotonEnergyCoM(epsPrime) *
-               ebl.I_gamma(epsPrime / 2. / Gamma);
+               ebl.I_gamma(epsPrime / 2. / Gamma, z);
       },
-      std::log(epsPrimeMin), std::log(epsPrimeMax), 1000);
+      std::log(epsPrimeMin), std::log(epsPrimeMax), 100);
 
   return value;
 }
@@ -68,6 +68,7 @@ int main() {
       out() << std::log10(Gamma) << "\t";
       out() << rate_cmb(Gamma) / SI::cLight / units << "\t";
       out() << rate_ebl(Gamma) / SI::cLight / units << "\t";
+      out() << rate_ebl(Gamma, 3.0) / SI::cLight / units << "\t";
       out() << "\n";
     }
   } catch (const std::exception& e) {
