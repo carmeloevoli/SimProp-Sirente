@@ -2,10 +2,11 @@
 #define SIMPROP_INTERACTIONS_PSBPHOTODISINTEGRATION_H
 
 #include <map>
+#include <numeric>
 #include <string>
 
 #include "simprop/Units.h"
-#include "simprop/interactions/AbstractPhotoDisintegration.h"
+#include "simprop/interactions/AbstractInteraction.h"
 #include "simprop/utils/misc.h"
 
 namespace simprop {
@@ -16,14 +17,14 @@ struct PsbParams {
   double eth_2;
   double e0_1;
   double e0_2;
-  double csi_1;
-  double csi_2;
-  double delta_1;
-  double delta_2;
-  double zita;
+  double xi_1;
+  double xi_2;
+  double Delta_1;
+  double Delta_2;
+  double zeta;
 };
 
-class PsbPhotoDisintegration : AbstractPhotoDisintegration {
+class PsbPhotoDisintegration : AbstractInteration {
  protected:
   void loadPsbParams(std::string filename);
 
@@ -34,14 +35,19 @@ class PsbPhotoDisintegration : AbstractPhotoDisintegration {
   }
   virtual ~PsbPhotoDisintegration() = default;
 
-  virtual double getAbsorptionSigma(double photonEnergy) const override { return 0.; };
+  std::array<double, 3> getCrossSections(PID pid, double photonEnergy) const;
 
-  std::array<double, 3> getCrossSections(PID pid, double photonEnergy);
-  double getTotalCrossSections(PID pid, double photonEnergy);
+  double getSigma(PID pid, double photonEnergy) const override {
+    auto sigmas = getCrossSections(pid, photonEnergy);
+    return std::accumulate(sigmas.begin(), sigmas.end(), 0.);
+  };
 
  protected:
   std::string m_tableFilename = "data/xsec_params_pd_PSB.txt";
   std::map<PID, PsbParams> m_psbParams;
+  const double m_lowThreshold = 30. * SI::MeV;
+  const double m_maxEnergy = 150. * SI::MeV;
+  size_t m_nNuclearSpecies = 51;
 };
 
 }  // namespace interactions

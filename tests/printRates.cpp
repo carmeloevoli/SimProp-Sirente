@@ -19,21 +19,6 @@ double rate_cmb(double Gamma, double z = 0) {
       },
       std::log(epsPrimeMin), std::log(epsPrimeMax), 100);
 
-  //   value *= gsl::QAGIntegration<double>(
-  //       [Gamma, &cmb, &sigma](double epsPrime) {
-  //         return epsPrime * sigma.getAtPhotonEnergyCoM(epsPrime) * cmb.I_gamma(epsPrime / 2. /
-  //         Gamma);
-  //       },
-  //       epsPrimeMin, epsPrimeMax, 1000, 1e-3);
-
-  //   value *= gsl::QAGIntegration<double>(
-  //       [Gamma, &cmb, &sigma](double logEpsPrime) {
-  //         auto epsPrime = std::exp(logEpsPrime);
-  //         return epsPrime * epsPrime * sigma.getAtPhotonEnergyCoM(epsPrime) *
-  //                cmb.I_gamma(epsPrime / 2. / Gamma);
-  //       },
-  //       std::log(epsPrimeMin), std::log(epsPrimeMax), 1000, 1e-3);
-
   return value;
 }
 
@@ -60,7 +45,7 @@ double rate_ebl(double Gamma, double z = 0) {
 int main() {
   try {
     log::startup_information();
-    const auto Gammas = utils::LogAxis(1e8, 1e16, 3000);
+    const auto Gammas = utils::LogAxis(1e8, 1e16, 8 * 32);
     utils::OutputFile out("test_rates.txt");
     const auto units = 1. / SI::Mpc;
     out() << std::scientific;

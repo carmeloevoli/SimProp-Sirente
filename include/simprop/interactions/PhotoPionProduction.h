@@ -3,13 +3,15 @@
 
 #include <string>
 
+#include "simprop/Units.h"
+#include "simprop/interactions/AbstractInteraction.h"
 #include "simprop/utils/lookupTable.h"
 #include "simprop/utils/misc.h"
 
 namespace simprop {
 namespace interactions {
 
-class PhotoPionProduction {
+class PhotoPionProduction : AbstractInteration {
  protected:
   const std::string pionSigmaFilename = "data/xsec_ppp.txt";
   utils::LookupTable<45, 1> pionSigma{pionSigmaFilename};
@@ -18,21 +20,13 @@ class PhotoPionProduction {
   PhotoPionProduction() {}
   virtual ~PhotoPionProduction() = default;
 
-  double getPhotonEnergyThresholdCoM() const {
+  inline double getPhotonEnergyThresholdCoM() const {
     return SI::pionMassC2 + pow2(SI::pionMassC2) / (2 * SI::protonMassC2);
   }
 
-  double getAtS(double s) const {
-    auto logs = std::log10(s / SI::GeV2);
-    auto value = pionSigma.get(logs);
-    return std::max(value, 0.) * SI::mbarn;
-  }
-
-  double getAtPhotonEnergyCoM(double epsPrime) const {
-    if (epsPrime < getPhotonEnergyThresholdCoM()) return 0;
-    const auto s = utils::pow<2>(SI::protonMassC2) + 2 * SI::protonMassC2 * epsPrime;
-    return getAtS(s);
-  }
+  double getAtS(double s) const;
+  double getAtPhotonEnergyCoM(double epsPrime) const;
+  double getSigma(PID pid, double photonEnergy) const override;
 };
 
 }  // namespace interactions

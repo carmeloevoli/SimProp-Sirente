@@ -14,21 +14,22 @@ double Dominguez2011PhotonField::getPhotonDensity(double ePhoton, double z) cons
   const auto loge = std::log10(ePhoton / SI::eV);
   if (m_field.isWithinXRange(z) && m_field.isWithinYRange(loge)) {
     const auto value = m_field.get(z, loge);
-    const auto power = std::pow(10., value) / SI::eV / SI::m3;
-    return power;
+    const auto density = std::pow(10., value) / SI::eV / SI::m3;
+    return density;
   } else {
     return 0;
   }
 };
 
 double Dominguez2011PhotonField::I_gamma(double ePhoton, double z) const {
-  if (ePhoton > m_ePhotonMax) return 0;
-  const auto epsUpper = m_ePhotonMax;
-  const auto epsLower = std::max(ePhoton, m_ePhotonMin);
-  auto I = gsl::QAGIntegration<double>(
-      [&](double eps) { return getPhotonDensity(eps, z) / utils::pow<2>(eps); }, epsLower, epsUpper,
-      1000, 1e-3);
-  return I;
+  const auto loge = std::log10(ePhoton / SI::eV);
+  if (m_field.isWithinXRange(z) && m_field.isWithinYRange(loge)) {
+    const auto value = m_Igamma.get(z, loge);
+    const auto I = std::pow(10., value) / utils::pow<2>(SI::eV) / utils::pow<2>(SI::m3);
+    return I;
+  } else {
+    return 0;
+  }
 }
 
 }  // namespace photonfield
