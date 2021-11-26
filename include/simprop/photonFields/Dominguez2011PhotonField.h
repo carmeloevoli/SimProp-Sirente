@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "simprop/Units.h"
 #include "simprop/photonFields/AbstractPhotonField.h"
 #include "simprop/utils/lookupTable.h"
 
@@ -14,6 +15,8 @@ class Dominguez2011PhotonField : public AbstractPhotonField {
  protected:
   utils::LookupTable<18, 50> m_field{"data/EBL_Dominguez2011.txt"};
   utils::LookupTable<18, 50> m_Igamma{"data/EBL_Igamma_Dominguez2011.txt"};
+  const double m_densityUnits = 1. / SI::eV / SI::m3;
+  const double m_IgammaUnits = 1. / utils::pow<2>(SI::eV) / utils::pow<2>(SI::m3);
 
  public:
   Dominguez2011PhotonField();

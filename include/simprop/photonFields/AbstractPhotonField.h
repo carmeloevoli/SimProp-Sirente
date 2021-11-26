@@ -1,12 +1,12 @@
-#ifndef SIMPROP_PHOTONFIELDS_PHOTONFIELD_H
-#define SIMPROP_PHOTONFIELDS_PHOTONFIELD_H
+#ifndef SIMPROP_PHOTONFIELDS_ABSTRACTPHOTONFIELD_H
+#define SIMPROP_PHOTONFIELDS_ABSTRACTPHOTONFIELD_H
 
 namespace simprop {
 namespace photonfield {
 
 class AbstractPhotonField {
  public:
-  explicit AbstractPhotonField(std::string fieldName, double ePhotonMin, double ePhotonMax)
+  AbstractPhotonField(std::string fieldName, double ePhotonMin, double ePhotonMax)
       : m_fieldName(fieldName), m_ePhotonMin(ePhotonMin), m_ePhotonMax(ePhotonMax) {}
   virtual ~AbstractPhotonField() = default;
 
