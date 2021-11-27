@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 set(LANGS CXX)
 project(simprop ${LANGS})
-file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION VERSION)
+#file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION VERSION)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 

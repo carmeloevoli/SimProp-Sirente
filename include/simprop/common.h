@@ -3,7 +3,7 @@
 
 #include <utility>
 
-#include "simprop/Units.h"
+#include "simprop/units.h"
 
 namespace simprop {
 

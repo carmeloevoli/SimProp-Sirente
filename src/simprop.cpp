@@ -1,4 +1,4 @@
-#include "simprop/SimProp.h"
+#include "simprop/simprop.h"
 
 #include <algorithm>
 #include <fstream>

@@ -1,8 +1,8 @@
 #ifndef SIMPROP_PARTICLE_H
 #define SIMPROP_PARTICLE_H
 
-#include "simprop/Units.h"
 #include "simprop/pid.h"
+#include "simprop/units.h"
 
 namespace simprop {
 

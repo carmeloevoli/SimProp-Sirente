@@ -1,7 +1,6 @@
 #ifndef INCLUDE_SIMPROP_H
 #define INCLUDE_SIMPROP_H
 
-#include "simprop/Units.h"
 #include "simprop/common.h"
 #include "simprop/cosmology/Planck2018.h"
 #include "simprop/cosmology/cosmology.h"
@@ -18,6 +17,7 @@
 #include "simprop/photonFields/Dominguez2011PhotonField.h"
 #include "simprop/pid.h"
 #include "simprop/simprop.h"
+#include "simprop/units.h"
 #include "simprop/utils/gsl.h"
 #include "simprop/utils/interpolators.h"
 #include "simprop/utils/logging.h"

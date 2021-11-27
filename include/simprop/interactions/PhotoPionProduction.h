@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "simprop/Units.h"
 #include "simprop/interactions/AbstractInteraction.h"
+#include "simprop/units.h"
 #include "simprop/utils/lookupTable.h"
 #include "simprop/utils/misc.h"
 
