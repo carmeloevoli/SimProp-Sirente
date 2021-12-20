@@ -1,12 +1,13 @@
 #ifndef SIMPROP_INTERACTIONS_PSBPHOTODISINTEGRATION_H
 #define SIMPROP_INTERACTIONS_PSBPHOTODISINTEGRATION_H
 
+#include <array>
 #include <map>
 #include <numeric>
 #include <string>
 
-#include "simprop/Units.h"
 #include "simprop/interactions/AbstractInteraction.h"
+#include "simprop/units.h"
 #include "simprop/utils/misc.h"
 
 namespace simprop {

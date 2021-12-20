@@ -1,5 +1,6 @@
 # SimProp - a new beta version
 
+[![Build Status](https://github.com/carmeloevoli/SimProp-beta/actions/workflows/ci.yml/badge.svg)](https://github.com/carmeloevoli/SimProp-beta/actions)
 ![GitHub](https://img.shields.io/github/license/carmeloevoli/SimProp-beta)
 
 ## Install

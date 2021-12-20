@@ -1,6 +1,7 @@
 #include "simprop/pid.h"
 
 #include <map>
+#include <string>
 
 namespace simprop {
 

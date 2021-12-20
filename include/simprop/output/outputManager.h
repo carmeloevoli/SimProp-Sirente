@@ -1,7 +1,7 @@
 #ifndef SIMPROP_OUTPUT_OUTPUTMANAGER_H
 #define SIMPROP_OUTPUT_OUTPUTMANAGER_H
 
-#include "simprop/SimProp.h"
+#include "simprop/simprop.h"
 
 namespace simprop {
 

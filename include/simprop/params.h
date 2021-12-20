@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "simprop/Units.h"
 #include "simprop/pid.h"
+#include "simprop/units.h"
 #include "simprop/utils/logging.h"
 
 using Range = std::pair<double, double>;

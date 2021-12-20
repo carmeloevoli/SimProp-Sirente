@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "simprop/Units.h"
 #include "simprop/photonFields/AbstractPhotonField.h"
+#include "simprop/units.h"
 #include "simprop/utils/lookupTable.h"
 
 namespace simprop {
