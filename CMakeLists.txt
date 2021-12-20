@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.1)
-set(LANGS CXX)
-project(simprop ${LANGS})
-file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION VERSION)
+project(simprop CXX)
+set(SIMPROP_RELEASE_VERSION 3.0)
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+set(SIMPROP_EXTRA_SOURCES)
+set(SIMPROP_EXTRA_INCLUDES)
+set(SIMPROP_EXTRA_LIBRARIES)
 
 set(CMAKE_CXX_STANDARD 17)
 cmake_policy(SET CMP0048 NEW)
@@ -28,41 +31,6 @@ message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math")
 
-if(CMAKE_COMPILER_IS_GNUCXX AND NOT APPLE)
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
-    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--as-needed")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed")
-    message(STATUS "Use --as-needed linker flags!")
-endif(CMAKE_COMPILER_IS_GNUCXX AND NOT APPLE)
-
-
-# ----------------------------------------------------------------------------
-# Fix Apple RPATH
-# ----------------------------------------------------------------------------
-set(CMAKE_MACOSX_RPATH 1)
-option(USE_ABSOLUTE_RPATH "Add absolute rpath to all libraries and executables" ON)
-if(APPLE OR USE_ABSOLUTE_RPATH)
-    set(CMAKE_SKIP_BUILD_RPATH  FALSE)
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-    set(ABSOLUTE_RPATH "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
-    if(NOT IS_ABSOLUTE ${ABSOLUTE_RPATH})
-        set(ABSOLUTE_RPATH ${CMAKE_BINARY_DIR}/${ABSOLUTE_RPATH})
-    endif()
-
-    list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${ABSOLUTE_RPATH}" isSystemDir)
-    if("${isSystemDir}" STREQUAL "-1")
-        message(STATUS "Use absolute RPATH ${ABSOLUTE_RPATH}")
-        set(CMAKE_INSTALL_RPATH "${ABSOLUTE_RPATH}")
-    endif("${isSystemDir}" STREQUAL "-1")
-endif()
-
-# Fix for linker error on mac, Issue: #147
-if(APPLE)
-    add_definitions(-arch x86_64)
-endif(APPLE)
-
-
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -76,25 +44,43 @@ include_directories(external/plog/include)
 
 # GSL (required)
 find_package(GSL REQUIRED)
-list(APPEND SIMPROP_INCLUDES ${GSL_INCLUDE_DIR})
-list(APPEND SIMPROP_LIBRARIES ${GSL_LIBRARIES})
+list(APPEND SIMPROP_EXTRA_INCLUDES ${GSL_INCLUDE_DIR})
+list(APPEND SIMPROP_EXTRA_LIBRARIES ${GSL_LIBRARIES})
+
+# googletest (provided, see https://code.google.com/p/googletest/wiki/FAQ
+#     Why is it not recommended use a pre-compiled copy of Google Test?)
+option(ENABLE_TESTING "Build tests and enable test target" OFF)
+if(ENABLE_TESTING)
+    set(GOOGLETEST_VERSION 1.10.0)
+    include_directories(external/gtest/googletest/include)
+    add_subdirectory(external/gtest/googletest)
+    if(APPLE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGTEST_USE_OWN_TR1_TUPLE=1")
+    endif(APPLE)
+endif(ENABLE_TESTING)
 
 # Version info from Git
-include(GetGitRevisionDescription)
-get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-git_local_changes(GIT_HAS_LOCAL_CHANGES)
-set(git_revision_cpp "${CMAKE_CURRENT_BINARY_DIR}/git_revision.cpp")
-configure_file("src/utils/git_revision.cpp.in" "${git_revision_cpp}" @ONLY)
-
+option(ENABLE_GIT "Embedding information about Simprop version from git" ON)
+if(ENABLE_GIT)
+    include(GetGitRevisionDescription)
+    get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+    git_local_changes(GIT_HAS_LOCAL_CHANGES)
+    set(git_revision_cpp "${CMAKE_CURRENT_BINARY_DIR}/git_revision.cpp")
+    configure_file("src/utils/git_revision.cpp.in" "${git_revision_cpp}" @ONLY)
+endif(ENABLE_GIT)
+IF(NOT ENABLE_GIT OR (${GIT_SHA1} STREQUAL "GITDIR-NOTFOUND"))
+    set(GIT_REFSPEC "")
+    set(GIT_SHA1 "")
+    set(GIT_DESC "${SIMPROP_RELEASE_VERSION}-no-git")
+endif()
+message(STATUS "Simprop version: ${GIT_DESC} ${GIT_SHA1} ${GIT_REFSPEC}")
 
 # ----------------------------------------------------------------------------
 # Install
 # ----------------------------------------------------------------------------
+include_directories(include ${SIMPROP_EXTRA_INCLUDES})
 
-include_directories("${CMAKE_SOURCE_DIR}")
-include_directories(include)
-
-set(SIMPROP_SRCS
+add_library(simprop SHARED
     src/common.cpp
  	src/params.cpp
     src/pid.cpp
@@ -112,6 +98,19 @@ set(SIMPROP_SRCS
     src/utils/timer.cpp
     "${git_revision_cpp}"
     )
+    target_link_libraries(simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+# make library
+#include_directories(include ${SIMPROP_INCLUDES})
+#add_library(SIMPROP_LIB ${SIMPROP_SRCS} ${SIMPROP_INCLUDES})
+
+# testing
+if(ENABLE_TESTING)
+    enable_testing()
+    add_executable(testCommon test/testCommon.cpp)
+    target_link_libraries(testCommon simprop gtest gtest_main ${SIMPROP_LIBRARIES})
+    add_test(testCommon testCommon)
+endif(ENABLE_TESTING)
 
 # create the output dir
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/output)
@@ -120,29 +119,25 @@ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/output)
 file(GLOB SIMPROP_DATA "data/*.txt")
 file(COPY ${SIMPROP_DATA} DESTINATION ${PROJECT_BINARY_DIR}/data)
 
-# make library
-include_directories(include ${SIMPROP_INCLUDES})
-add_library(SIMPROP_LIB ${SIMPROP_SRCS} ${SIMPROP_INCLUDES})
-
 # make executable
-add_executable(simprop src/main.cpp)
-target_link_libraries (simprop SIMPROP_LIB ${SIMPROP_LIBRARIES})
+# add_executable(simprop src/main.cpp)
+# target_link_libraries (simprop SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
-add_executable(sandbox src/sandbox.cpp)
-target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
+# add_executable(sandbox src/sandbox.cpp)
+# target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
-# make tests
-add_executable(printLosses tests/printLosses.cpp)
-target_link_libraries (printLosses SIMPROP_LIB ${SIMPROP_LIBRARIES})
+# make examples
+add_executable(printLosses examples/printLosses.cpp)
+target_link_libraries (printLosses simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(printSigmas tests/printSigmas.cpp)
-target_link_libraries (printSigmas SIMPROP_LIB ${SIMPROP_LIBRARIES})
+# add_executable(printSigmas tests/printSigmas.cpp)
+# target_link_libraries (printSigmas SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
-add_executable(printEbl tests/printEbl.cpp)
-target_link_libraries (printEbl SIMPROP_LIB ${SIMPROP_LIBRARIES})
+# add_executable(printEbl tests/printEbl.cpp)
+# target_link_libraries (printEbl SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
-add_executable(printRates tests/printRates.cpp)
-target_link_libraries (printRates SIMPROP_LIB ${SIMPROP_LIBRARIES})
+# add_executable(printRates tests/printRates.cpp)
+# target_link_libraries (printRates SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
 # Show summary.
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
@@ -150,5 +145,5 @@ message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")
 message (STATUS "CMAKE_CXX_COMPILER .... = ${CMAKE_CXX_COMPILER}")
 message (STATUS "CMAKE_CXX_FLAGS ....... = ${CMAKE_CXX_FLAGS}")
 message (STATUS "CMAKE_INCLUDE_PATH .... = ${CMAKE_INCLUDE_PATH}")
-message (STATUS "SIMPROP_INCLUDES ...... = ${SIMPROP_INCLUDES}")
-message (STATUS "SIMPROP_LIBRARIES ..... = ${SIMPROP_LIBRARIES}")
+message (STATUS "SIMPROP_INCLUDES ...... = ${SIMPROP_EXTRA_INCLUDES}")
+message (STATUS "SIMPROP_LIBRARIES ..... = ${SIMPROP_EXTRA_LIBRARIES}")
