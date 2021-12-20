@@ -1,7 +1,7 @@
 #include "simprop/photonFields/Dominguez2011PhotonField.h"
 
 #include "simprop/common.h"
-#include "simprop/utils/gsl.h"
+#include "simprop/utils/numeric.h"
 
 namespace simprop {
 namespace photonfield {

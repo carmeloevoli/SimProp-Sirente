@@ -8,7 +8,7 @@
 
 #include "simprop/interactions/AbstractInteraction.h"
 #include "simprop/units.h"
-#include "simprop/utils/misc.h"
+#include "simprop/utils/io.h"
 
 namespace simprop {
 namespace interactions {

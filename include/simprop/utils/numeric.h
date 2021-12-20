@@ -7,7 +7,32 @@
 #include <functional>
 
 namespace simprop {
-namespace gsl {
+namespace utils {
+
+// pow implementation as template for integer exponents
+template <unsigned int exponent>
+inline double pow(double base) {
+  return pow<(exponent >> 1)>(base * base) * (((exponent & 1) > 0) ? base : 1);
+}
+
+template <>
+inline double pow<0>(double base) {
+  return 1;
+}
+
+// Axis
+std::vector<double> LinAxis(const double &min, const double &max, const size_t &size);
+
+std::vector<double> LogAxis(const double &min, const double &max, const size_t &size);
+
+double interpolate(double x, const std::vector<double> &X, const std::vector<double> &Y);
+
+double cspline(double x, const std::vector<double> &X, const std::vector<double> &Y);
+
+double interpolateEquidistant(double x, double lo, double hi, const std::vector<double> &Y);
+
+double interpolate2d(double x, double y, const std::vector<double> &X, const std::vector<double> &Y,
+                     const std::vector<double> &Z);
 
 template <typename T>
 T QAGIntegration(std::function<T(T)> f, T start, T stop, int LIMIT, double rel_error = 1e-4) {
@@ -53,7 +78,7 @@ T simpsonIntegration(std::function<T(T)> f, T start, T stop, int N = 100) {
   return h * (XI0 + 2 * XI2 + 4 * XI1) / 3.0;
 }
 
-}  // namespace gsl
+}  // namespace utils
 }  // namespace simprop
 
 #endif

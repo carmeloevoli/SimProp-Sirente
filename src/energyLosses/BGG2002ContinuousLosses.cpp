@@ -1,6 +1,7 @@
 #include "simprop/energyLosses/BGG2002ContinuousLosses.h"
 
 #include "simprop/utils/logging.h"
+#include "simprop/utils/numeric.h"
 
 namespace simprop {
 namespace losses {

@@ -18,11 +18,10 @@
 #include "simprop/pid.h"
 #include "simprop/simprop.h"
 #include "simprop/units.h"
-#include "simprop/utils/gsl.h"
-#include "simprop/utils/interpolators.h"
+#include "simprop/utils/io.h"
 #include "simprop/utils/logging.h"
 #include "simprop/utils/lookupTable.h"
-#include "simprop/utils/misc.h"
+#include "simprop/utils/numeric.h"
 #include "simprop/utils/random.h"
 #include "simprop/utils/timer.h"
 

@@ -6,7 +6,7 @@
 #include "simprop/interactions/AbstractInteraction.h"
 #include "simprop/units.h"
 #include "simprop/utils/lookupTable.h"
-#include "simprop/utils/misc.h"
+#include "simprop/utils/numeric.h"
 
 namespace simprop {
 namespace interactions {

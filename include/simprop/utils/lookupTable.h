@@ -5,8 +5,8 @@
 #include <cmath>
 #include <stdexcept>
 
-#include "simprop/utils/interpolators.h"
-#include "simprop/utils/misc.h"
+#include "simprop/utils/io.h"
+#include "simprop/utils/numeric.h"
 
 namespace simprop {
 namespace utils {

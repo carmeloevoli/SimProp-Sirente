@@ -1,4 +1,4 @@
-#include "simprop/utils/interpolators.h"
+#include "simprop/utils/numeric.h"
 
 #include <algorithm>
 #include <cmath>

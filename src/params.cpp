@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-#include "simprop/utils/misc.h"
+#include "simprop/utils/io.h"
 
 namespace simprop {
 

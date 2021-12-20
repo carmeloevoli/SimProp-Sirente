@@ -1,7 +1,7 @@
 #include "simprop/utils/logging.h"
 
 namespace simprop {
-namespace log {
+namespace utils {
 
 void startup_information() {
   static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
@@ -17,5 +17,5 @@ void startup_information() {
   LOGW << "has local changes " << git_has_local_changes();
 }
 
-}  // namespace log
+}  // namespace utils
 }  // namespace simprop

@@ -1,14 +1,8 @@
 #include "simprop/cosmology/cosmology.h"
 
-#include <cmath>
-#include <stdexcept>
-
 #include "simprop/cosmology/Planck2018.h"
-#include "simprop/utils/gsl.h"
 
 using namespace simprop::planck2018;
-
-#define LIMIT 1000
 
 namespace simprop {
 namespace cosmo {

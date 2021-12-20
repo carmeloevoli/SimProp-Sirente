@@ -92,9 +92,9 @@ add_library(simprop SHARED
     src/interactions/PsbPhotoDisintegration.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
-	src/utils/interpolators.cpp
+	src/utils/io.cpp
 	src/utils/logging.cpp
-    src/utils/misc.cpp
+    src/utils/numeric.cpp
     src/utils/timer.cpp
     "${git_revision_cpp}"
     )
@@ -126,15 +126,14 @@ file(COPY ${SIMPROP_DATA} DESTINATION ${PROJECT_BINARY_DIR}/data)
 # add_executable(sandbox src/sandbox.cpp)
 # target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
-# make examples
-add_executable(printLosses examples/printLosses.cpp)
-target_link_libraries (printLosses simprop ${SIMPROP_EXTRA_LIBRARIES})
+# add_executable(printEbl tests/printEbl.cpp)
+# target_link_libraries (printEbl SIMPROP_LIB ${SIMPROP_LIBRARIES})
+
+# add_executable(printLosses examples/printLosses.cpp)
+# target_link_libraries (printLosses simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(printSigmas tests/printSigmas.cpp)
 # target_link_libraries (printSigmas SIMPROP_LIB ${SIMPROP_LIBRARIES})
-
-# add_executable(printEbl tests/printEbl.cpp)
-# target_link_libraries (printEbl SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
 # add_executable(printRates tests/printRates.cpp)
 # target_link_libraries (printRates SIMPROP_LIB ${SIMPROP_LIBRARIES})
