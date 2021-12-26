@@ -5,25 +5,19 @@
 
 #include <cassert>
 #include <functional>
+#include <vector>
 
 namespace simprop {
 namespace utils {
-
-// pow implementation as template for integer exponents
-template <unsigned int exponent>
-inline double pow(double base) {
-  return pow<(exponent >> 1)>(base * base) * (((exponent & 1) > 0) ? base : 1);
-}
-
-template <>
-inline double pow<0>(double base) {
-  return 1;
-}
 
 // Axis
 std::vector<double> LinAxis(const double &min, const double &max, const size_t &size);
 
 std::vector<double> LogAxis(const double &min, const double &max, const size_t &size);
+
+inline bool isInside(double x, const std::vector<double> &X) {
+  return (x >= X.front() && x <= X.back());
+};
 
 double interpolate(double x, const std::vector<double> &X, const std::vector<double> &Y);
 

@@ -22,10 +22,12 @@ std::vector<std::vector<double> > loadFileByRow(std::string filePath, std::strin
 
 // Output file
 class OutputFile {
+  std::string filename;
   std::ofstream out;
 
  public:
-  explicit OutputFile(const std::string& filename) : out("output/" + filename) {}
+  explicit OutputFile(const std::string& name) : filename(name), out("output/" + name) {}
+  ~OutputFile() { LOGD << "created output file " << filename; }
 
   template <typename T>
   OutputFile& operator<<(const T& value) {

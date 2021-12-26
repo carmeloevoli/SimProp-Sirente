@@ -65,6 +65,7 @@ static constexpr double petaelectronvolt = peta * electronvolt;
 static constexpr double sec = second;
 static constexpr double kyr = kiloyear;
 static constexpr double Myr = megayear;
+static constexpr double Gyr = gigayear;
 static constexpr double kpc = kiloparsec;
 static constexpr double Mpc = megaparsec;
 static constexpr double eV = electronvolt;

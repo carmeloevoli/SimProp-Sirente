@@ -45,11 +45,13 @@ std::vector<double> LogAxis(const double& min, const double& max, const size_t& 
 }
 
 size_t countFileLines(const std::string& filename) {
-  size_t count = 0;
+  size_t counter = 0;
   std::string line;
   std::ifstream file(filename.c_str());
-  while (getline(file, line)) count++;
-  return count;
+  while (getline(file, line)) {
+    if (line.at(0) != '#') counter++;
+  }
+  return counter;
 }
 
 bool fileExists(const std::string& filename) {

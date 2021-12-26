@@ -82,14 +82,14 @@ include_directories(include ${SIMPROP_EXTRA_INCLUDES})
 
 add_library(simprop SHARED
     src/common.cpp
+    src/cosmology.cpp
  	src/params.cpp
     src/pid.cpp
-    src/simprop.cpp
-    src/cosmology/cosmology.cpp
-    src/energyLosses/AdiabaticContinuousLosses.cpp
-    src/energyLosses/BGG2002ContinuousLosses.cpp
-    src/interactions/PhotoPionProduction.cpp
-    src/interactions/PsbPhotoDisintegration.cpp
+    # src/simprop.cpp
+    # src/energyLosses/AdiabaticContinuousLosses.cpp
+    # src/energyLosses/BGG2002ContinuousLosses.cpp
+    # src/interactions/PhotoPionProduction.cpp
+    # src/interactions/PsbPhotoDisintegration.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
 	src/utils/io.cpp
@@ -108,7 +108,7 @@ add_library(simprop SHARED
 if(ENABLE_TESTING)
     enable_testing()
     add_executable(testCommon test/testCommon.cpp)
-    target_link_libraries(testCommon simprop gtest gtest_main ${SIMPROP_LIBRARIES})
+    target_link_libraries(testCommon simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
     add_test(testCommon testCommon)
 endif(ENABLE_TESTING)
 
@@ -119,15 +119,15 @@ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/output)
 file(GLOB SIMPROP_DATA "data/*.txt")
 file(COPY ${SIMPROP_DATA} DESTINATION ${PROJECT_BINARY_DIR}/data)
 
-# make executable
-# add_executable(simprop src/main.cpp)
-# target_link_libraries (simprop SIMPROP_LIB ${SIMPROP_LIBRARIES})
+# make examples
+add_executable(print_cosmology examples/printCosmology.cpp)
+target_link_libraries (print_cosmology simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+add_executable(print_photons examples/printPhotonFields.cpp)
+target_link_libraries (print_photons simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(sandbox src/sandbox.cpp)
 # target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
-
-# add_executable(printEbl tests/printEbl.cpp)
-# target_link_libraries (printEbl SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
 # add_executable(printLosses examples/printLosses.cpp)
 # target_link_libraries (printLosses simprop ${SIMPROP_EXTRA_LIBRARIES})
