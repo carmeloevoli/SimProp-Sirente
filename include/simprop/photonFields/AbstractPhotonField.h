@@ -6,21 +6,18 @@ namespace photonfield {
 
 class AbstractPhotonField {
  public:
-  AbstractPhotonField(std::string fieldName, double ePhotonMin, double ePhotonMax)
-      : m_fieldName(fieldName), m_ePhotonMin(ePhotonMin), m_ePhotonMax(ePhotonMax) {}
+  AbstractPhotonField() {}
   virtual ~AbstractPhotonField() = default;
 
-  virtual double getPhotonDensity(double ePhoton, double z = 0.) const = 0;  // comoving
+  virtual double density(double ePhoton, double z = 0.) const = 0;
   virtual double I_gamma(double ePhoton, double z = 0.) const = 0;
 
-  std::string getFieldName() const { return m_fieldName; }
   double getMinPhotonEnergy() const { return m_ePhotonMin; }
   double getMaxPhotonEnergy() const { return m_ePhotonMax; }
 
  protected:
-  std::string m_fieldName = "AbstractPhotonField";
-  double m_ePhotonMin;
-  double m_ePhotonMax;
+  double m_ePhotonMin = 0.;
+  double m_ePhotonMax = 0.;
 };
 
 }  // namespace photonfield

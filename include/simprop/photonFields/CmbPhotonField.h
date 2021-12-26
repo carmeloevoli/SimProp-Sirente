@@ -6,20 +6,21 @@
 
 #include "simprop/photonFields/AbstractPhotonField.h"
 #include "simprop/units.h"
-#include "simprop/utils/numeric.h"
 
 namespace simprop {
 namespace photonfield {
 
-class CMB : public AbstractPhotonField {
+class CMB final : public AbstractPhotonField {
  public:
-  CMB() : AbstractPhotonField("CMB", 1e-10 * SI::eV, 1e-1 * SI::eV) {}
-  double getPhotonDensity(double ePhoton, double z = 0.) const override;
+  CMB(double T) : m_temperature(T) {
+    m_ePhotonMin = 1e-10 * SI::eV;
+    m_ePhotonMax = 1e-1 * SI::eV;
+  }
+  double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
 
  protected:
-  const double m_blackbodyTemperature = 2.73 * SI::K;
-  const double m_factor = 1. / utils::pow<2>(M_PI) / utils::pow<3>(SI::hbarC);
+  double m_temperature = 1;
 };
 
 }  // namespace photonfield
