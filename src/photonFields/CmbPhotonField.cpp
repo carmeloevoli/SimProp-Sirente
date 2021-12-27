@@ -1,7 +1,7 @@
 #include "simprop/photonFields/CmbPhotonField.h"
 
 namespace simprop {
-namespace photonfield {
+namespace photonfields {
 
 double CMB::density(double ePhoton, double z) const {
   constexpr double factor = 1. / pow2(M_PI) / pow3(SI::hbarC);
@@ -19,5 +19,5 @@ double CMB::I_gamma(double ePhoton, double z) const {
   return std::fabs(I) * pow3(1. + z);
 }
 
-}  // namespace photonfield
+}  // namespace photonfields
 }  // namespace simprop

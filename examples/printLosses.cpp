@@ -2,17 +2,38 @@
 
 using namespace simprop;
 
+double rate_cmb(double Gamma, double z = 0) {
+  const auto cmb = photonfields::CMB();
+  const auto sigma = xsecs::PhotoPionProduction();
+  const auto epsPrimeMin = 2. * Gamma * cmb.getMinPhotonEnergy();
+  const auto epsPrimeMax = 2. * Gamma * cmb.getMaxPhotonEnergy();
+
+  auto value = SI::cLight / 2. / pow2(Gamma);
+  value *= utils::simpsonIntegration<double>(
+      [Gamma, &cmb, &sigma](double logEpsPrime) {
+        auto epsPrime = std::exp(logEpsPrime);
+        return epsPrime * epsPrime * sigma.get(proton, epsPrime) *
+               cmb.I_gamma(epsPrime / 2. / Gamma);
+      },
+      std::log(epsPrimeMin), std::log(epsPrimeMax), 100);
+  return value;
+}
+
 int main() {
   try {
-    log::startup_information();
-    const auto losses = losses::BGG2002ContinuousLosses();
-    const auto energyAxis = utils::LogAxis(1e16 * SI::eV, 1e24 * SI::eV, 1000);
+    utils::startup_information();
+    auto cosmology = cosmo::Planck2018();
+    auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
+    auto losses = losses::BGG2002ContinuousLosses(cosmology);
+    auto energyAxis = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 500);
     utils::OutputFile out("test_losses.txt");
-    out() << std::scientific;
+    out << std::scientific;
     for (auto E : energyAxis) {
-      out() << E / SI::eV << "\t";
-      out() << losses.dlnGamma_dt_0(E, proton) << "\t";
-      out() << losses.dlnGamma_dz(0., E, proton) / cosmo::dtdz(0.) / (1. / SI::year) << "\n";
+      out << E / SI::eV << "\t";
+      out << SI::cLight / adiabatic.dlnE_dt(proton, E) / SI::Mpc << "\t";
+      out << SI::cLight / losses.dlnE_dt(proton, E) / SI::Mpc << "\t";
+      out << rate_cmb(E / SI::protonMassC2) / SI::Mpc << "\t";
+      out << "\n";
     }
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();

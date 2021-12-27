@@ -35,8 +35,6 @@ class Particle {
   }
 };
 
-using ParticleStack = std::vector<Particle>;
-
 }  // namespace simprop
 
 #endif

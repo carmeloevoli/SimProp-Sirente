@@ -4,26 +4,28 @@
 #include <cmath>
 #include <string>
 
-#include "simprop/photonFields/AbstractPhotonField.h"
+#include "simprop/photonFields/PhotonField.h"
 #include "simprop/units.h"
 
 namespace simprop {
-namespace photonfield {
+namespace photonfields {
 
-class CMB final : public AbstractPhotonField {
+class CMB final : public PhotonField {
  public:
   CMB(double T) : m_temperature(T) {
     m_ePhotonMin = 1e-10 * SI::eV;
     m_ePhotonMax = 1e-1 * SI::eV;
   }
+  CMB() {}
+
   double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
 
  protected:
-  double m_temperature = 1;
+  double m_temperature = 2.725 * SI::K;
 };
 
-}  // namespace photonfield
+}  // namespace photonfields
 }  // namespace simprop
 
 #endif

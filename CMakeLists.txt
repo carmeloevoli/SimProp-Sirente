@@ -81,21 +81,20 @@ message(STATUS "Simprop version: ${GIT_DESC} ${GIT_SHA1} ${GIT_REFSPEC}")
 include_directories(include ${SIMPROP_EXTRA_INCLUDES})
 
 add_library(simprop SHARED
-    src/common.cpp
-    src/cosmology.cpp
- 	src/params.cpp
-    src/pid.cpp
-    # src/simprop.cpp
-    # src/energyLosses/AdiabaticContinuousLosses.cpp
-    # src/energyLosses/BGG2002ContinuousLosses.cpp
-    # src/interactions/PhotoPionProduction.cpp
-    # src/interactions/PsbPhotoDisintegration.cpp
+    src/crossSections/PhotoPionProduction.cpp
+    src/energyLosses/AdiabaticContinuousLosses.cpp
+    src/energyLosses/BGG2002ContinuousLosses.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
 	src/utils/io.cpp
 	src/utils/logging.cpp
     src/utils/numeric.cpp
     src/utils/timer.cpp
+    src/common.cpp
+    src/cosmology.cpp
+ 	src/params.cpp
+ 	src/particleStack.cpp
+    src/pid.cpp
     "${git_revision_cpp}"
     )
     target_link_libraries(simprop ${SIMPROP_EXTRA_LIBRARIES})
@@ -126,14 +125,14 @@ target_link_libraries (print_cosmology simprop ${SIMPROP_EXTRA_LIBRARIES})
 add_executable(print_photons examples/printPhotonFields.cpp)
 target_link_libraries (print_photons simprop ${SIMPROP_EXTRA_LIBRARIES})
 
+add_executable(print_xsecs examples/printCrossSections.cpp)
+target_link_libraries (print_xsecs simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+add_executable(print_losses examples/printLosses.cpp)
+target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
+
 # add_executable(sandbox src/sandbox.cpp)
 # target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
-
-# add_executable(printLosses examples/printLosses.cpp)
-# target_link_libraries (printLosses simprop ${SIMPROP_EXTRA_LIBRARIES})
-
-# add_executable(printSigmas tests/printSigmas.cpp)
-# target_link_libraries (printSigmas SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
 # add_executable(printRates tests/printRates.cpp)
 # target_link_libraries (printRates SIMPROP_LIB ${SIMPROP_LIBRARIES})

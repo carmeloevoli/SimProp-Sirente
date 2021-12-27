@@ -5,7 +5,7 @@
 #include "simprop/utils/numeric.h"
 
 namespace simprop {
-namespace photonfield {
+namespace photonfields {
 
 Dominguez2011PhotonField::Dominguez2011PhotonField(size_t zSize, size_t eSize, std::string filename)
     : m_zSize(zSize), m_eSize(eSize), m_filename("data/" + filename) {
@@ -63,5 +63,5 @@ double Dominguez2011PhotonField::I_gamma(double ePhoton, double z) const {
   return 0;
 }
 
-}  // namespace photonfield
+}  // namespace photonfields
 }  // namespace simprop

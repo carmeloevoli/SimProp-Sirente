@@ -1,13 +1,13 @@
-#ifndef SIMPROP_PHOTONFIELDS_ABSTRACTPHOTONFIELD_H
-#define SIMPROP_PHOTONFIELDS_ABSTRACTPHOTONFIELD_H
+#ifndef SIMPROP_PHOTONFIELDS_PHOTONFIELD_H
+#define SIMPROP_PHOTONFIELDS_PHOTONFIELD_H
 
 namespace simprop {
-namespace photonfield {
+namespace photonfields {
 
-class AbstractPhotonField {
+class PhotonField {
  public:
-  AbstractPhotonField() {}
-  virtual ~AbstractPhotonField() = default;
+  PhotonField() {}
+  virtual ~PhotonField() = default;
 
   virtual double density(double ePhoton, double z = 0.) const = 0;
   virtual double I_gamma(double ePhoton, double z = 0.) const = 0;
@@ -20,7 +20,7 @@ class AbstractPhotonField {
   double m_ePhotonMax = 0.;
 };
 
-}  // namespace photonfield
+}  // namespace photonfields
 }  // namespace simprop
 
 #endif  // SIMPROP_PHOTONFIELDS_PHOTONFIELD_H

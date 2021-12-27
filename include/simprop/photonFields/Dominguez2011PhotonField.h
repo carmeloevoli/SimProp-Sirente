@@ -4,14 +4,13 @@
 #include <string>
 #include <vector>
 
-#include "simprop/photonFields/AbstractPhotonField.h"
+#include "simprop/photonFields/PhotonField.h"
 #include "simprop/units.h"
-//#include "simprop/utils/lookupTable.h"
 
 namespace simprop {
-namespace photonfield {
+namespace photonfields {
 
-class Dominguez2011PhotonField final : public AbstractPhotonField {
+class Dominguez2011PhotonField final : public PhotonField {
  protected:
   size_t m_zSize;
   size_t m_eSize;
@@ -22,8 +21,8 @@ class Dominguez2011PhotonField final : public AbstractPhotonField {
   std::vector<double> m_Igamma;
   //   utils::LookupTable<18, 50> m_field{"data/EBL_Dominguez2011.txt"};
   //   utils::LookupTable<18, 50> m_Igamma{"data/EBL_Igamma_Dominguez2011.txt"};
-  const double m_densityUnits = 1. / SI::eV / SI::m3;
   //   const double m_IgammaUnits = 1. / utils::pow<2>(SI::eV) / utils::pow<2>(SI::m3);
+  const double m_densityUnits = 1. / SI::eV / SI::m3;
 
  public:
   Dominguez2011PhotonField(size_t zSize, size_t eSize, std::string filename);
@@ -35,7 +34,7 @@ class Dominguez2011PhotonField final : public AbstractPhotonField {
   void loadDataFile();
 };
 
-}  // namespace photonfield
+}  // namespace photonfields
 }  // namespace simprop
 
 #endif
