@@ -1,6 +1,8 @@
 #ifndef SIMPROP_PARTICLE_H
 #define SIMPROP_PARTICLE_H
 
+#include <iomanip>
+
 #include "simprop/pid.h"
 #include "simprop/units.h"
 
@@ -31,7 +33,7 @@ class Particle {
     auto n = getPidName(p.m_pid);
     auto z = p.m_now.z;
     auto E = p.m_now.E / SI::eV;
-    return os << n << "\t" << std::scientific << z << "\t" << E;
+    return os << n << "   " << std::fixed << z << "   " << std::scientific << E;
   }
 };
 

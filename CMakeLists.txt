@@ -90,7 +90,7 @@ add_library(simprop SHARED
 	src/utils/logging.cpp
     src/utils/numeric.cpp
     src/utils/timer.cpp
-    src/common.cpp
+    #src/common.cpp
     src/cosmology.cpp
  	src/params.cpp
  	src/particleStack.cpp
@@ -130,6 +130,9 @@ target_link_libraries (print_xsecs simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 add_executable(print_losses examples/printLosses.cpp)
 target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+add_executable(print_initial examples/printInitialState.cpp)
+target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(sandbox src/sandbox.cpp)
 # target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})

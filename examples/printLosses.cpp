@@ -16,7 +16,7 @@ double rate_cmb(double Gamma, double z = 0) {
                cmb.I_gamma(epsPrime / 2. / Gamma);
       },
       std::log(epsPrimeMin), std::log(epsPrimeMax), 100);
-  return value;
+  return value;  // TODO FIX THIS
 }
 
 int main() {

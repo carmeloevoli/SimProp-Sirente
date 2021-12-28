@@ -16,7 +16,7 @@ class RNG {
 
   explicit RNG(const unsigned int seed) { eng = generator_type(seed); }
 
-  // generate next random value in distribution (equivalent to next() in above code)
+  // generate next random value in distribution
   result_type operator()() { return dist(eng); }
   // will always yield 0.0 for this class type
   constexpr result_type min() const { return dist.min(); }
