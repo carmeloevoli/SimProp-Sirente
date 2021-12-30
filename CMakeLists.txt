@@ -86,18 +86,24 @@ add_library(simprop SHARED
     src/energyLosses/BGG2002ContinuousLosses.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
-	src/utils/io.cpp
-	src/utils/logging.cpp
+	  src/utils/io.cpp
+	  src/utils/logging.cpp
     src/utils/numeric.cpp
     src/utils/timer.cpp
     #src/common.cpp
     src/cosmology.cpp
- 	src/params.cpp
- 	src/particleStack.cpp
+   	src/params.cpp
+ 	  src/particleStack.cpp
     src/pid.cpp
     "${git_revision_cpp}"
     )
     target_link_libraries(simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+# Documentation
+option(BUILD_DOC "Enable building documentation from the source code" ON)
+if(BUILD_DOC)
+  add_subdirectory ("doc")
+endif(BUILD_DOC)
 
 # make library
 #include_directories(include ${SIMPROP_INCLUDES})

@@ -16,13 +16,13 @@ class CMB final : public PhotonField {
     m_ePhotonMin = 1e-10 * SI::eV;
     m_ePhotonMax = 1e-1 * SI::eV;
   }
-  CMB() {}
+  CMB() : CMB(2.725 * SI::K) {}
 
   double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
 
  protected:
-  double m_temperature = 2.725 * SI::K;
+  double m_temperature;
 };
 
 }  // namespace photonfields

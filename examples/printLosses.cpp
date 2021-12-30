@@ -8,15 +8,15 @@ double rate_cmb(double Gamma, double z = 0) {
   const auto epsPrimeMin = 2. * Gamma * cmb.getMinPhotonEnergy();
   const auto epsPrimeMax = 2. * Gamma * cmb.getMaxPhotonEnergy();
 
-  auto value = SI::cLight / 2. / pow2(Gamma);
-  value *= utils::simpsonIntegration<double>(
+  auto value = 1. / 2. / pow2(Gamma);
+  auto I = utils::simpsonIntegration<double>(
       [Gamma, &cmb, &sigma](double logEpsPrime) {
         auto epsPrime = std::exp(logEpsPrime);
         return epsPrime * epsPrime * sigma.get(proton, epsPrime) *
                cmb.I_gamma(epsPrime / 2. / Gamma);
       },
       std::log(epsPrimeMin), std::log(epsPrimeMax), 100);
-  return value;  // TODO FIX THIS
+  return value * I;
 }
 
 int main() {
@@ -32,7 +32,7 @@ int main() {
       out << E / SI::eV << "\t";
       out << SI::cLight / adiabatic.dlnE_dt(proton, E) / SI::Mpc << "\t";
       out << SI::cLight / losses.dlnE_dt(proton, E) / SI::Mpc << "\t";
-      out << rate_cmb(E / SI::protonMassC2) / SI::Mpc << "\t";
+      out << SI::cLight / rate_cmb(E / SI::protonMassC2) / SI::Mpc << "\t";
       out << "\n";
     }
   } catch (const std::exception& e) {
