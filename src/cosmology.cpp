@@ -5,16 +5,17 @@
 namespace simprop {
 namespace cosmo {
 
-Cosmology::Cosmology(double tCmb, double h, double OmegaB_h2, double OmegaC_h2, double OmegaL) {
-  m_tCmb = tCmb;
-  m_h = h;
-  m_H0 = 100. * h * SI::km / SI::sec / SI::Mpc;
-  m_OmegaB = OmegaB_h2 / h / h;
-  m_OmegaC = OmegaC_h2 / h / h;
+Cosmology::Cosmology(double cmbTemperature, double littleh, double OmegaBaryon_h2,
+                     double OmegaDarkMatter_h2, double OmegaLambda) {
+  m_tCmb = cmbTemperature;
+  m_h = littleh;
+  m_H0 = 100. * m_h * SI::km / SI::sec / SI::Mpc;
+  m_OmegaB = OmegaBaryon_h2 / pow2(m_h);
+  m_OmegaC = OmegaDarkMatter_h2 / pow2(m_h);
   m_OmegaM = m_OmegaB + m_OmegaC;
-  m_OmegaL = OmegaL;
+  m_OmegaL = OmegaLambda;
   LOGD << "OmegaM + OmegaL = " << m_OmegaM + m_OmegaL;
-  LOGD << "1/H_0 = " << 1. / m_H0 / SI::Gyr << " Gyr";
+  LOGD << "H_0^-1 = " << 1. / m_H0 / SI::Gyr << " Gyr";
 }
 
 double Cosmology::H(double z) const {

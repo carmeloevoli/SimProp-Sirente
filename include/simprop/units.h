@@ -7,7 +7,6 @@
 #define pow3(A) (A * A * A)
 
 namespace SI {
-// from https://en.wikipedia.org/wiki/International_System_of_Units
 
 // SI  base units
 static constexpr double meter = 1;
