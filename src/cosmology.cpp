@@ -5,9 +5,8 @@
 namespace simprop {
 namespace cosmo {
 
-Cosmology::Cosmology(double cmbTemperature, double littleh, double OmegaBaryon_h2,
-                     double OmegaDarkMatter_h2, double OmegaLambda) {
-  m_tCmb = cmbTemperature;
+Cosmology::Cosmology(double littleh, double OmegaBaryon_h2, double OmegaDarkMatter_h2,
+                     double OmegaLambda) {
   m_h = littleh;
   m_H0 = 100. * m_h * SI::km / SI::sec / SI::Mpc;
   m_OmegaB = OmegaBaryon_h2 / pow2(m_h);
