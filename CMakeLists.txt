@@ -92,7 +92,7 @@ add_library(simprop SHARED
     src/utils/timer.cpp
     #src/common.cpp
     src/cosmology.cpp
-   	src/params.cpp
+   	#src/params.cpp
  	src/particleStack.cpp
     src/pid.cpp
     "${git_revision_cpp}"

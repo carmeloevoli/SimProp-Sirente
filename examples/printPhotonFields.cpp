@@ -10,8 +10,7 @@ std::pair<double, double> getDensities(const photonfields::CMB& cmb,
 int main() {
   try {
     utils::startup_information();
-    const auto T_CMB = cosmo::Planck2018().tCmb;
-    const auto cmb = photonfields::CMB(T_CMB);
+    const auto cmb = photonfields::CMB();
     const auto ebl = photonfields::Dominguez2011PhotonField();
     const auto ePhoton = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
     utils::OutputFile out("test_photonfields.txt");

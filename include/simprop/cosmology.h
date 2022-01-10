@@ -1,15 +1,15 @@
 #ifndef SIMPROP_COSMOLOGY_COSMOLOGY_H
 #define SIMPROP_COSMOLOGY_COSMOLOGY_H
 
+#include "simprop/units.h"
+
 namespace simprop {
 namespace cosmo {
-
-#include "simprop/units.h"
 
 class Cosmology {
  protected:
   double m_h = 0.7;
-  double m_H0 = 100. * m_h * SI::km / SI::sec / SI::Mpc;
+  double m_H0 = 70. * m_h * SI::km / SI::sec / SI::Mpc;
   double m_OmegaB = 0.;
   double m_OmegaC = 0.3;
   double m_OmegaM = m_OmegaC;

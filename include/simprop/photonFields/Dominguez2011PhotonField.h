@@ -29,6 +29,8 @@ class Dominguez2011PhotonField final : public PhotonField {
   Dominguez2011PhotonField();
   double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
+  double getMinPhotonEnergy(double z = 0) const override { return 0; }
+  double getMaxPhotonEnergy(double z = 0) const override { return 0; }
 
  protected:
   void loadDataFile();
