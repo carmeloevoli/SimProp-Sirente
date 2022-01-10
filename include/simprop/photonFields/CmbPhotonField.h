@@ -14,7 +14,7 @@ class CMB final : public PhotonField {
  public:
   CMB(double T) : m_temperature(T) {
     m_ePhotonMin = 1e-10 * SI::eV;
-    m_ePhotonMax = 1e-1 * SI::eV;
+    m_ePhotonMax = 0.1 * SI::eV;
   }
   CMB() : CMB(2.725 * SI::K) {}
 

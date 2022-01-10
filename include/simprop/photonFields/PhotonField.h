@@ -12,8 +12,8 @@ class PhotonField {
   virtual double density(double ePhoton, double z = 0.) const = 0;
   virtual double I_gamma(double ePhoton, double z = 0.) const = 0;
 
-  double getMinPhotonEnergy() const { return m_ePhotonMin; }
-  double getMaxPhotonEnergy() const { return m_ePhotonMax; }
+  virtual double getMinPhotonEnergy(double z = 0) const = 0;
+  virtual double getMaxPhotonEnergy(double z = 0) const = 0;
 
  protected:
   double m_ePhotonMin = 0.;
