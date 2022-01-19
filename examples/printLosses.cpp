@@ -9,11 +9,19 @@ int main() {
     auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
     auto losses = losses::BGG2002ContinuousLosses(cosmology);
 
-    std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
-        std::make_shared<photonfields::CMB>(),
-        std::make_shared<photonfields::Dominguez2011PhotonField>()};
+    // std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
+    //     std::make_shared<photonfields::CMB>(),
+    //     std::make_shared<photonfields::Dominguez2011PhotonField>()};
 
-    auto pair = losses::PairProductionLosses(cosmology, phFields);
+    // auto pair = losses::PairProductionLosses(cosmology, phFields);
+
+    std::vector<std::shared_ptr<photonfields::PhotonField> > cmb{
+        std::make_shared<photonfields::CMB>()};
+    auto pair_cmb = losses::PairProductionLosses(cosmology, cmb);
+
+    std::vector<std::shared_ptr<photonfields::PhotonField> > ebl{
+        std::make_shared<photonfields::Dominguez2011PhotonField>()};
+    auto pair_irb = losses::PairProductionLosses(cosmology, ebl);
 
     auto energyAxis = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 500);
     utils::OutputFile out("test_losses.txt");
@@ -23,7 +31,8 @@ int main() {
       auto Gamma = E / SI::protonMassC2;
       out << SI::cLight / adiabatic.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
       out << SI::cLight / losses.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
-      out << SI::cLight / pair.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
+      out << SI::cLight / pair_cmb.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
+      out << SI::cLight / pair_irb.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
       out << "\n";
     }
   } catch (const std::exception& e) {
