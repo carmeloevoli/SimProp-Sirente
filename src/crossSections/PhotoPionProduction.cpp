@@ -8,11 +8,15 @@
 namespace simprop {
 namespace xsecs {
 
-double PhotoPionProduction::get(PID pid, double photonEnergy) const {
-  constexpr double m_photonEnergyThreshold =
+double PhotoPionProduction::getThreshold() const {
+  constexpr double photonEnergyThreshold =
       SI::pionMassC2 + pow2(SI::pionMassC2) / (2 * SI::protonMassC2);
+  return photonEnergyThreshold;
+}
+
+double PhotoPionProduction::get(PID pid, double photonEnergy) const {
   double value = 0;
-  if (photonEnergy > m_photonEnergyThreshold) {
+  if (photonEnergy > getThreshold()) {
     auto loge = std::log10(photonEnergy / SI::eV);
     value = (loge < MAXLOGE) ? m_sigmas.spline(loge) : m_sigmas.spline(MAXLOGE);
   }
