@@ -6,6 +6,7 @@
 #include "simprop/crossSections/PhotoPionProduction.h"
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
 #include "simprop/energyLosses/BGG2002ContinuousLosses.h"
+#include "simprop/energyLosses/PairProductionLosses.h"
 // #include "simprop/params.h"
 #include "simprop/particle.h"
 #include "simprop/particleStack.h"
