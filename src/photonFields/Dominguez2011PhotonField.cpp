@@ -12,9 +12,9 @@ Dominguez2011PhotonField::Dominguez2011PhotonField(size_t zSize, size_t eSize, s
   auto fileSize = utils::countFileLines(m_filename);
   if (utils::fileExists(m_filename) && fileSize == (zSize * eSize)) {
     m_redshifts.reserve(zSize);
-    m_photonEnergies.reserve(eSize);
-    m_density.reserve(zSize * eSize);
-    m_Igamma.reserve(zSize * eSize);
+    m_logPhotonEnergies.reserve(eSize);
+    m_logDensity.reserve(zSize * eSize);
+    m_logIgamma.reserve(zSize * eSize);
     loadDataFile();
   } else {
     throw std::runtime_error("error reading from file : " + filename);
@@ -30,39 +30,37 @@ void Dominguez2011PhotonField::loadDataFile() {
   for (size_t i = 0; i < m_zSize; ++i) {
     for (size_t j = 0; j < m_eSize; ++j) {
       auto line = v.at(counter);
-      if (line.size() != 3) throw std::runtime_error("error in reading table values");
+      if (line.size() != 4) throw std::runtime_error("error in reading table values");
       if (j == 0) m_redshifts.emplace_back(line[0]);
-      if (i == 0) m_photonEnergies.emplace_back(line[1]);
-      m_density.emplace_back(line[2]);
-      m_Igamma.emplace_back(0.);  // TODO this
+      if (i == 0) m_logPhotonEnergies.emplace_back(line[1]);
+      m_logDensity.emplace_back(line[2]);
+      m_logIgamma.emplace_back(line[3]);
       counter++;
     }
   }
-  m_ePhotonMin = std::exp(m_photonEnergies.front()) * SI::eV;
-  m_ePhotonMax = std::exp(m_photonEnergies.back()) * SI::eV;
-  assert(m_redshifts.size() == m_zSize && m_photonEnergies.size() == m_eSize);
+  assert(m_redshifts.size() == m_zSize && m_logPhotonEnergies.size() == m_eSize);
 }
 
 double Dominguez2011PhotonField::density(double ePhoton, double z) const {
+  constexpr auto units = 1. / SI::eV / SI::m3;
   double value = 0;
   auto loge = std::log10(ePhoton / SI::eV);
-  if (utils::isInside(z, m_redshifts) && utils::isInside(loge, m_photonEnergies)) {
-    auto logDensity = utils::interpolate2d(z, loge, m_redshifts, m_photonEnergies, m_density);
-    value = std::pow(10., logDensity) * m_densityUnits;
+  if (utils::isInside(z, m_redshifts) && utils::isInside(loge, m_logPhotonEnergies)) {
+    auto logn = utils::interpolate2d(z, loge, m_redshifts, m_logPhotonEnergies, m_logDensity);
+    value = std::pow(10., logn) * units;
   }
   return value;
-};
+}
 
 double Dominguez2011PhotonField::I_gamma(double ePhoton, double z) const {
-  // const auto loge = std::log10(ePhoton / SI::eV);
-  // if (m_field.isWithinXRange(z) && m_field.isWithinYRange(loge)) {
-  //   const auto value = m_Igamma.get(z, loge);
-  //   const auto I = std::pow(10., value) * m_IgammaUnits;
-  //   return I;
-  // } else {
-  //   return 0;
-  // }
-  return 0;
+  constexpr auto units = 1. / pow2(SI::eV) / SI::m3;
+  double value = 0;
+  auto loge = std::log10(ePhoton / SI::eV);
+  if (utils::isInside(z, m_redshifts) && utils::isInside(loge, m_logPhotonEnergies)) {
+    auto logn = utils::interpolate2d(z, loge, m_redshifts, m_logPhotonEnergies, m_logIgamma);
+    value = std::pow(10., logn) * units;
+  }
+  return value;
 }
 
 }  // namespace photonfields

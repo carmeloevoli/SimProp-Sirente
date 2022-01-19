@@ -10,21 +10,23 @@
 namespace simprop {
 namespace photonfields {
 
+using PhotonEnergyRange = std::pair<double, double>;
+
 class CMB final : public PhotonField {
  public:
-  CMB(double T) : m_temperature(T) {
-    m_ePhotonMin = 1e-10 * SI::eV;
-    m_ePhotonMax = 0.1 * SI::eV;
-  }
+  CMB(double T)
+      : m_temperature(T),
+        m_epsRange({1e-5 * (T / SI::K) * SI::eV, 0.1 * (T / 2.725 / SI::K) * SI::eV}) {}
   CMB() : CMB(2.725 * SI::K) {}
 
   double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
-  double getMinPhotonEnergy(double z = 0) const override { return m_ePhotonMin; }
-  double getMaxPhotonEnergy(double z = 0) const override { return m_ePhotonMax; }
+  double getMinPhotonEnergy(double z = 0) const override { return m_epsRange.first; }
+  double getMaxPhotonEnergy(double z = 0) const override { return m_epsRange.second; }
 
  protected:
   double m_temperature;
+  PhotonEnergyRange m_epsRange{0., 0.};
 };
 
 }  // namespace photonfields

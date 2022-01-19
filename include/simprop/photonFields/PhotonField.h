@@ -14,10 +14,6 @@ class PhotonField {
 
   virtual double getMinPhotonEnergy(double z = 0) const = 0;
   virtual double getMaxPhotonEnergy(double z = 0) const = 0;
-
- protected:
-  double m_ePhotonMin = 0.;
-  double m_ePhotonMax = 0.;
 };
 
 }  // namespace photonfields
