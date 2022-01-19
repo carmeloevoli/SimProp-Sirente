@@ -11,15 +11,15 @@ namespace losses {
 
 class ContinuousLosses {
  public:
-  explicit ContinuousLosses(const cosmo::Cosmology& cosmology) : m_cosmology(cosmology) {}
+  explicit ContinuousLosses(const std::shared_ptr<cosmo::Cosmology>& cosmology)
+      : m_cosmology(cosmology) {}
   virtual ~ContinuousLosses() = default;
 
-  virtual double dlnE_dz(PID pid, double E, double z = 0) const = 0;
-  virtual double dlnE_dt(PID pid, double E, double z = 0) const = 0;
-  // virtual double evolve(double E_i, double z_i, double z_f, PID pid) const = 0;
+  virtual double dlnGamma_dz(PID pid, double Gamma, double z = 0) const = 0;
+  virtual double dlnGamma_dt(PID pid, double Gamma, double z = 0) const = 0;
 
  protected:
-  const cosmo::Cosmology& m_cosmology;
+  std::shared_ptr<cosmo::Cosmology> m_cosmology;
 };
 
 }  // namespace losses

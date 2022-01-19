@@ -3,14 +3,14 @@
 namespace simprop {
 namespace losses {
 
-double AdiabaticContinuousLosses::dlnE_dz(PID pid, double E, double z) const {
+double AdiabaticContinuousLosses::dlnGamma_dz(PID pid, double Gamma, double z) const {
   const auto b_a = 1. / (1. + z);
   return b_a;
 }
 
-double AdiabaticContinuousLosses::dlnE_dt(PID pid, double E, double z) const {
+double AdiabaticContinuousLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
   const auto b_a = 1. / (1. + z);
-  return b_a / m_cosmology.dtdz(z);
+  return b_a / m_cosmology->dtdz(z);
 }
 
 // double AdiabaticContinuousLosses::evolve(double E_i, double z_i, double z_f, PID pid) const {

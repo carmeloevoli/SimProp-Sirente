@@ -16,7 +16,8 @@ double BGG2002ContinuousLosses::getInterpolated(double E) const {
   return b_l;
 }
 
-double BGG2002ContinuousLosses::dlnE_dt(PID pid, double E, double z) const {
+double BGG2002ContinuousLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
+  const auto E = Gamma * SI::protonMassC2 * getNucleusMassNumber(pid);
   const auto redshiftedEnergy = E * (1. + z);
   double b_l = getInterpolated(redshiftedEnergy);
   if (b_l > 0.) {
@@ -28,9 +29,9 @@ double BGG2002ContinuousLosses::dlnE_dt(PID pid, double E, double z) const {
   return b_l;
 }
 
-double BGG2002ContinuousLosses::dlnE_dz(PID pid, double E, double z) const {
-  auto b_l = dlnE_dt(pid, E, z);
-  return (b_l > 0.) ? b_l * m_cosmology.dtdz(z) : 0.;
+double BGG2002ContinuousLosses::dlnGamma_dz(PID pid, double Gamma, double z) const {
+  auto b_l = dlnGamma_dt(pid, Gamma, z);
+  return (b_l > 0.) ? b_l * m_cosmology->dtdz(z) : 0.;
 }
 
 // double BGG2002ContinuousLosses::evolve(double E_i, double z_i, double z_f, PID pid) const {

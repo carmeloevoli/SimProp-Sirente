@@ -10,14 +10,12 @@ namespace losses {
 
 class AdiabaticContinuousLosses final : public ContinuousLosses {
  public:
-  explicit AdiabaticContinuousLosses(const cosmo::Cosmology& cosmology)
+  explicit AdiabaticContinuousLosses(const std::shared_ptr<cosmo::Cosmology>& cosmology)
       : ContinuousLosses(cosmology) {}
   virtual ~AdiabaticContinuousLosses() = default;
 
-  double dlnE_dz(PID pid, double E, double z = 0) const override;
-  double dlnE_dt(PID pid, double E, double z = 0) const override;
-  // double evolve(double E_i, double z_i, double z_f, PID pid) const override;
-  //  double evolve_rk4(double E_i, double z_i, double z_f, PID pid) const;
+  double dlnGamma_dz(PID pid, double Gamma, double z = 0) const override;
+  double dlnGamma_dt(PID pid, double Gamma, double z = 0) const override;
 };
 
 }  // namespace losses

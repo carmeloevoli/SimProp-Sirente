@@ -1,52 +1,70 @@
 #include "simprop/energyLosses/PairProductionLosses.h"
 
-#include <algorithm>
 #include <array>
+#include <cmath>
 
-#include "simprop/photonFields/CmbPhotonField.h"
 #include "simprop/utils/logging.h"
 #include "simprop/utils/numeric.h"
 
 namespace simprop {
 namespace losses {
 
+double sum_c(double k) {
+  static auto _c = std::array<double, 4>{0.8048, 0.1459, 1.137e-3, -3.879e-6};
+  double value = 0;
+  for (size_t i = 1; i <= 4; ++i) value += _c[i - 1] * std::pow(k - 2, (double)i);
+  return value;
+}
+
+double sum_d(double k) {
+  static auto _d = std::array<double, 4>{-86.07, 50.96, -14.45, 8 / 3.};
+  auto lnk = std::log(k);
+  double value = 0;
+  for (size_t i = 0; i <= 3; ++i) value += _d[i] * std::pow(lnk, (double)i);
+  return value;
+}
+
+double sum_f(double k) {
+  static auto _f = std::array<double, 3>{2.910, 78.35, 1837};
+  double value = 0;
+  for (size_t i = 1; i <= 3; ++i) value += _f[i - 1] / std::pow(k, (double)i);
+  return value;
+}
+
 double phi(double k) {
-  auto _c = std::array<double, 4>{0.8048, 0.1459, 1.137e-3, -3.879e-6};
-  auto _d = std::array<double, 4>{-86.07, 50.96, -14.45, 8 / 3.};
-  auto _f = std::array<double, 3>{2.910, 78.35, 1837};
-  if (k < 25) {
-    double value = 0;
-    for (size_t i = 1; i < 5; ++i) value += _c.at(i - 1) * std::pow(k - 2, (double)i);
-    return M_PI / 12. * pow4(k - 2) / (1. + value);
-  } else {
-    // double phi_ = 0;
-    // for (size_t i = 0; i < 4; ++i) phi_ += _d.at(i) * std::log(k, (double)i);
-    // phi_ *= k;
-    // double value = 0;
-    // for (size_t i = 1; i < 4; ++i) value += _f.at(i) * std::pow(k, -(double)i);
+  if (k < 2.)
     return 0;
+  else if (k < 25.) {
+    return M_PI / 12. * pow4(k - 2) / (1. + sum_c(k));
+  } else {
+    return (k * sum_d(k)) / (1. - sum_f(k));
   }
 }
 
-double PairProductionLosses::dlnE_dt(PID pid, double E, double z) const {
-  auto Gamma = getGamma(pid, E);
-  const auto cmb = photonfields::CMB();
-  const auto epsmin = cmb.getMinPhotonEnergy();
-  const auto epsmax = cmb.getMaxPhotonEnergy();
+double PairProductionLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
+  auto TwoGamma_mec2 = 2. * Gamma / SI::electronMassC2;
 
-  const auto lkmin = 0;  // std::log(std::max(2, 2 * Gamma * epsmin));
-  const auto lkmax = std::log(2 * Gamma * epsmax);
+  double I = 0;
 
-  auto I = utils::simpsonIntegration<double>(
-      [Gamma, &cmb](double logk) {
-        auto epsPrime = std::exp(logEpsPrime);
-        return epsPrime * epsPrime * sigma.get(proton, epsPrime) *
-               cmb.density(epsPrime / 2. / Gamma);
-      },
-      lkmin, lkmax, 100);
+  for (auto phField : m_photonFields) {
+    // const auto cmb = photonfields::CMB();
+    const auto epsmin = phField->getMinPhotonEnergy();
+    const auto epsmax = phField->getMaxPhotonEnergy();
 
-  const auto factor = SI::alpha * pow2(SI::electronRadius) * (SI::electronMass / SI::protonMass);
-  return factor;
+    const auto lkmin = std::log(TwoGamma_mec2 * epsmin);
+    const auto lkmax = std::log(TwoGamma_mec2 * epsmax);
+
+    I += utils::simpsonIntegration<double>(
+        [TwoGamma_mec2, phField](double lnk) {
+          auto k = std::exp(lnk);
+          return phi(k) / k * phField->density(k / TwoGamma_mec2);
+        },
+        lkmin, lkmax, 200);
+  }
+
+  constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::cLight * SI::electronMassC2 *
+                          (SI::electronMass / SI::protonMass);
+  return factor * I / Gamma;
 }
 
 //   const auto redshiftedEnergy = E * (1. + z);
@@ -59,9 +77,9 @@ double PairProductionLosses::dlnE_dt(PID pid, double E, double z) const {
 //   }
 // return 0;
 
-double PairProductionLosses::dlnE_dz(PID pid, double E, double z) const {
-  auto b_l = dlnE_dt(pid, E, z);
-  return (b_l > 0.) ? b_l * m_cosmology.dtdz(z) : 0.;
+double PairProductionLosses::dlnGamma_dz(PID pid, double Gamma, double z) const {
+  auto b_l = dlnGamma_dt(pid, Gamma, z);
+  return (b_l > 0.) ? b_l * m_cosmology->dtdz(z) : 0.;
 }
 
 }  // namespace losses
