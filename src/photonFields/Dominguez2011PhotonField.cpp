@@ -38,6 +38,8 @@ void Dominguez2011PhotonField::loadDataFile() {
       counter++;
     }
   }
+  m_ePhotonMin = std::exp(m_photonEnergies.front()) * SI::eV;
+  m_ePhotonMax = std::exp(m_photonEnergies.back()) * SI::eV;
   assert(m_redshifts.size() == m_zSize && m_photonEnergies.size() == m_eSize);
 }
 
