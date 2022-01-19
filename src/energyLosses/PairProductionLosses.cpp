@@ -41,19 +41,14 @@ double phi(double k) {
   }
 }
 
-double PairProductionLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
+double PairProductionLosses::dlnGamma_dt_0(double Gamma) const {
   auto TwoGamma_mec2 = 2. * Gamma / SI::electronMassC2;
-
   double I = 0;
-
   for (auto phField : m_photonFields) {
-    // const auto cmb = photonfields::CMB();
     const auto epsmin = phField->getMinPhotonEnergy();
     const auto epsmax = phField->getMaxPhotonEnergy();
-
     const auto lkmin = std::log(TwoGamma_mec2 * epsmin);
     const auto lkmax = std::log(TwoGamma_mec2 * epsmax);
-
     I += utils::simpsonIntegration<double>(
         [TwoGamma_mec2, phField](double lnk) {
           auto k = std::exp(lnk);
@@ -61,21 +56,18 @@ double PairProductionLosses::dlnGamma_dt(PID pid, double Gamma, double z) const 
         },
         lkmin, lkmax, 200);
   }
-
   constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::cLight * SI::electronMassC2 *
                           (SI::electronMass / SI::protonMass);
   return factor * I / Gamma;
 }
 
-//   const auto redshiftedEnergy = E * (1. + z);
-//   double b_l = getInterpolated(redshiftedEnergy);
-//   if (b_l > 0.) {
-//     b_l *= pow3(1. + z);
-//     const double Z = (double)getNucleusChargeNumber(pid);
-//     const double A = (double)getNucleusChargeNumber(pid);
-//     b_l *= pow2(Z) / A;
-//   }
-// return 0;
+double PairProductionLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
+  auto b_l = pow3(1. + z) * dlnGamma_dt_0(Gamma * (1. + z));
+  auto Z = (double)getNucleusChargeNumber(pid);
+  auto A = (double)getNucleusChargeNumber(pid);
+  b_l *= pow2(Z) / A;
+  return b_l;
+}
 
 double PairProductionLosses::dlnGamma_dz(PID pid, double Gamma, double z) const {
   auto b_l = dlnGamma_dt(pid, Gamma, z);
