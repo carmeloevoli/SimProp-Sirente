@@ -9,9 +9,10 @@ int main() {
     auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
     auto losses = losses::BGG2002ContinuousLosses(cosmology);
 
-    std::vector<std::shared_ptr<photonfields::PhotonField> > phFields;
-    std::shared_ptr<photonfields::PhotonField> cmb = std::make_shared<photonfields::CMB>();
-    phFields.push_back(cmb);
+    std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
+        std::make_shared<photonfields::CMB>(),
+        std::make_shared<photonfields::Dominguez2011PhotonField>()};
+
     auto pair = losses::PairProductionLosses(cosmology, phFields);
 
     auto energyAxis = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 500);
