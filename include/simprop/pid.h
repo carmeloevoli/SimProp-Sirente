@@ -13,6 +13,7 @@ bool isNucleus(const PID& pid);
 int getNucleusMassNumber(const PID& pid);
 int getNucleusChargeNumber(const PID& pid);
 std::string getPidName(const PID& pid);
+double getGamma(const PID& pid, double E);
 
 static const PID photon = PID(0);
 static const PID neutrino_e = PID(1);

@@ -5,6 +5,7 @@
 
 #define pow2(A) (A * A)
 #define pow3(A) (A * A * A)
+#define pow4(A) (A * A * A * A)
 
 namespace SI {
 
@@ -104,6 +105,7 @@ static constexpr double kBoltzmann = 1.3806488e-23 * joule / kelvin;
 static constexpr double electronRadius = 2.8179403227e-15 * meter;
 static constexpr double barn = 1e-28 * m2;
 static constexpr double mbarn = 1e-3 * barn;
+static constexpr double alpha = 7.297352e-3;
 
 }  // namespace SI
 
