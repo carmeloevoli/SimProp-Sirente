@@ -3,9 +3,9 @@
 
 #include <cmath>
 
-#define pow2(A) (A * A)
-#define pow3(A) (A * A * A)
-#define pow4(A) (A * A * A * A)
+#define pow2(A) ((A) * (A))
+#define pow3(A) ((A) * (A) * (A))
+#define pow4(A) ((A) * (A) * (A) * (A))
 
 namespace SI {
 
