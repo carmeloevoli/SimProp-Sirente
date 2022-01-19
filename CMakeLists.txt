@@ -84,6 +84,7 @@ add_library(simprop SHARED
     src/crossSections/PhotoPionProduction.cpp
     src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2002ContinuousLosses.cpp
+    src/energyLosses/PairProductionLosses.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
 	src/utils/io.cpp
