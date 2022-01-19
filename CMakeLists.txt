@@ -85,6 +85,8 @@ add_library(simprop SHARED
     src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2002ContinuousLosses.cpp
     src/energyLosses/PairProductionLosses.cpp
+    src/interactions/pppCmb.cpp
+    src/interactions/pppEbl.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
 	src/utils/io.cpp
@@ -138,8 +140,8 @@ target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 # add_executable(sandbox src/sandbox.cpp)
 # target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
-# add_executable(printRates tests/printRates.cpp)
-# target_link_libraries (printRates SIMPROP_LIB ${SIMPROP_LIBRARIES})
+add_executable(print_rates examples/printRates.cpp)
+target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # Show summary.
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
