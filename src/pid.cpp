@@ -3,6 +3,8 @@
 #include <map>
 #include <string>
 
+#include "simprop/units.h"
+
 namespace simprop {
 
 PID getPidNucleus(const int& Z, const int& A) {
@@ -98,6 +100,11 @@ std::string getPidName(const PID& pid) {
     return it->second;
   else
     throw std::invalid_argument("pid name not found");
+}
+
+double getGamma(const PID& pid, double E) {
+  auto A = (double)getNucleusMassNumber(pid);
+  return E / (A * SI::protonMassC2);
 }
 
 }  // namespace simprop
