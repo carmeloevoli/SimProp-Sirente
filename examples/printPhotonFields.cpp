@@ -11,7 +11,11 @@ int main() {
   try {
     utils::startup_information();
     const auto cmb = photonfields::CMB();
+    LOGD << "CMB photon range : " << cmb.getMinPhotonEnergy() / SI::eV << " "
+         << cmb.getMaxPhotonEnergy() / SI::eV;
     const auto ebl = photonfields::Dominguez2011PhotonField();
+    LOGD << "EBL photon range : " << ebl.getMinPhotonEnergy() / SI::eV << " "
+         << ebl.getMaxPhotonEnergy() / SI::eV;
     const auto ePhoton = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
     utils::OutputFile out("test_photonfields.txt");
     const auto units = SI::nW / pow2(SI::meter) / SI::sr / SI::cOver4pi;
