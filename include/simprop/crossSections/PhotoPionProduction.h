@@ -18,8 +18,9 @@ class PhotoPionProduction final : public CrossSection {
  public:
   PhotoPionProduction() {}
   virtual ~PhotoPionProduction() = default;
-  double get(PID pid, double photonEnergy) const override;
-  double getThreshold() const override;
+  double getAtEpsPrime(PID pid, double epsPrime) const override;
+  double getAtS(PID pid, double s) const override;
+  double getPhotonEnergyThreshold() const override;
 };
 
 }  // namespace xsecs

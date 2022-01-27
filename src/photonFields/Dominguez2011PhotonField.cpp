@@ -49,7 +49,7 @@ double Dominguez2011PhotonField::density(double ePhoton, double z) const {
     auto logn = utils::interpolate2d(z, loge, m_redshifts, m_logPhotonEnergies, m_logDensity);
     value = std::pow(10., logn) * units;
   }
-  return value;
+  return std::max(value, 0.);
 }
 
 double Dominguez2011PhotonField::I_gamma(double ePhoton, double z) const {

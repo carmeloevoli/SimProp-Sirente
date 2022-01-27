@@ -8,7 +8,7 @@ double CMB::density(double ePhoton, double z) const {
   if (ePhoton < m_epsRange.first || ePhoton > m_epsRange.second) return 0;
   const auto kT = SI::kBoltzmann * m_temperature;
   const auto density = factor * pow2(ePhoton) / std::expm1(ePhoton / kT);
-  return density;
+  return std::max(density, 0.);
 }
 
 double CMB::I_gamma(double ePhoton, double z) const {

@@ -2,11 +2,6 @@
 
 using namespace simprop;
 
-std::pair<double, double> getDensities(const photonfields::CMB& cmb,
-                                       const photonfields::PhotonField& ebl, double E, double z) {
-  return {cmb.density(E, z), ebl.density(E, z)};
-}
-
 int main() {
   try {
     utils::startup_information();
@@ -24,26 +19,17 @@ int main() {
     for (auto E : ePhoton) {
       out << E / SI::eV << "\t";
       out << energyToWavelenght(E) / SI::micron << "\t";
-      {
-        auto n = getDensities(cmb, ebl, E, 0.);
-        out << pow2(E) * n.first / units << "\t";
-        out << pow2(E) * n.second / units << "\t";
-      }
-      {
-        auto n = getDensities(cmb, ebl, E, 1.);
-        out << pow2(E) * n.first / units << "\t";
-        out << pow2(E) * n.second / units << "\t";
-      }
-      {
-        auto n = getDensities(cmb, ebl, E, 2.);
-        out << pow2(E) * n.first / units << "\t";
-        out << pow2(E) * n.second / units << "\t";
-      }
-      {
-        auto n = getDensities(cmb, ebl, E, 3.);
-        out << pow2(E) * n.first / units << "\t";
-        out << pow2(E) * n.second / units << "\t";
-      }
+      out << pow2(E) * cmb.density(E) / units << "\t";
+      out << pow2(E) * ebl.density(E, 0.) / units << "\t";
+      out << pow2(E) * ebl.density(E, 0.1) / units << "\t";
+      out << pow2(E) * ebl.density(E, 0.2) / units << "\t";
+      out << pow2(E) * ebl.density(E, 0.5) / units << "\t";
+      out << pow2(E) * ebl.density(E, 0.75) / units << "\t";
+      out << pow2(E) * ebl.density(E, 1.0) / units << "\t";
+      out << pow2(E) * ebl.density(E, 1.5) / units << "\t";
+      out << pow2(E) * ebl.density(E, 2.0) / units << "\t";
+      out << pow2(E) * ebl.density(E, 2.5) / units << "\t";
+      out << pow2(E) * ebl.density(E, 3.0) / units << "\t";
       out << "\n";
     }
   } catch (const std::exception& e) {

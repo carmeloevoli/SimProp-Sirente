@@ -7,7 +7,6 @@
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
 #include "simprop/energyLosses/BGG2002ContinuousLosses.h"
 #include "simprop/energyLosses/PairProductionLosses.h"
-#include "simprop/interactions/pppCmb.h"
 #include "simprop/interactions/pppEbl.h"
 // #include "simprop/params.h"
 #include "simprop/particle.h"

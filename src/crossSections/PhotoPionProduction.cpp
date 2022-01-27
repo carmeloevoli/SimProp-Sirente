@@ -3,24 +3,34 @@
 #include "simprop/units.h"
 #include "simprop/utils/numeric.h"
 
-#define MAXLOGE 18.0
+#define MAXLOGS 9.0
 
 namespace simprop {
 namespace xsecs {
 
-double PhotoPionProduction::getThreshold() const {
+double PhotoPionProduction::getPhotonEnergyThreshold() const {
   constexpr double photonEnergyThreshold =
       SI::pionMassC2 + pow2(SI::pionMassC2) / (2 * SI::protonMassC2);
   return photonEnergyThreshold;
 }
 
-double PhotoPionProduction::get(PID pid, double photonEnergy) const {
+double PhotoPionProduction::getAtS(PID pid, double s) const {
   double value = 0;
-  if (photonEnergy > getThreshold()) {
-    auto loge = std::log10(photonEnergy / SI::eV);
-    value = (loge < MAXLOGE) ? m_sigmas.spline(loge) : m_sigmas.spline(MAXLOGE);
+  constexpr auto sThreshold = pow2(SI::protonMassC2 + SI::pionMassC2);
+  if (s > sThreshold) {
+    auto logs = std::log10(s / pow2(SI::GeV));
+    value = (logs < MAXLOGS) ? m_sigmas.spline(logs) : m_sigmas.spline(MAXLOGS);
   }
-  return value * SI::mbarn;
+  return std::max(value, 0.) * SI::mbarn;
+}
+
+double PhotoPionProduction::getAtEpsPrime(PID pid, double epsPrime) const {
+  if (epsPrime > getPhotonEnergyThreshold()) {
+    auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
+    return getAtS(pid, s);
+  } else {
+    return 0;
+  }
 }
 
 }  // namespace xsecs
