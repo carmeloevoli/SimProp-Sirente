@@ -5,7 +5,7 @@ using namespace simprop;
 int main() {
   try {
     utils::startup_information();
-    auto sigmaPpp = xsecs::PhotoPionProduction();
+    auto sigmaPpp = xsecs::PhotoPionProductionXsec();
     {
       auto sAxis = utils::LogAxis(0.1 * pow2(SI::GeV), 1e11 * pow2(SI::GeV), 1000);
       utils::OutputFile out("test_xsecs.txt");

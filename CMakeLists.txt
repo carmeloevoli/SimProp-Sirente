@@ -81,11 +81,11 @@ message(STATUS "Simprop version: ${GIT_DESC} ${GIT_SHA1} ${GIT_REFSPEC}")
 include_directories(include ${SIMPROP_EXTRA_INCLUDES})
 
 add_library(simprop SHARED
-    src/crossSections/PhotoPionProduction.cpp
+    src/crossSections/PhotoPionProductionXsec.cpp
     src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2002ContinuousLosses.cpp
     src/energyLosses/PairProductionLosses.cpp
-    src/interactions/pppEbl.cpp
+    src/interactions/PhotoPionProduction.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
 	src/utils/io.cpp

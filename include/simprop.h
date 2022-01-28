@@ -3,11 +3,11 @@
 
 #include "simprop/common.h"
 #include "simprop/cosmology.h"
-#include "simprop/crossSections/PhotoPionProduction.h"
+#include "simprop/crossSections/PhotoPionProductionXsec.h"
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
 #include "simprop/energyLosses/BGG2002ContinuousLosses.h"
 #include "simprop/energyLosses/PairProductionLosses.h"
-#include "simprop/interactions/pppEbl.h"
+#include "simprop/interactions/PhotoPionProduction.h"
 // #include "simprop/params.h"
 #include "simprop/particle.h"
 #include "simprop/particleStack.h"

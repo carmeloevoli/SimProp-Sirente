@@ -9,9 +9,9 @@ int main() {
     const auto units = 1. / SI::Mpc;
     const auto cmb = std::make_shared<photonfields::CMB>();
     const auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
-    const auto sigma = std::make_shared<xsecs::PhotoPionProduction>();
-    const auto pppcmb = interactions::pppEbl(sigma, cmb);
-    const auto pppebl = interactions::pppEbl(sigma, ebl);
+    const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
+    const auto pppcmb = interactions::PhotoPionProduction(sigma, cmb);
+    const auto pppebl = interactions::PhotoPionProduction(sigma, ebl);
     utils::OutputFile out("test_rates.txt");
     out << std::scientific;
     for (auto Gamma : Gammas) {
