@@ -9,16 +9,19 @@
 namespace simprop {
 namespace interactions {
 
-class pppEbl final : public Interaction {
+class PhotoPionProduction final : public Interaction {
  protected:
   std::shared_ptr<photonfields::PhotonField> m_ebl;
 
  public:
-  pppEbl(const std::shared_ptr<xsecs::CrossSection>& sigma,
-         const std::shared_ptr<photonfields::PhotonField>& ebl)
+  PhotoPionProduction(const std::shared_ptr<xsecs::CrossSection>& sigma,
+                      const std::shared_ptr<photonfields::PhotonField>& ebl)
       : Interaction(sigma), m_ebl(ebl) {}
-  virtual ~pppEbl() = default;
+  virtual ~PhotoPionProduction() = default;
   double rate(PID pid, double Gamma, double z = 0) const override;
+
+ protected:
+  double computeRateComoving(PID pid, double Gamma, double z) const;
 };
 
 }  // namespace interactions

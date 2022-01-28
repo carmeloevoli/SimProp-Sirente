@@ -1,4 +1,4 @@
-#include "simprop/interactions/pppEbl.h"
+#include "simprop/interactions/PhotoPionProduction.h"
 
 #include <cmath>
 
@@ -8,10 +8,8 @@
 namespace simprop {
 namespace interactions {
 
-double pppEbl::rate(PID pid, double Gamma, double z) const {
+double PhotoPionProduction::computeRateComoving(PID pid, double Gamma, double z) const {
   auto value = SI::cLight / 2. / pow2(Gamma);
-
-  Gamma *= 1. + z;
 
   auto threshold = m_sigma->getPhotonEnergyThreshold();
   auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_ebl->getMinPhotonEnergy()));
@@ -25,7 +23,11 @@ double pppEbl::rate(PID pid, double Gamma, double z) const {
       },
       lnEpsPrimeMin, lnEpsPrimeMax, 300);
 
-  return pow3(1. + z) * std::max(value, 0.);
+  return std::max(value, 0.);
+}
+
+double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
+  return pow3(1. + z) * computeRateComoving(pid, Gamma * (1. + z), z);
 }
 
 }  // namespace interactions

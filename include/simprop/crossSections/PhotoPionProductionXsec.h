@@ -10,14 +10,14 @@
 namespace simprop {
 namespace xsecs {
 
-class PhotoPionProduction final : public CrossSection {
+class PhotoPionProductionXsec final : public CrossSection {
  protected:
   const std::string m_filename = "data/xsec_ppp.txt";
   utils::LookupArray<1000> m_sigmas{m_filename};
 
  public:
-  PhotoPionProduction() {}
-  virtual ~PhotoPionProduction() = default;
+  PhotoPionProductionXsec() {}
+  virtual ~PhotoPionProductionXsec() = default;
   double getAtEpsPrime(PID pid, double epsPrime) const override;
   double getAtS(PID pid, double s) const override;
   double getPhotonEnergyThreshold() const override;
