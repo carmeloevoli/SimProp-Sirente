@@ -34,7 +34,7 @@ ParticleStack::ParticleStack(PID pid, int nParticles, int seed)
     : m_pid(pid), m_size(nParticles), m_rng(RandomNumberGenerator(seed)) {}
 
 void ParticleStack::buildInitialStates(Range zRange, Range eRange, double slope) {
-  for (int i = 0; i < m_size; ++i) {
+  for (size_t i = 0; i < m_size; ++i) {
     auto z_i = getRndRedshift(zRange, 2, m_rng());
     auto E_i = getRndEnergy(eRange, slope, m_rng());
     m_particles.push_back(Particle{m_pid, z_i, E_i});
