@@ -1,7 +1,10 @@
 #ifndef SIMPROP_UTILS_GSL_H
 #define SIMPROP_UTILS_GSL_H
 
+#include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_roots.h>
 
 #include <cassert>
 #include <functional>
@@ -70,6 +73,40 @@ T simpsonIntegration(std::function<T(T)> f, T start, T stop, int N = 100) {
   }
 
   return h * (XI0 + 2 * XI2 + 4 * XI1) / 3.0;
+}
+
+template <typename T>
+T rootFinding(std::function<T(T)> f, T xLower, T xUpper, int maxIter, double relError = 1e-4) {
+  int status;
+  int iter = 0;
+  const gsl_root_fsolver_type *solverType;
+  gsl_root_fsolver *solver;
+
+  T r = 0;
+
+  gsl_function F;
+  F.function = [](double x, void *vf) -> double {
+    auto &func = *static_cast<std::function<double(double)> *>(vf);
+    return func(x);
+  };
+  F.params = &f;
+
+  solverType = gsl_root_fsolver_brent;
+  solver = gsl_root_fsolver_alloc(solverType);
+  gsl_root_fsolver_set(solver, &F, xLower, xUpper);
+
+  do {
+    iter++;
+    status = gsl_root_fsolver_iterate(solver);
+    r = (T)gsl_root_fsolver_root(solver);
+    xLower = gsl_root_fsolver_x_lower(solver);
+    xUpper = gsl_root_fsolver_x_upper(solver);
+    status = gsl_root_test_interval(xLower, xUpper, 0, relError);
+  } while (status == GSL_CONTINUE && iter < maxIter);
+
+  gsl_root_fsolver_free(solver);
+
+  return r;
 }
 
 }  // namespace utils

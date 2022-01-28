@@ -22,6 +22,7 @@ class PhotoPionProduction final : public Interaction {
 
  protected:
   double computeRateComoving(PID pid, double Gamma, double z) const;
+  double sampleS(double r, double sMax) const;
 };
 
 }  // namespace interactions
