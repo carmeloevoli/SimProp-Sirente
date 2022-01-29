@@ -76,7 +76,7 @@ T simpsonIntegration(std::function<T(T)> f, T start, T stop, int N = 100) {
 }
 
 template <typename T>
-T rootFinding(std::function<T(T)> f, T xLower, T xUpper, int maxIter, double relError = 1e-4) {
+T rootFinder(std::function<T(T)> f, T xLower, T xUpper, int maxIter, double relError = 1e-4) {
   int status;
   int iter = 0;
   const gsl_root_fsolver_type *solverType;
