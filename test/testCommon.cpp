@@ -8,7 +8,7 @@ namespace simprop {
 TEST(Common, energyToFrequency) {
   double photonEnergy = SI::eV;
   double photonFrenquency = energyToFrequency(photonEnergy);
-  EXPECT_NEAR(photonFrenquency, 3.2548e39, 1e36);
+  EXPECT_NEAR(photonFrenquency, 2.418e14, 1e11);
 }
 
 int main(int argc, char **argv) {
