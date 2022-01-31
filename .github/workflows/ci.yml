@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -29,29 +29,24 @@ jobs:
       uses: actions/cache@v2
       with:
         path: |
-          $HOME/hermes_cache
-        key: 'hermes-data'
+          $HOME/simprop_cache
+        key: 'simprop-data'
     
     - name: Install dependencies on Ubuntu
       if: ${{ contains(env.OS, 'ubuntu') }}
-      run: sudo apt-get install -y libgsl-dev libfftw3-dev libcfitsio-dev libmuparser-dev
+      run: sudo apt-get install -y libgsl-dev
       
     - name: Install dependencies on MacOS
       if: ${{ contains(env.OS, 'macos') }}
       run: |
-         HOMEBREW_NO_AUTO_UPDATE=1 brew install python3;
          HOMEBREW_NO_AUTO_UPDATE=1 brew install gsl;
-         HOMEBREW_NO_AUTO_UPDATE=1 brew install cfitsio;
          HOMEBREW_NO_AUTO_UPDATE=1 brew install gcc;
-         HOMEBREW_NO_AUTO_UPDATE=1 brew install jq;
          HOMEBREW_NO_AUTO_UPDATE=1 brew link --overwrite gcc;
-         HOMEBREW_NO_AUTO_UPDATE=1 brew link --overwrite python;
 
     - name: Configure paths on MacOS
       if: ${{ contains(env.OS, 'macos') }}
       run: |
          GCC_BREW_PATH=$(brew --cellar gcc)/$(brew info --json gcc | jq -r '.[0].installed[0].version');
-         PYTHON_BREW_PATH=$(brew --cellar python)/$(brew info --json python | jq -r '.[0].installed[0].version');
 
     - name: Configure CMake with Clang
       if: ${{ contains(env.COMPILER, 'clang') }}
@@ -61,13 +56,7 @@ jobs:
         CXX_COMPILER: 'clang++'
         C_COMPILER: 'clang'
       run: |
-        DATAFILE=$HOME/hermes_cache/hermes-data.tar.gz
-        if [ -f $DATAFILE ]; then
-          echo "Using data file from cache!"
-          cp $DATAFILE ${{github.workspace}}/build/
-        fi;
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_TESTING=On -DENABLE_PYTHON=True
-        cp ${{github.workspace}}/build/hermes-data.tar.gz $HOME/hermes_cache
 
     - name: Configure CMake with GCC
       if: ${{ contains(env.COMPILER, 'gcc') }}
@@ -77,13 +66,7 @@ jobs:
         CXX_COMPILER: 'g++'
         C_COMPILER: 'gcc'
       run: |
-        DATAFILE=$HOME/hermes_cache/hermes-data.tar.gz
-        if [ -f $DATAFILE ]; then
-          echo "Using data file from cache!"
-          cp $DATAFILE ${{github.workspace}}/build/
-        fi;
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_TESTING=On -DENABLE_PYTHON=True
-        cp ${{github.workspace}}/build/hermes-data.tar.gz $HOME/hermes_cache
         
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
