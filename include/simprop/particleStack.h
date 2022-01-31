@@ -4,7 +4,6 @@
 #include "simprop/particle.h"
 #include "simprop/utils/random.h"
 
-using RandomNumberGenerator = simprop::utils::RNG<double>;
 using Range = std::pair<double, double>;
 
 namespace simprop {

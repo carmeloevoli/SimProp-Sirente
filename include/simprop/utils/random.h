@@ -25,6 +25,8 @@ class RNG {
   // resets internal state such that next call to operator()
   // does not rely on previous call
   void reset_distribution_state() { dist.reset(); }
+  // uniform distribution
+  result_type uniform(double vMin, double vMax) { return dist(eng) * (vMax - vMin) + vMin; }
 
  private:
   generator_type eng;
@@ -32,6 +34,9 @@ class RNG {
 };
 
 }  // namespace utils
+
+using RandomNumberGenerator = simprop::utils::RNG<double>;
+
 }  // namespace simprop
 
 #endif  // SIMPROP_UTILS_RANDOM_H
