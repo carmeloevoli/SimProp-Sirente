@@ -19,7 +19,7 @@ double PhotoPionProductionXsec::getAtS(PID pid, double s) const {
   constexpr auto sThreshold = pow2(SI::protonMassC2 + SI::pionMassC2);
   if (s > sThreshold) {
     auto logs = std::log10(s / pow2(SI::GeV));
-    value = (logs < MAXLOGS) ? m_sigmas.spline(logs) : m_sigmas.spline(MAXLOGS);
+    value = (logs < MAXLOGS) ? m_sigmas.get(logs) : m_sigmas.get(MAXLOGS);
   }
   return std::max(value, 0.) * SI::mbarn;
 }
