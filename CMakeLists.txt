@@ -111,6 +111,10 @@ if(ENABLE_TESTING)
     add_executable(testCommon test/testCommon.cpp)
     target_link_libraries(testCommon simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
     add_test(testCommon testCommon)
+
+    add_executable(testRng test/testRng.cpp)
+    target_link_libraries(testRng simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(testRng testRng)
 endif(ENABLE_TESTING)
 
 # create the output dir
