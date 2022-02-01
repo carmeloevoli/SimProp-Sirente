@@ -6,6 +6,7 @@
 #include "simprop/interactions/Interaction.h"
 #include "simprop/photonFields/PhotonField.h"
 #include "simprop/units.h"
+#include "simprop/utils/random.h"
 
 namespace simprop {
 namespace interactions {
@@ -27,6 +28,8 @@ class PhotoPionProduction final : public Interaction {
 
   double computeRateComoving(PID pid, double Gamma, double z) const;  // TODO protected
   double phi(double s) const;
+
+  double samplePionEnergy(double E, double z, RandomNumberGenerator& rng) const;
 };
 
 }  // namespace interactions

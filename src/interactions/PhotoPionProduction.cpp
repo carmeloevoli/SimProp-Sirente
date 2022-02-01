@@ -63,5 +63,19 @@ double PhotoPionProduction::sample_eps(double r, double E, double z) const {
   return value;
 }
 
+double PhotoPionProduction::samplePionEnergy(double E, double z, RandomNumberGenerator& rng) const {
+  auto photonEnergy = sample_eps(rng(), E, z);
+  auto sMax = pow2(SI::protonMassC2) + 4. * E * photonEnergy;
+  auto s = sample_s(rng(), sMax);
+  auto sqrt_s = std::sqrt(s);
+  auto E_star = 0.5 * (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / sqrt_s;
+  auto p_star = 0.5 *
+                std::sqrt((s - pow2(SI::pionMassC2 + SI::protonMassC2)) *
+                          (s - pow2(SI::pionMassC2 - SI::protonMassC2))) /
+                sqrt_s;
+  auto mu_star = rng.uniform(-1, 1);
+  return E / sqrt_s * (E_star + p_star * mu_star);
+}
+
 }  // namespace interactions
 }  // namespace simprop
