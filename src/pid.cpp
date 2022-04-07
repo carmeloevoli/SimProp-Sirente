@@ -102,9 +102,4 @@ std::string getPidName(const PID& pid) {
     throw std::invalid_argument("pid name not found");
 }
 
-double getGamma(const PID& pid, double E) {
-  auto A = (double)getNucleusMassNumber(pid);
-  return E / (A * SI::protonMassC2);
-}
-
 }  // namespace simprop
