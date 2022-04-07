@@ -1,3 +1,4 @@
 build*/
 *.code-workspace
+scratch
 *.DS_Store
