@@ -10,6 +10,8 @@
 namespace simprop {
 namespace photonfields {
 
+enum EblModel { MEAN, UPPER, LOWER };
+
 class Dominguez2011PhotonField final : public PhotonField {
  protected:
   size_t m_zSize;
@@ -21,8 +23,9 @@ class Dominguez2011PhotonField final : public PhotonField {
   std::vector<double> m_logIgamma;
 
  public:
-  Dominguez2011PhotonField(size_t zSize, size_t eSize, std::string filename);
+  Dominguez2011PhotonField(EblModel model);
   Dominguez2011PhotonField();
+
   double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
   double getMinPhotonEnergy(double z = 0) const override {
@@ -33,6 +36,7 @@ class Dominguez2011PhotonField final : public PhotonField {
   }
 
  protected:
+  void loadPhotonField(size_t zSize, size_t eSize, std::string filename);
   void loadDataFile();
 };
 

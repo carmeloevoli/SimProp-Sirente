@@ -7,8 +7,10 @@
 namespace simprop {
 namespace photonfields {
 
-Dominguez2011PhotonField::Dominguez2011PhotonField(size_t zSize, size_t eSize, std::string filename)
-    : m_zSize(zSize), m_eSize(eSize), m_filename("data/" + filename) {
+void Dominguez2011PhotonField::loadPhotonField(size_t zSize, size_t eSize, std::string filename) {
+  m_zSize = zSize;
+  m_eSize = eSize;
+  m_filename = "data/" + filename;
   auto fileSize = utils::countFileLines(m_filename);
   if (utils::fileExists(m_filename) && fileSize == (zSize * eSize)) {
     m_redshifts.reserve(zSize);
@@ -21,8 +23,18 @@ Dominguez2011PhotonField::Dominguez2011PhotonField(size_t zSize, size_t eSize, s
   }
 }
 
-Dominguez2011PhotonField::Dominguez2011PhotonField()
-    : Dominguez2011PhotonField(18, 50, "EBL_Dominguez2011.txt") {}
+Dominguez2011PhotonField::Dominguez2011PhotonField() {
+  loadPhotonField(18, 50, "EBL_Dominguez2011.txt");
+}
+
+Dominguez2011PhotonField::Dominguez2011PhotonField(EblModel model) {
+  if (model == MEAN)
+    loadPhotonField(18, 50, "EBL_Dominguez2011.txt");
+  else if (model == UPPER)
+    loadPhotonField(18, 50, "EBL_upper_Dominguez2011.txt");
+  else
+    loadPhotonField(18, 50, "EBL_lower_Dominguez2011.txt");
+}
 
 void Dominguez2011PhotonField::loadDataFile() {
   auto v = utils::loadFileByRow(m_filename, ",");
