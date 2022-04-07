@@ -30,6 +30,7 @@ class ParticleStack {
   virtual ~ParticleStack() = default;
 
   void buildInitialStates(Range zRange, Range gammaRange, double slope);
+  void buildSingleParticleStack(double z, double Gamma);
   Range getRedshiftRange() const;
   Range getGammaRange() const;
 };

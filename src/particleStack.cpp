@@ -33,17 +33,21 @@ double getRndRedshift(std::pair<double, double> redshiftRange, int evolutionInde
 ParticleStack::ParticleStack(PID pid, int nParticles, int seed)
     : m_pid(pid), m_size(nParticles), m_rng(RandomNumberGenerator(seed)) {}
 
+void ParticleStack::buildSingleParticleStack(double z, double Gamma) {
+  m_particles.push_back(Particle{m_pid, z, Gamma});
+}
+
 void ParticleStack::buildInitialStates(Range zRange, Range gammaRange, double slope) {
   for (size_t i = 0; i < m_size; ++i) {
     auto z_i = getRndRedshift(zRange, 2, m_rng());
-    auto E_i = getRndGamma(gammaRange, slope, m_rng());
-    m_particles.push_back(Particle{m_pid, z_i, E_i});
+    auto Gamma_i = getRndGamma(gammaRange, slope, m_rng());
+    m_particles.push_back(Particle{m_pid, z_i, Gamma_i});
   }
   LOGD << "built primaries with size " << m_particles.size();
   auto z_r = getRedshiftRange();
   LOGD << "z range (" << z_r.first << "," << z_r.second << ")";
-  auto E_r = getGammaRange();
-  LOGD << "Gamma range (" << E_r.first << "," << E_r.second << ")";
+  auto G_r = getGammaRange();
+  LOGD << "Gamma range (" << G_r.first << "," << G_r.second << ")";
 }
 
 Range ParticleStack::getRedshiftRange() const {
