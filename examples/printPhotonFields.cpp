@@ -9,6 +9,8 @@ int main() {
     LOGD << "CMB photon range : " << cmb.getMinPhotonEnergy() / SI::eV << " "
          << cmb.getMaxPhotonEnergy() / SI::eV;
     const auto ebl = photonfields::Dominguez2011PhotonField();
+    const auto ebl_lo = photonfields::Dominguez2011PhotonField(photonfields::EblModel::LOWER);
+    const auto ebl_up = photonfields::Dominguez2011PhotonField(photonfields::EblModel::UPPER);
     LOGD << "EBL photon range : " << ebl.getMinPhotonEnergy() / SI::eV << " "
          << ebl.getMaxPhotonEnergy() / SI::eV;
     const auto ePhoton = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
@@ -21,6 +23,8 @@ int main() {
       out << energyToWavelenght(E) / SI::micron << "\t";
       out << pow2(E) * cmb.density(E) / units << "\t";
       out << pow2(E) * ebl.density(E, 0.) / units << "\t";
+      out << pow2(E) * ebl_lo.density(E, 0.) / units << "\t";
+      out << pow2(E) * ebl_up.density(E, 0.) / units << "\t";
       out << pow2(E) * ebl.density(E, 0.1) / units << "\t";
       out << pow2(E) * ebl.density(E, 0.2) / units << "\t";
       out << pow2(E) * ebl.density(E, 0.5) / units << "\t";

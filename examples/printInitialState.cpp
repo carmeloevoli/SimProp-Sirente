@@ -5,8 +5,8 @@ using namespace simprop;
 int main() {
   try {
     utils::startup_information();
-    auto particles = ParticleStack(proton, 10000, 333);
-    particles.buildInitialStates({0., 2.}, {1e17 * SI::eV, 1e21 * SI::eV}, 1.0);
+    auto particles = ParticleStack(proton, 1e6, 66);
+    particles.buildInitialStates({0., 2.}, {1e8, 1e12}, 1.0);
     utils::OutputFile out("test_initial.txt");
     out << "#\n";
     for (auto& p : particles) {

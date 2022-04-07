@@ -23,12 +23,12 @@ int main() {
         std::make_shared<photonfields::Dominguez2011PhotonField>()};
     auto pair_irb = losses::PairProductionLosses(cosmology, ebl);
 
-    auto energyAxis = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 500);
+    const auto gammaAxis = utils::LogAxis(1e8, 1e16, 8 * 32);
+
     utils::OutputFile out("test_losses.txt");
     out << std::scientific;
-    for (auto E : energyAxis) {
-      out << E / SI::eV << "\t";
-      auto Gamma = E / SI::protonMassC2;
+    for (auto Gamma : gammaAxis) {
+      out << Gamma << "\t";
       out << SI::cLight / adiabatic.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
       out << SI::cLight / losses.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
       out << SI::cLight / pair_cmb.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
