@@ -22,6 +22,8 @@ class PhotoPionProduction final : public Interaction {
       : Interaction(sigma), m_ebl(ebl) {}
   virtual ~PhotoPionProduction() = default;
   double rate(PID pid, double Gamma, double z = 0) const override;
+  double rateCrpropaComparison(PID pid, double Gamma, double z) const;
+
   double sample_s(double r, double sMax) const;
   double sample_eps(double r, double E, double z) const;
   double epsPdfIntegral(double photonEnergy, double E, double z) const;

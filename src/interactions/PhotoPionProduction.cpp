@@ -30,6 +30,10 @@ double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
   return pow3(1. + z) * computeRateComoving(pid, Gamma * (1. + z), z);
 }
 
+double PhotoPionProduction::rateCrpropaComparison(PID pid, double Gamma, double z) const {
+  return computeRateComoving(pid, Gamma, z);
+}
+
 double PhotoPionProduction::phi(double s) const {
   auto integrand = [&](double s) {
     return (s - pow2(SI::protonMassC2)) * m_sigma->getAtS(proton, s);
