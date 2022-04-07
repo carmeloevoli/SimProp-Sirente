@@ -41,7 +41,7 @@ double phi(double k) {
   }
 }
 
-double PairProductionLosses::dlnGamma_dt_0(double Gamma) const {
+double PairProductionLosses::dotGamma(double Gamma) const {
   auto TwoGamma_mec2 = 2. * Gamma / SI::electronMassC2;
   double I = 0;
   for (auto phField : m_photonFields) {
@@ -62,7 +62,7 @@ double PairProductionLosses::dlnGamma_dt_0(double Gamma) const {
 }
 
 double PairProductionLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
-  auto b_l = pow3(1. + z) * dlnGamma_dt_0(Gamma * (1. + z));
+  auto b_l = pow3(1. + z) * dotGamma(Gamma * (1. + z));
   auto Z = (double)getNucleusChargeNumber(pid);
   auto A = (double)getNucleusChargeNumber(pid);
   b_l *= pow2(Z) / A;

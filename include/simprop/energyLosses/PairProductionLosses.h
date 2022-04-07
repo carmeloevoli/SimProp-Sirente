@@ -27,7 +27,7 @@ class PairProductionLosses final : public ContinuousLosses {
   double dlnGamma_dz(PID pid, double Gamma, double z = 0) const override;
 
  protected:
-  double dlnGamma_dt_0(double Gamma) const;
+  double dotGamma(double Gamma) const;
 };
 
 }  // namespace losses
