@@ -11,7 +11,7 @@ namespace simprop {
 class Particle {
   struct State {
     double z;
-    double E;
+    double Gamma;
   };
 
  protected:
@@ -20,20 +20,24 @@ class Particle {
   State m_now;
 
  public:
-  Particle(PID pid, double z, double E) : m_pid(pid), m_origin({z, E}), m_now({z, E}) {}
+  Particle(PID pid, double z, double Gamma) : m_pid(pid), m_origin({z, Gamma}), m_now({z, Gamma}) {}
 
   const State getNow() const { return m_now; }
   State& getNow() { return m_now; }
 
   const double getRedshift() const { return m_now.z; }
-  const double getEnergy() const { return m_now.E; }
+  const double getGamma() const { return m_now.Gamma; }
+  const double getEnergy() const {
+    return m_now.Gamma * getNucleusMassNumber(m_pid) * SI::protonMassC2;
+  }
+
   const PID getPid() const { return m_pid; }
 
   friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
-    auto n = getPidName(p.m_pid);
+    auto pidName = getPidName(p.m_pid);
     auto z = p.m_now.z;
-    auto E = p.m_now.E / SI::eV;
-    return os << n << "   " << std::fixed << z << "   " << std::scientific << E;
+    auto Gamma = p.m_now.Gamma;
+    return os << pidName << " " << std::fixed << z << " " << std::scientific << Gamma;
   }
 };
 

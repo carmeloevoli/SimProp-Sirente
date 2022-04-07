@@ -29,9 +29,9 @@ class ParticleStack {
   explicit ParticleStack(PID pid, int nParticles, int seed = 1234);
   virtual ~ParticleStack() = default;
 
-  void buildInitialStates(Range zRange, Range eRange, double slope);
+  void buildInitialStates(Range zRange, Range gammaRange, double slope);
   Range getRedshiftRange() const;
-  Range getEnergyRange() const;
+  Range getGammaRange() const;
 };
 
 }  // namespace simprop
