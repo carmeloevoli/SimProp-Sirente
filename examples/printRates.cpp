@@ -19,8 +19,8 @@ void plot_rates() {
     out << Gamma << "\t";
     out << pppcmb->rate(proton, Gamma) / SI::cLight / units << "\t";
     out << pppebl->rate(proton, Gamma) / SI::cLight / units << "\t";
-    out << pppebl->rateCrpropaComparison(proton, Gamma, 1.0) / SI::cLight / units << "\t";
-    out << pppebl->rateCrpropaComparison(proton, Gamma, 2.0) / SI::cLight / units << "\t";
+    out << pppebl->computeRateComoving(proton, Gamma, 1.0) / SI::cLight / units << "\t";
+    out << pppebl->computeRateComoving(proton, Gamma, 2.0) / SI::cLight / units << "\t";
     out << "\n";
   }
 }

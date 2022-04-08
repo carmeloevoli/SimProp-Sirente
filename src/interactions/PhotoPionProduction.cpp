@@ -30,10 +30,6 @@ double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
   return pow3(1. + z) * computeRateComoving(pid, Gamma * (1. + z), z);
 }
 
-double PhotoPionProduction::rateCrpropaComparison(PID pid, double Gamma, double z) const {
-  return computeRateComoving(pid, Gamma, z);
-}
-
 double PhotoPionProduction::phi(double s) const {
   auto integrand = [&](double s) {
     return (s - pow2(SI::protonMassC2)) * m_sigma->getAtS(proton, s);
@@ -79,6 +75,11 @@ double PhotoPionProduction::samplePionEnergy(double E, double z, RandomNumberGen
                 sqrt_s;
   auto mu_star = rng.uniform(-1, 1);
   return E / sqrt_s * (E_star + p_star * mu_star);
+}
+
+std::vector<Particle> PhotoPionProduction::finalState(PID pid, double Gamma, double z) const {
+  auto p = Particle{pid, z, Gamma};
+  return {p};
 }
 
 }  // namespace interactions
