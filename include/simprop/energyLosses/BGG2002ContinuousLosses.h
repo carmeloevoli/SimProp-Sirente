@@ -15,12 +15,10 @@ class BGG2002ContinuousLosses final : public ContinuousLosses {
   utils::LookupArray<501> m_totalLosses{totalLossesFilename};
 
  public:
-  explicit BGG2002ContinuousLosses(const std::shared_ptr<cosmo::Cosmology>& cosmology)
-      : ContinuousLosses(cosmology) {}
+  explicit BGG2002ContinuousLosses() : ContinuousLosses() {}
   virtual ~BGG2002ContinuousLosses() = default;
 
   double dlnGamma_dt(PID pid, double Gamma, double z = 0) const override;
-  double dlnGamma_dz(PID pid, double Gamma, double z = 0) const override;
 
  protected:
   double getInterpolated(double E) const;

@@ -62,16 +62,11 @@ double PairProductionLosses::dotGamma(double Gamma) const {
 }
 
 double PairProductionLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
-  auto b_l = pow3(1. + z) * dotGamma(Gamma * (1. + z));
+  auto b_l = pow3(1. + z) * dotGamma(Gamma * (1. + z));  // TODO no EBL evolution?
   auto Z = (double)getNucleusChargeNumber(pid);
   auto A = (double)getNucleusChargeNumber(pid);
   b_l *= pow2(Z) / A;
-  return b_l;
-}
-
-double PairProductionLosses::dlnGamma_dz(PID pid, double Gamma, double z) const {
-  auto b_l = dlnGamma_dt(pid, Gamma, z);
-  return (b_l > 0.) ? b_l * m_cosmology->dtdz(z) : 0.;
+  return std::max(b_l, 0.);
 }
 
 }  // namespace losses

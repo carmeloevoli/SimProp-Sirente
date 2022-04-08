@@ -9,12 +9,14 @@ namespace simprop {
 namespace losses {
 
 class AdiabaticContinuousLosses final : public ContinuousLosses {
+ protected:
+  std::shared_ptr<cosmo::Cosmology> m_cosmology;
+
  public:
   explicit AdiabaticContinuousLosses(const std::shared_ptr<cosmo::Cosmology>& cosmology)
-      : ContinuousLosses(cosmology) {}
+      : ContinuousLosses(), m_cosmology(cosmology) {}
   virtual ~AdiabaticContinuousLosses() = default;
 
-  double dlnGamma_dz(PID pid, double Gamma, double z = 0) const override;
   double dlnGamma_dt(PID pid, double Gamma, double z = 0) const override;
 };
 

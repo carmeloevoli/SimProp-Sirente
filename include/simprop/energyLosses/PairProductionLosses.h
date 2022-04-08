@@ -12,19 +12,17 @@
 namespace simprop {
 namespace losses {
 
+using PhotonFields = std::vector<std::shared_ptr<photonfields::PhotonField>>;
+
 class PairProductionLosses final : public ContinuousLosses {
  protected:
-  std::vector<std::shared_ptr<photonfields::PhotonField>> m_photonFields;
+  PhotonFields m_photonFields;
 
  public:
-  explicit PairProductionLosses(
-      const std::shared_ptr<cosmo::Cosmology>& cosmology,
-      const std::vector<std::shared_ptr<photonfields::PhotonField>>& photonFields)
-      : ContinuousLosses(cosmology), m_photonFields(photonFields) {}
+  explicit PairProductionLosses(const PhotonFields& photonFields)
+      : ContinuousLosses(), m_photonFields(photonFields) {}
   virtual ~PairProductionLosses() = default;
-
   double dlnGamma_dt(PID pid, double Gamma, double z = 0) const override;
-  double dlnGamma_dz(PID pid, double Gamma, double z = 0) const override;
 
  protected:
   double dotGamma(double Gamma) const;

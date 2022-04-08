@@ -3,11 +3,6 @@
 namespace simprop {
 namespace losses {
 
-double AdiabaticContinuousLosses::dlnGamma_dz(PID pid, double Gamma, double z) const {
-  const auto b_a = 1. / (1. + z);
-  return b_a;
-}
-
 double AdiabaticContinuousLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
   const auto b_a = 1. / (1. + z);
   return b_a / m_cosmology->dtdz(z);

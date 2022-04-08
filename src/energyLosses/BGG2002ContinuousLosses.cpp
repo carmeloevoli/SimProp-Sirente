@@ -26,12 +26,7 @@ double BGG2002ContinuousLosses::dlnGamma_dt(PID pid, double Gamma, double z) con
     const double A = (double)getNucleusChargeNumber(pid);
     b_l *= pow2(Z) / A;
   }
-  return b_l;
-}
-
-double BGG2002ContinuousLosses::dlnGamma_dz(PID pid, double Gamma, double z) const {
-  auto b_l = dlnGamma_dt(pid, Gamma, z);
-  return (b_l > 0.) ? b_l * m_cosmology->dtdz(z) : 0.;
+  return std::max(b_l, 0.);
 }
 
 // double BGG2002ContinuousLosses::evolve(double E_i, double z_i, double z_f, PID pid) const {
