@@ -8,7 +8,7 @@
 namespace simprop {
 namespace interactions {
 
-double PhotoPionProduction::computeRateComoving(PID pid, double Gamma, double z) const {
+double PhotoPionProduction::computeRateComoving(double Gamma, double z) const {
   auto value = SI::cLight / 2. / pow2(Gamma);
 
   auto threshold = m_sigma->getPhotonEnergyThreshold();
@@ -27,7 +27,8 @@ double PhotoPionProduction::computeRateComoving(PID pid, double Gamma, double z)
 }
 
 double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
-  return pow3(1. + z) * computeRateComoving(pid, Gamma * (1. + z), z);
+  auto A = (double)getNucleusMassNumber(pid);
+  return pow3(1. + z) * A * computeRateComoving(Gamma * (1. + z), z);
 }
 
 double PhotoPionProduction::phi(double s) const {
@@ -55,17 +56,18 @@ double PhotoPionProduction::epsPdfIntegral(double photonEnergy, double E, double
   return value;
 }
 
-double PhotoPionProduction::sample_eps(double r, double E, double z) const {
-  auto rIntegralMax = r * epsPdfIntegral(m_ebl->getMaxPhotonEnergy(), E, z);
+double PhotoPionProduction::sample_eps(double r, double nucleonEnergy, double z) const {
+  auto rIntegralMax = r * epsPdfIntegral(m_ebl->getMaxPhotonEnergy(), nucleonEnergy, z);
   auto value = utils::rootFinder<double>(
-      [&](double eps) { return epsPdfIntegral(eps, E, z) - rIntegralMax; },
+      [&](double eps) { return epsPdfIntegral(eps, nucleonEnergy, z) - rIntegralMax; },
       m_ebl->getMinPhotonEnergy(), m_ebl->getMaxPhotonEnergy(), 1000, 1e-4);
   return value;
 }
 
-double PhotoPionProduction::samplePionEnergy(double E, double z, RandomNumberGenerator& rng) const {
-  auto photonEnergy = sample_eps(rng(), E, z);
-  auto sMax = pow2(SI::protonMassC2) + 4. * E * photonEnergy;
+double PhotoPionProduction::samplePionEnergy(double nucleonEnergy, double z,
+                                             RandomNumberGenerator& rng) const {
+  auto photonEnergy = sample_eps(rng(), nucleonEnergy, z);
+  auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
   auto s = sample_s(rng(), sMax);
   auto sqrt_s = std::sqrt(s);
   auto E_star = 0.5 * (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / sqrt_s;
@@ -74,7 +76,7 @@ double PhotoPionProduction::samplePionEnergy(double E, double z, RandomNumberGen
                           (s - pow2(SI::pionMassC2 - SI::protonMassC2))) /
                 sqrt_s;
   auto mu_star = rng.uniform(-1, 1);
-  return E / sqrt_s * (E_star + p_star * mu_star);
+  return nucleonEnergy / sqrt_s * (E_star + p_star * mu_star);
 }
 
 std::vector<Particle> PhotoPionProduction::finalState(PID pid, double Gamma, double z) const {
