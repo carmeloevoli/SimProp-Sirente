@@ -79,8 +79,12 @@ double PhotoPionProduction::samplePionEnergy(double nucleonEnergy, double z,
   return nucleonEnergy / sqrt_s * (E_star + p_star * mu_star);
 }
 
-std::vector<Particle> PhotoPionProduction::finalState(PID pid, double Gamma, double z) const {
-  auto p = Particle{pid, z, Gamma};
+std::vector<Particle> PhotoPionProduction::finalState(const Particle& particle) const {
+  // const auto pid = particle.getPid();
+  // if (pid == proton || pid == neutron) {
+  //   double a = 1;
+  // }
+  auto p = Particle{particle};
   return {p};
 }
 

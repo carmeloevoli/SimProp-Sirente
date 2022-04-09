@@ -22,8 +22,8 @@ double BGG2002ContinuousLosses::dlnGamma_dt(PID pid, double Gamma, double z) con
   double b_l = getInterpolated(redshiftedEnergy);
   if (b_l > 0.) {
     b_l *= pow3(1. + z);
-    const double Z = (double)getNucleusChargeNumber(pid);
-    const double A = (double)getNucleusChargeNumber(pid);
+    const double Z = (double)getNucleusCharge(pid);
+    const double A = (double)getNucleusCharge(pid);
     b_l *= pow2(Z) / A;
   }
   return std::max(b_l, 0.);

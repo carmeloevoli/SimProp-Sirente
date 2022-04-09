@@ -63,8 +63,8 @@ double PairProductionLosses::dotGamma(double Gamma) const {
 
 double PairProductionLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
   auto b_l = pow3(1. + z) * dotGamma(Gamma * (1. + z));  // TODO no EBL evolution?
-  auto Z = (double)getNucleusChargeNumber(pid);
-  auto A = (double)getNucleusChargeNumber(pid);
+  auto Z = (double)getNucleusCharge(pid);
+  auto A = (double)getNucleusCharge(pid);
   b_l *= pow2(Z) / A;
   return std::max(b_l, 0.);
 }

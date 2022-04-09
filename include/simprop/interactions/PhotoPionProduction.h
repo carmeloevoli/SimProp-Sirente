@@ -23,7 +23,7 @@ class PhotoPionProduction final : public Interaction {
   virtual ~PhotoPionProduction() = default;
   double rate(PID pid, double Gamma, double z = 0) const override;
   double computeRateComoving(double Gamma, double z) const;  // TODO to make protected
-  std::vector<Particle> finalState(PID pid, double Gamma, double z = 0) const override;
+  std::vector<Particle> finalState(const Particle& particle) const override;
 
   double sample_s(double r, double sMax) const;
   double sample_eps(double r, double nucleonEnergy, double z) const;
