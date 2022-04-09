@@ -37,7 +37,7 @@ void ParticleStack::buildSingleParticleStack(double z, double Gamma) {
   m_particles.push_back(Particle{m_pid, z, Gamma});
 }
 
-void ParticleStack::buildInitialStates(Range zRange, Range gammaRange, double slope) {
+void ParticleStack::buildMultipleParticleStack(Range zRange, Range gammaRange, double slope) {
   for (size_t i = 0; i < m_size; ++i) {
     auto z_i = getRndRedshift(zRange, 2, m_rng());
     auto Gamma_i = getRndGamma(gammaRange, slope, m_rng());
@@ -48,6 +48,13 @@ void ParticleStack::buildInitialStates(Range zRange, Range gammaRange, double sl
   LOGD << "z range (" << z_r.first << "," << z_r.second << ")";
   auto G_r = getGammaRange();
   LOGD << "Gamma range (" << G_r.first << "," << G_r.second << ")";
+}
+
+void ParticleStack::buildInitialState(Range zRange, Range gammaRange, double slope) {
+  if (m_size == 1)
+    buildSingleParticleStack(zRange.first, gammaRange.first);
+  else
+    buildMultipleParticleStack(zRange, gammaRange, slope);
 }
 
 Range ParticleStack::getRedshiftRange() const {

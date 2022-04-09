@@ -29,8 +29,10 @@ class ParticleStack {
   explicit ParticleStack(PID pid, int nParticles, int seed = 1234);
   virtual ~ParticleStack() = default;
 
-  void buildInitialStates(Range zRange, Range gammaRange, double slope);
+  void buildInitialState(Range zRange, Range gammaRange, double slope);
   void buildSingleParticleStack(double z, double Gamma);
+  void buildMultipleParticleStack(Range zRange, Range gammaRange, double slope);
+
   Range getRedshiftRange() const;
   Range getGammaRange() const;
 };
