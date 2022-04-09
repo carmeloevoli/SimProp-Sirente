@@ -105,18 +105,6 @@ add_library(simprop SHARED
 #include_directories(include ${SIMPROP_INCLUDES})
 #add_library(SIMPROP_LIB ${SIMPROP_SRCS} ${SIMPROP_INCLUDES})
 
-# testing
-if(ENABLE_TESTING)
-    enable_testing()
-    add_executable(testCommon test/testCommon.cpp)
-    target_link_libraries(testCommon simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
-    add_test(testCommon testCommon)
-
-    add_executable(testRng test/testRng.cpp)
-    target_link_libraries(testRng simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
-    add_test(testRng testRng)
-endif(ENABLE_TESTING)
-
 # create the output dir
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/output)
 
@@ -145,6 +133,22 @@ target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 add_executable(print_rates examples/printRates.cpp)
 target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+# testing
+if(ENABLE_TESTING)
+    enable_testing()
+    add_executable(testCommon test/testCommon.cpp)
+    target_link_libraries(testCommon simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(testCommon testCommon)
+
+    add_executable(testRng test/testRng.cpp)
+    target_link_libraries(testRng simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(testRng testRng)
+
+    add_executable(testPid test/testPid.cpp)
+    target_link_libraries(testPid simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(testPid testPid)
+endif(ENABLE_TESTING)
 
 # Show summary.
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")

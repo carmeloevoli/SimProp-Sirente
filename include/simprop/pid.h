@@ -11,7 +11,7 @@ enum class PID : long int {};
 PID getPidNucleus(const int& Z, const int& A);
 bool isNucleus(const PID& pid);
 int getNucleusMassNumber(const PID& pid);
-int getNucleusChargeNumber(const PID& pid);
+int getNucleusCharge(const PID& pid);
 std::string getPidName(const PID& pid);
 
 static const PID photon = PID(0);
@@ -19,8 +19,11 @@ static const PID neutrino_e = PID(1);
 static const PID antineutrino_e = PID(2);
 static const PID neutrino_mu = PID(3);
 static const PID antineutrino_mu = PID(4);
-static const PID electron = PID(5);
-static const PID positron = PID(6);
+static const PID pionNeutral = PID(5);
+static const PID pionPlus = PID(6);
+static const PID pionMinus = PID(7);
+static const PID electron = PID(8);
+static const PID positron = PID(9);
 
 static const PID neutron = getPidNucleus(0, 1);
 static const PID proton = getPidNucleus(1, 1);
