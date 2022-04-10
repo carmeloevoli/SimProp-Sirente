@@ -5,6 +5,7 @@
 
 #include "simprop/crossSections/CrossSection.h"
 #include "simprop/particle.h"
+#include "simprop/utils/random.h"
 
 namespace simprop {
 namespace interactions {
@@ -17,7 +18,9 @@ class Interaction {
   Interaction(const std::shared_ptr<xsecs::CrossSection>& sigma) : m_sigma(sigma) {}
   virtual ~Interaction() = default;
   virtual double rate(PID pid, double Gamma, double z = 0) const = 0;
-  virtual std::vector<Particle> finalState(const Particle& particle) const = 0;
+  virtual std::vector<Particle> finalState(const Particle& incomingParticle,
+                                           double interactionRedshift,
+                                           RandomNumberGenerator& rng) const = 0;
 };
 
 }  // namespace interactions

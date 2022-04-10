@@ -11,6 +11,17 @@
 namespace simprop {
 namespace interactions {
 
+struct RndUnifNumber {
+ public:
+  RndUnifNumber(double r) : m_r(r) {
+    if (r < 0. || r > 1.) throw std::invalid_argument("invalid random number");
+  }
+  double get() const { return m_r; };
+
+ protected:
+  double m_r;
+};
+
 class PhotoPionProduction final : public Interaction {
  protected:
   std::shared_ptr<photonfields::PhotonField> m_ebl;
@@ -23,12 +34,14 @@ class PhotoPionProduction final : public Interaction {
   virtual ~PhotoPionProduction() = default;
   double rate(PID pid, double Gamma, double z = 0) const override;
   double computeRateComoving(double Gamma, double z) const;  // TODO to make protected
-  std::vector<Particle> finalState(const Particle& particle) const override;
+  std::vector<Particle> finalState(const Particle& particle, double interactionRedshift,
+                                   RandomNumberGenerator& rng) const override;
 
-  double sample_s(double r, double sMax) const;
-  double sample_eps(double r, double nucleonEnergy, double z) const;
-  double samplePionEnergy(double nucleonEnergy, double z, RandomNumberGenerator& rng) const;
+  double sampleS(RndUnifNumber r, double sMax) const;
+  double sampleEps(RndUnifNumber r, double nucleonEnergy, double z) const;
+  double samplePionInelasticity(RndUnifNumber r, double s) const;
   double epsPdfIntegral(double photonEnergy, double nucleonEnergy, double z) const;
+  PID samplePionCharge(RndUnifNumber r, bool isNeutron) const;
 
  protected:
   double phi(double s) const;

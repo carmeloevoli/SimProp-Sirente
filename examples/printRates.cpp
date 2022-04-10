@@ -75,36 +75,36 @@ void plot_epsilon_pdf() {
 }
 
 void plot_pion_energies() {
-  const auto cmb = std::make_shared<photonfields::CMB>();
-  const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-  RandomNumberGenerator rng = utils::RNG<double>(1234);
-  const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
-  utils::OutputFile out("test_pionenergy_sample.txt");
-  const size_t N = 1000;
-  const double E18 = 1e18 * SI::eV;
-  const double E20 = 1e20 * SI::eV;
-  for (size_t i = 0; i < N; ++i) {
-    out << pppcmb->samplePionEnergy(E18, 0., rng) / E18 << " ";
-    out << pppcmb->samplePionEnergy(E20, 0., rng) / E20 << "\n";
-  }
+  // const auto cmb = std::make_shared<photonfields::CMB>();
+  // const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
+  // RandomNumberGenerator rng = utils::RNG<double>(1234);
+  // const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
+  // utils::OutputFile out("test_pionenergy_sample.txt");
+  // const size_t N = 1000;
+  // const double E18 = 1e18 * SI::eV;
+  // const double E20 = 1e20 * SI::eV;
+  // for (size_t i = 0; i < N; ++i) {
+  //   out << pppcmb->samplePionEnergy(E18, 0., rng) / E18 << " ";
+  //   out << pppcmb->samplePionEnergy(E20, 0., rng) / E20 << "\n";
+  // }
 }
 
 void plot_inelasticity() {
-  const auto cmb = std::make_shared<photonfields::CMB>();
-  const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-  RandomNumberGenerator rng = utils::RNG<double>(1234);
-  const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
-  utils::OutputFile out("test_inelasticity.txt");
-  const auto protonEnergies = utils::LogAxis(1e18 * SI::eV, 1e21 * SI::eV, 4 * 8);
-  const size_t N = 100;
-  for (auto& E : protonEnergies) {
-    double Y[N];
-    for (size_t i = 0; i < N; ++i) {
-      Y[i] = pppcmb->samplePionEnergy(E, 0., rng) / E;
-    }
-    out << E / SI::eV << " ";
-    out << gsl_stats_median(Y, 1, N) << " " << gsl_stats_sd(Y, 1, N) << "\n";
-  }
+  // const auto cmb = std::make_shared<photonfields::CMB>();
+  // const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
+  // RandomNumberGenerator rng = utils::RNG<double>(1234);
+  // const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
+  // utils::OutputFile out("test_inelasticity.txt");
+  // const auto protonEnergies = utils::LogAxis(1e18 * SI::eV, 1e21 * SI::eV, 4 * 8);
+  // const size_t N = 100;
+  // for (auto& E : protonEnergies) {
+  //   double Y[N];
+  //   for (size_t i = 0; i < N; ++i) {
+  //     Y[i] = pppcmb->samplePionEnergy(E, 0., rng) / E;
+  //   }
+  //   out << E / SI::eV << " ";
+  //   out << gsl_stats_median(Y, 1, N) << " " << gsl_stats_sd(Y, 1, N) << "\n";
+  // }
 }
 
 int main() {

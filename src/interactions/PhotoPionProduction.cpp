@@ -39,52 +39,70 @@ double PhotoPionProduction::phi(double s) const {
   return value;
 }
 
-double PhotoPionProduction::sample_s(double r, double sMax) const {
+double PhotoPionProduction::sampleS(RndUnifNumber r, double sMax) const {
   if (sMax <= m_sThreshold) return 0;
-  auto rPhiMax = r * phi(sMax);
+  auto rPhiMax = r.get() * phi(sMax);
   return utils::rootFinder<double>([&](double s) { return phi(s) - rPhiMax; }, m_sThreshold, sMax,
                                    1000, 1e-4);
 }
 
 double PhotoPionProduction::epsPdfIntegral(double photonEnergy, double E, double z) const {
   auto integrand = [&](double eps) {
-    auto s_max = pow2(SI::protonMassC2) + 4. * E * eps;
-    return m_ebl->density(eps) / pow2(eps) * phi(s_max);
+    const auto s_max = pow2(SI::protonMassC2) + 4. * E * eps;
+    return m_ebl->density(eps) / pow2(eps) * phi(s_max);  // TODO evolution in z?
   };
   auto value = utils::QAGIntegration<double>(integrand, m_ebl->getMinPhotonEnergy(), photonEnergy,
                                              1000, 0.5e-3);
   return value;
 }
 
-double PhotoPionProduction::sample_eps(double r, double nucleonEnergy, double z) const {
-  auto rIntegralMax = r * epsPdfIntegral(m_ebl->getMaxPhotonEnergy(), nucleonEnergy, z);
+double PhotoPionProduction::sampleEps(RndUnifNumber r, double nucleonEnergy, double z) const {
+  auto rIntegralMax = r.get() * epsPdfIntegral(m_ebl->getMaxPhotonEnergy(), nucleonEnergy, z);
   auto value = utils::rootFinder<double>(
       [&](double eps) { return epsPdfIntegral(eps, nucleonEnergy, z) - rIntegralMax; },
       m_ebl->getMinPhotonEnergy(), m_ebl->getMaxPhotonEnergy(), 1000, 1e-4);
   return value;
 }
 
-double PhotoPionProduction::samplePionEnergy(double nucleonEnergy, double z,
-                                             RandomNumberGenerator& rng) const {
-  auto photonEnergy = sample_eps(rng(), nucleonEnergy, z);
-  auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
-  auto s = sample_s(rng(), sMax);
+double PhotoPionProduction::samplePionInelasticity(RndUnifNumber r, double s) const {
+  // auto photonEnergy = sample_eps(rng(), nucleonEnergy, z);
+  // auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
+  // auto s = sample_s(rng(), sMax);
   auto sqrt_s = std::sqrt(s);
   auto E_star = 0.5 * (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / sqrt_s;
   auto p_star = 0.5 *
                 std::sqrt((s - pow2(SI::pionMassC2 + SI::protonMassC2)) *
                           (s - pow2(SI::pionMassC2 - SI::protonMassC2))) /
                 sqrt_s;
-  auto mu_star = rng.uniform(-1, 1);
-  return nucleonEnergy / sqrt_s * (E_star + p_star * mu_star);
+  auto mu_star = 2. * r.get() - 1.;
+  return 1. / sqrt_s * (E_star + p_star * mu_star);
 }
 
-std::vector<Particle> PhotoPionProduction::finalState(const Particle& particle) const {
-  // const auto pid = particle.getPid();
-  // if (pid == proton || pid == neutron) {
-  //   double a = 1;
-  // }
-  auto p = Particle{particle};
+PID PhotoPionProduction::samplePionCharge(RndUnifNumber r, bool isNeutron) const {
+  if (r.get() < 2. / 3.)
+    return pionNeutral;
+  else
+    return (isNeutron) ? pionMinus : pionPlus;
+}
+
+std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingParticle,
+                                                      double interactionRedshift,
+                                                      RandomNumberGenerator& rng) const {
+  const auto pid = incomingParticle.getPid();
+  if (pid == proton || pid == neutron) {
+    const auto nucleonEnergy = incomingParticle.getGamma() * SI::protonMassC2;
+    const auto photonEnergy =
+        sampleEps(rng(), nucleonEnergy, interactionRedshift);  // TODO incomplete
+    const auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
+    const auto s = sampleS((rng()), sMax);
+    const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;
+    const auto outPionCharge = samplePionCharge(rng(), pid == neutron);
+    const auto outNucleonEnergy = nucleonEnergy - outPionEnergy;
+    auto outPion = Particle(outPionCharge, interactionRedshift, outPionEnergy / SI::pionMassC2);
+    auto outNucleon = Particle(proton, interactionRedshift, outNucleonEnergy / SI::protonMassC2);
+    return {outNucleon, outPion};
+  }
+  auto p = Particle{incomingParticle};
   return {p};
 }
 
