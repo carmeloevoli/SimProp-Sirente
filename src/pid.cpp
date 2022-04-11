@@ -54,6 +54,19 @@ std::string getNucleusName(const PID& pid) {
     throw std::invalid_argument("pid name not found");
 }
 
+double getMassFromPid(const PID& pid) {
+  if (isNucleus(pid)) {
+    auto A = (double)getNucleusMassNumber(pid);
+    auto Z = (double)getNucleusCharge(pid);
+    return (A - Z) * SI::neutronMassC2 + Z * SI::protonMassC2;
+  } else if (pid == positron || pid == electron)
+    return SI::electronMassC2;
+  else if (pid == pionNeutral || pid == pionMinus || pid == pionPlus)
+    return SI::pionMassC2;
+  else
+    throw std::invalid_argument("mass not available for this pid");
+}
+
 std::string getPidName(const PID& pid) {
   if (pid == proton) return "proton";
   if (pid == neutron) return "neutron";

@@ -12,6 +12,7 @@ PID getPidNucleus(const int& Z, const int& A);
 bool isNucleus(const PID& pid);
 int getNucleusMassNumber(const PID& pid);
 int getNucleusCharge(const PID& pid);
+double getMassFromPid(const PID& pid);
 std::string getPidName(const PID& pid);
 
 static const PID photon = PID(0);
