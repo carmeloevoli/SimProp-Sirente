@@ -56,11 +56,11 @@ double PhotoPionProduction::epsPdfIntegral(double photonEnergy, double nucleonEn
                                            double z) const {
   auto integrand = [&](double eps) {
     const auto s_max = pow2(SI::protonMassC2) + 4. * nucleonEnergy * eps;
-    return m_phField->density(eps) / pow2(eps) * phi(s_max);  // TODO evolution in z?
+    return m_phField->density(eps / (1. + z), z) / pow2(eps) * phi(s_max);
   };
   auto minPhEnergy = pickMinPhotonEnergy(m_phField->getMinPhotonEnergy(), nucleonEnergy);
-  auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000,
-                                             1e-3);  // TODO why improve this?
+  auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000, 1e-3);
+  // TODO try to improve the precision
   return value;
 }
 
@@ -75,15 +75,11 @@ double PhotoPionProduction::sampleEps(RndUnifNumber r, double nucleonEnergy, dou
 }
 
 double PhotoPionProduction::samplePionInelasticity(RndUnifNumber r, double s) const {
-  // auto photonEnergy = sample_eps(rng(), nucleonEnergy, z);
-  // auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
-  // auto s = sample_s(rng(), sMax);
   auto sqrt_s = std::sqrt(s);
   auto E_star = 0.5 * (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / sqrt_s;
-  auto p_star = 0.5 *
-                std::sqrt((s - pow2(SI::pionMassC2 + SI::protonMassC2)) *
-                          (s - pow2(SI::pionMassC2 - SI::protonMassC2))) /
-                sqrt_s;
+  auto p_star = 0.5 / sqrt_s;
+  p_star *= std::sqrt((s - pow2(SI::pionMassC2 + SI::protonMassC2)) *
+                      (s - pow2(SI::pionMassC2 - SI::protonMassC2)));
   auto mu_star = 2. * r.get() - 1.;
   return 1. / sqrt_s * (E_star + p_star * mu_star);
 }
@@ -101,8 +97,7 @@ std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingPa
   const auto pid = incomingParticle.getPid();
   if (pid == proton || pid == neutron) {
     const auto nucleonEnergy = incomingParticle.getGamma() * SI::protonMassC2;
-    const auto photonEnergy =
-        sampleEps(rng(), nucleonEnergy, zInteractionPoint);  // TODO implement z-evolution
+    const auto photonEnergy = sampleEps(rng(), nucleonEnergy, zInteractionPoint);
     const auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
     const auto s = sampleS((rng()), sMax);
     const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;

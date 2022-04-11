@@ -27,9 +27,7 @@ class Particle {
 
   const double getRedshift() const { return m_now.z; }
   const double getGamma() const { return m_now.Gamma; }
-  const double getEnergy() const {
-    return m_now.Gamma * getNucleusMassNumber(m_pid) * SI::protonMassC2;
-  }
+  const double getEnergy() const { return m_now.Gamma * getMassFromPid(m_pid); }
 
   const PID getPid() const { return m_pid; }
 
