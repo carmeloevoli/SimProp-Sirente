@@ -12,14 +12,14 @@ double PhotoPionProduction::computeRateComoving(double Gamma, double z) const {
   auto value = SI::cLight / 2. / pow2(Gamma);
 
   auto threshold = m_sigma->getPhotonEnergyThreshold();
-  auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_ebl->getMinPhotonEnergy()));
-  auto lnEpsPrimeMax = std::log(2. * Gamma * m_ebl->getMaxPhotonEnergy());
+  auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_phField->getMinPhotonEnergy()));
+  auto lnEpsPrimeMax = std::log(2. * Gamma * m_phField->getMaxPhotonEnergy());
 
   value *= utils::simpsonIntegration<double>(
       [&](double logEpsPrime) {
         auto epsPrime = std::exp(logEpsPrime);
         return epsPrime * epsPrime * m_sigma->getAtEpsPrime(proton, epsPrime) *
-               m_ebl->I_gamma(epsPrime / 2. / Gamma, z);
+               m_phField->I_gamma(epsPrime / 2. / Gamma, z);
       },
       lnEpsPrimeMin, lnEpsPrimeMax, 300);
 
@@ -46,21 +46,31 @@ double PhotoPionProduction::sampleS(RndUnifNumber r, double sMax) const {
                                    1000, 1e-4);
 }
 
-double PhotoPionProduction::epsPdfIntegral(double photonEnergy, double E, double z) const {
+double pickMinPhotonEnergy(double minPhotonEnergy, double nucleonEnergy) {
+  const auto thresholdPhotonEnergy =
+      (pow2(SI::pionMassC2) + 2. * SI::pionMassC2 * SI::protonMassC2) / 4. / nucleonEnergy;
+  return std::max(minPhotonEnergy, thresholdPhotonEnergy);
+}
+
+double PhotoPionProduction::epsPdfIntegral(double photonEnergy, double nucleonEnergy,
+                                           double z) const {
   auto integrand = [&](double eps) {
-    const auto s_max = pow2(SI::protonMassC2) + 4. * E * eps;
-    return m_ebl->density(eps) / pow2(eps) * phi(s_max);  // TODO evolution in z?
+    const auto s_max = pow2(SI::protonMassC2) + 4. * nucleonEnergy * eps;
+    return m_phField->density(eps) / pow2(eps) * phi(s_max);  // TODO evolution in z?
   };
-  auto value = utils::QAGIntegration<double>(integrand, m_ebl->getMinPhotonEnergy(), photonEnergy,
-                                             1000, 0.5e-3);
+  auto minPhEnergy = pickMinPhotonEnergy(m_phField->getMinPhotonEnergy(), nucleonEnergy);
+  auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000,
+                                             1e-3);  // TODO why improve this?
   return value;
 }
 
 double PhotoPionProduction::sampleEps(RndUnifNumber r, double nucleonEnergy, double z) const {
-  auto rIntegralMax = r.get() * epsPdfIntegral(m_ebl->getMaxPhotonEnergy(), nucleonEnergy, z);
+  auto minPhEnergy = pickMinPhotonEnergy(m_phField->getMinPhotonEnergy(), nucleonEnergy);
+  auto maxPhotonEnergy = m_phField->getMaxPhotonEnergy();
+  auto rIntegralMax = r.get() * epsPdfIntegral(maxPhotonEnergy, nucleonEnergy, z);
   auto value = utils::rootFinder<double>(
-      [&](double eps) { return epsPdfIntegral(eps, nucleonEnergy, z) - rIntegralMax; },
-      m_ebl->getMinPhotonEnergy(), m_ebl->getMaxPhotonEnergy(), 1000, 1e-4);
+      [&](double eps) { return epsPdfIntegral(eps, nucleonEnergy, z) - rIntegralMax; }, minPhEnergy,
+      maxPhotonEnergy, 1000, 1e-3);
   return value;
 }
 
@@ -86,20 +96,20 @@ PID PhotoPionProduction::samplePionCharge(RndUnifNumber r, bool isNeutron) const
 }
 
 std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingParticle,
-                                                      double interactionRedshift,
+                                                      double zInteractionPoint,
                                                       RandomNumberGenerator& rng) const {
   const auto pid = incomingParticle.getPid();
   if (pid == proton || pid == neutron) {
     const auto nucleonEnergy = incomingParticle.getGamma() * SI::protonMassC2;
     const auto photonEnergy =
-        sampleEps(rng(), nucleonEnergy, interactionRedshift);  // TODO incomplete
+        sampleEps(rng(), nucleonEnergy, zInteractionPoint);  // TODO implement z-evolution
     const auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
     const auto s = sampleS((rng()), sMax);
     const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;
-    const auto outPionCharge = samplePionCharge(rng(), pid == neutron);
+    const auto outPionCharge = samplePionCharge(rng(), (pid == neutron));
     const auto outNucleonEnergy = nucleonEnergy - outPionEnergy;
-    auto outPion = Particle(outPionCharge, interactionRedshift, outPionEnergy / SI::pionMassC2);
-    auto outNucleon = Particle(proton, interactionRedshift, outNucleonEnergy / SI::protonMassC2);
+    auto outPion = Particle(outPionCharge, zInteractionPoint, outPionEnergy / SI::pionMassC2);
+    auto outNucleon = Particle(proton, zInteractionPoint, outNucleonEnergy / SI::protonMassC2);
     return {outNucleon, outPion};
   }
   auto p = Particle{incomingParticle};

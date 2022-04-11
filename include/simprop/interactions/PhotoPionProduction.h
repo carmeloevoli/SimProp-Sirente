@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "simprop/interactions/Interaction.h"
-#include "simprop/photonFields/PhotonField.h"
 #include "simprop/units.h"
 #include "simprop/utils/random.h"
 
@@ -24,17 +23,16 @@ struct RndUnifNumber {
 
 class PhotoPionProduction final : public Interaction {
  protected:
-  std::shared_ptr<photonfields::PhotonField> m_ebl;
   const double m_sThreshold = pow2(SI::protonMassC2 + SI::pionMassC2);
 
  public:
   PhotoPionProduction(const std::shared_ptr<xsecs::CrossSection>& sigma,
-                      const std::shared_ptr<photonfields::PhotonField>& ebl)
-      : Interaction(sigma), m_ebl(ebl) {}
+                      const std::shared_ptr<photonfields::PhotonField>& phField)
+      : Interaction(sigma, phField) {}
   virtual ~PhotoPionProduction() = default;
   double rate(PID pid, double Gamma, double z = 0) const override;
   double computeRateComoving(double Gamma, double z) const;  // TODO to make protected
-  std::vector<Particle> finalState(const Particle& particle, double interactionRedshift,
+  std::vector<Particle> finalState(const Particle& particle, double zInteractionPoint,
                                    RandomNumberGenerator& rng) const override;
 
   double sampleS(RndUnifNumber r, double sMax) const;
@@ -43,7 +41,7 @@ class PhotoPionProduction final : public Interaction {
   double epsPdfIntegral(double photonEnergy, double nucleonEnergy, double z) const;
   PID samplePionCharge(RndUnifNumber r, bool isNeutron) const;
 
- protected:
+  // protected:
   double phi(double s) const;
 };
 
