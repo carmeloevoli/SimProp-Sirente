@@ -1,6 +1,8 @@
 #ifndef SIMPROP_PARTICLESTACK_H
 #define SIMPROP_PARTICLESTACK_H
 
+#include <memory>
+
 #include "simprop/particle.h"
 #include "simprop/utils/random.h"
 
@@ -9,6 +11,7 @@ using Range = std::pair<double, double>;
 namespace simprop {
 
 class ParticleStack {
+ public:
   using stack = std::vector<Particle>;
   using iterator = typename stack::iterator;
   using const_iterator = typename stack::const_iterator;
@@ -16,8 +19,8 @@ class ParticleStack {
  protected:
   PID m_pid;
   size_t m_size;
-  RandomNumberGenerator m_rng = utils::RNG<double>(1234);
   stack m_particles;
+  RandomNumberGenerator& m_rng;
 
  public:
   iterator begin() { return m_particles.begin(); }
@@ -26,7 +29,7 @@ class ParticleStack {
   const_iterator end() const { return m_particles.end(); }
 
  public:
-  explicit ParticleStack(PID pid, int nParticles, int seed = 1234);
+  explicit ParticleStack(PID pid, int nParticles, RandomNumberGenerator& rng);
   virtual ~ParticleStack() = default;
 
   void buildInitialState(Range zRange, Range gammaRange, double slope);

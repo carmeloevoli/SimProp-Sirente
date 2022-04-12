@@ -30,8 +30,8 @@ double getRndRedshift(std::pair<double, double> redshiftRange, int evolutionInde
   return C - 1;
 }
 
-ParticleStack::ParticleStack(PID pid, int nParticles, int seed)
-    : m_pid(pid), m_size(nParticles), m_rng(RandomNumberGenerator(seed)) {}
+ParticleStack::ParticleStack(PID pid, int nParticles, RandomNumberGenerator& rng)
+    : m_pid(pid), m_size(nParticles), m_rng(rng) {}
 
 void ParticleStack::buildSingleParticleStack(double z, double Gamma) {
   m_particles.push_back(Particle{m_pid, z, Gamma});
