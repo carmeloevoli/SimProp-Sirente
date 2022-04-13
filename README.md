@@ -2,6 +2,7 @@
 
 [![Build Status](https://github.com/carmeloevoli/SimProp-beta/actions/workflows/ci.yml/badge.svg)](https://github.com/carmeloevoli/SimProp-beta/actions)
 ![GitHub](https://img.shields.io/github/license/carmeloevoli/SimProp-beta)
+[![Coverage Status](https://coveralls.io/repos/github/carmeloevoli/SimProp-beta/badge.svg?branch=main)](https://coveralls.io/github/carmeloevoli/SimProp-beta?branch=main)
 
 ## Install
 
