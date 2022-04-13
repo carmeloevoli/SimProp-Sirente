@@ -1,6 +1,9 @@
 #ifndef SIMPROP_PHOTONFIELDS_PHOTONFIELD_H
 #define SIMPROP_PHOTONFIELDS_PHOTONFIELD_H
 
+#include <memory>
+#include <vector>
+
 namespace simprop {
 namespace photonfields {
 
@@ -15,6 +18,8 @@ class PhotonField {
   virtual double getMinPhotonEnergy(double z = 0) const = 0;
   virtual double getMaxPhotonEnergy(double z = 0) const = 0;
 };
+
+using PhotonFields = std::vector<std::shared_ptr<photonfields::PhotonField>>;
 
 }  // namespace photonfields
 }  // namespace simprop
