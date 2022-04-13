@@ -21,7 +21,7 @@ int main() {
     RandomNumberGenerator rng = utils::RNG<double>(66);
 
     auto stack = ParticleStack(proton, 1, rng);
-    stack.buildSingleParticleStack(1., 1e12);
+    stack.buildSingleParticleStack(1., 1e10);
 
     auto cosmology = std::make_shared<cosmo::Planck2018>();
 
@@ -38,18 +38,19 @@ int main() {
     auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
 
     ParticleStack::iterator it = stack.begin();
-    utils::OutputFile out("test_proton_evolution_1e12.txt");
+    utils::OutputFile out("test_proton_evolution_1e10.txt");
 
     while (it != stack.end()) {
       const auto nowRedshift = it->getNow().z;
       const auto Gamma = it->getNow().Gamma;
       const auto dtdz = cosmology->dtdz(nowRedshift);
 
-      auto lambda_s = 1. / pppcmb->rate(it->getPid(), Gamma, nowRedshift) / dtdz;
+      auto lambda_s = std::fabs(1. / pppcmb->rate(it->getPid(), Gamma, nowRedshift) /
+                                dtdz);  // TODO check this fabs!
       auto dz_s = -lambda_s * std::log(1. - rng());
 
+      // std::cout << *it << " dz_s : " << dz_s << " lambda_s : " << lambda_s << "\n";
       assert(dz_s > 0.);
-      std::cout << *it << " dz_s : " << dz_s << "\n";
 
       auto dz_c = nowRedshift;
       double deltaGamma = 100.0;
@@ -64,7 +65,7 @@ int main() {
         }
         deltaGamma = dz_c / 6. * dtdz * (dlnGammaNow + 4. * dlnGammaHalf + dlnGammaNext);
       }
-      while (deltaGamma > 0.1) {
+      while (deltaGamma > 0.1) {  // TODO better a bisection method?
         dz_c *= 0.9;
         double dlnGammaNow = 0, dlnGammaHalf = 0, dlnGammaNext = 0;
         for (auto losses : continuousLosses) {
@@ -77,16 +78,39 @@ int main() {
         deltaGamma = dz_c / 6. * dtdz * (dlnGammaNow + 4. * dlnGammaHalf + dlnGammaNext);
       }
 
+      // std::cout << *it << " dz_c : " << dz_c << " z_now : " << nowRedshift << "\n";
       assert(dz_c > 0. && dz_c <= nowRedshift);
-      std::cout << *it << " dz_c : " << dz_c << "\n";
-
-      auto dz_min = std::min(dz_c, dz_s);
 
       if (dz_s > dz_c || dz_s > nowRedshift) {
-        std::cout << "only losses!\n";
+        const auto dz = dz_c;
+        const auto dt = dtdz * dz;
+        double dlnGammaNow = 0, dlnGammaHalf = 0, dlnGammaNext = 0;
+        for (auto losses : continuousLosses) {
+          dlnGammaNow += losses->dlnGamma_dt(it->getPid(), Gamma, nowRedshift);
+          auto halfRedshift = nowRedshift - 0.5 * dz_c;
+          dlnGammaHalf += losses->dlnGamma_dt(it->getPid(), Gamma, halfRedshift);
+          auto nextRedhisft = nowRedshift - dz_c;
+          dlnGammaNext += losses->dlnGamma_dt(it->getPid(), Gamma, nextRedhisft);
+        }
+        it->getNow().Gamma *= 1. - dt / 6. * (dlnGammaNow + 4. * dlnGammaHalf + dlnGammaNext);
+        it->getNow().z -= dz;
+        out << *it << " " << 0 << "\n";
       } else {
-        std::cout << "compute losses on dz_s\n";
-        std::cout << "perform an interaction\n";
+        const auto dz = dz_s;
+        const auto dt = dtdz * dz;
+        double dlnGammaNow = 0, dlnGammaHalf = 0, dlnGammaNext = 0;
+        for (auto losses : continuousLosses) {
+          dlnGammaNow += losses->dlnGamma_dt(it->getPid(), Gamma, nowRedshift);
+          auto halfRedshift = nowRedshift - 0.5 * dz_c;
+          dlnGammaHalf += losses->dlnGamma_dt(it->getPid(), Gamma, halfRedshift);
+          auto nextRedhisft = nowRedshift - dz_c;
+          dlnGammaNext += losses->dlnGamma_dt(it->getPid(), Gamma, nextRedhisft);
+        }
+        it->getNow().Gamma *= 1. - dt / 6. * (dlnGammaNow + 4. * dlnGammaHalf + dlnGammaNext);
+        it->getNow().z -= dz;
+        auto state = pppcmb->finalState(*it, nowRedshift - dz, rng);
+        it->getNow().Gamma = state.at(0).getGamma();
+        out << *it << " " << 1 << "\n";
       }
 
       //   const double dz = 0.01;
@@ -125,7 +149,7 @@ int main() {
       //   //   it->getNow().E =
       //   //       m_continuousLosses->evolve(nowEnergy, nowRedshift, nextRedshift, it->getPid());
       //   out << *it << "\n";
-      //   it = std::find_if(stack.begin(), stack.end(), isActive);
+      it = std::find_if(stack.begin(), stack.end(), isActive);
     }
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
