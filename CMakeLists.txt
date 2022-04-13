@@ -128,11 +128,15 @@ target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
 add_executable(print_initial examples/printInitialState.cpp)
 target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 
+add_executable(print_rates examples/printRates.cpp)
+target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+add_executable(evolve_protons examples/evolveProtons.cpp)
+target_link_libraries (evolve_protons simprop ${SIMPROP_EXTRA_LIBRARIES})
+
 # add_executable(sandbox src/sandbox.cpp)
 # target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
-add_executable(print_rates examples/printRates.cpp)
-target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # testing
 if(ENABLE_TESTING)
