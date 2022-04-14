@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(simprop CXX)
-set(SIMPROP_RELEASE_VERSION 3.0)
+set(VERSION 3.0)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
@@ -136,7 +136,6 @@ target_link_libraries (evolve_protons simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(sandbox src/sandbox.cpp)
 # target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
-
 
 # testing
 if(ENABLE_TESTING)
