@@ -10,8 +10,9 @@ class CrossSection {
  public:
   CrossSection() {}
   virtual ~CrossSection() = default;
-  virtual double getAtEpsPrime(PID pid, double epsPrime) const = 0;
-  virtual double getAtS(PID pid, double s) const = 0;
+  virtual double getAtEpsPrime(double epsPrime) const = 0;
+  virtual double getAtS(double s) const = 0;
+  virtual double getPhiAtS(double s) const = 0;
   virtual double getPhotonEnergyThreshold() const = 0;
 };
 

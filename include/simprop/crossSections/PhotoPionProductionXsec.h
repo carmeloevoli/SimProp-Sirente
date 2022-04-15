@@ -13,14 +13,21 @@ namespace xsecs {
 class PhotoPionProductionXsec final : public CrossSection {
  protected:
   const std::string m_filename = "data/xsec_ppp.txt";
-  utils::LookupArray<1000> m_sigmas{m_filename};
+  size_t m_sSize = 9999;
+  std::vector<double> m_sEnergies;
+  std::vector<double> m_sigma;
+  std::vector<double> m_phi;
 
  public:
-  PhotoPionProductionXsec() {}
+  PhotoPionProductionXsec();
   virtual ~PhotoPionProductionXsec() = default;
-  double getAtEpsPrime(PID pid, double epsPrime) const override;
-  double getAtS(PID pid, double s) const override;
+  double getAtEpsPrime(double epsPrime) const override;
+  double getAtS(double s) const override;
+  double getPhiAtS(double s) const override;
   double getPhotonEnergyThreshold() const override;
+
+ protected:
+  void loadDataFile();
 };
 
 }  // namespace xsecs

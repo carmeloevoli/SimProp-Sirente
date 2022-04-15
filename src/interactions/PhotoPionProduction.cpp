@@ -18,7 +18,7 @@ double PhotoPionProduction::computeRateComoving(double Gamma, double z) const {
   value *= utils::simpsonIntegration<double>(
       [&](double logEpsPrime) {
         auto epsPrime = std::exp(logEpsPrime);
-        return epsPrime * epsPrime * m_sigma->getAtEpsPrime(proton, epsPrime) *
+        return epsPrime * epsPrime * m_sigma->getAtEpsPrime(epsPrime) *
                m_phField->I_gamma(epsPrime / 2. / Gamma, z);
       },
       lnEpsPrimeMin, lnEpsPrimeMax, 300);
@@ -31,19 +31,17 @@ double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
   return pow3(1. + z) * A * computeRateComoving(Gamma * (1. + z), z);
 }
 
-double PhotoPionProduction::phi(double s) const {
-  auto integrand = [&](double s) {
-    return (s - pow2(SI::protonMassC2)) * m_sigma->getAtS(proton, s);
-  };
-  auto value = utils::QAGIntegration<double>(integrand, m_sThreshold, s, 1000, 0.5e-3);
-  return value;
-}
+// double PhotoPionProduction::phi(double s) const {
+//   auto integrand = [&](double s) { return (s - pow2(SI::protonMassC2)) * m_sigma->getAtS(s); };
+//   auto value = utils::QAGIntegration<double>(integrand, m_sThreshold, s, 1000, 0.5e-3);
+//   return value;
+// }
 
 double PhotoPionProduction::sampleS(RndUnifNumber r, double sMax) const {
   if (sMax <= m_sThreshold) return 0;
-  auto rPhiMax = r.get() * phi(sMax);
-  return utils::rootFinder<double>([&](double s) { return phi(s) - rPhiMax; }, m_sThreshold, sMax,
-                                   1000, 1e-4);
+  auto rPhiMax = r.get() * m_sigma->getPhiAtS(sMax);
+  return utils::rootFinder<double>([&](double s) { return m_sigma->getPhiAtS(s) - rPhiMax; },
+                                   m_sThreshold, sMax, 1000, 1e-4);
 }
 
 double pickMinPhotonEnergy(double minPhotonEnergy, double nucleonEnergy) {
@@ -56,7 +54,7 @@ double PhotoPionProduction::epsPdfIntegral(double photonEnergy, double nucleonEn
                                            double z) const {
   auto integrand = [&](double eps) {
     const auto s_max = pow2(SI::protonMassC2) + 4. * nucleonEnergy * eps;
-    return m_phField->density(eps / (1. + z), z) / pow2(eps) * phi(s_max);
+    return m_phField->density(eps / (1. + z), z) / pow2(eps) * m_sigma->getPhiAtS(s_max);
   };
   auto minPhEnergy = pickMinPhotonEnergy(m_phField->getMinPhotonEnergy(), nucleonEnergy);
   auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000, 1e-3);

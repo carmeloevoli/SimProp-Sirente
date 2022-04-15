@@ -42,7 +42,7 @@ class PhotoPionProduction final : public Interaction {
   PID samplePionCharge(RndUnifNumber r, bool isNeutron) const;
 
   // protected:
-  double phi(double s) const;
+  // double phi(double s) const;
 };
 
 }  // namespace interactions
