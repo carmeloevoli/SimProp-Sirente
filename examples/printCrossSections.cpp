@@ -7,23 +7,23 @@ int main() {
     utils::startup_information();
     auto sigmaPpp = xsecs::PhotoPionProductionXsec();
     {
-      auto sAxis = utils::LogAxis(0.1 * pow2(SI::GeV), 1e11 * pow2(SI::GeV), 1000);
+      auto sAxis = utils::LogAxis(0.1 * pow2(SI::GeV), 1e11 * pow2(SI::GeV), 10000);
       utils::OutputFile out("test_xsecs.txt");
       out << "#\n";
       out << std::scientific;
       for (auto s : sAxis) {
         out << s / pow2(SI::GeV) << "\t";
-        out << sigmaPpp.getAtS(proton, s) / SI::mbarn << "\n";
+        out << sigmaPpp.getAtS(s) / SI::mbarn << "\n";
       }
     }
     {
-      auto eAxis = utils::LogAxis(0.1 * SI::GeV, 1e11 * SI::GeV, 1000);
+      auto eAxis = utils::LogAxis(0.1 * SI::GeV, 1e11 * SI::GeV, 10000);
       utils::OutputFile out("test_xsecs_epsprime.txt");
       out << "#\n";
       out << std::scientific;
       for (auto e : eAxis) {
         out << e / SI::GeV << "\t";
-        out << sigmaPpp.getAtEpsPrime(proton, e) / SI::mbarn << "\n";
+        out << sigmaPpp.getAtEpsPrime(e) / SI::mbarn << "\n";
       }
     }
 

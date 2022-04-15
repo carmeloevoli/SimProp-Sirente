@@ -62,22 +62,22 @@ void plot_sampled_epsilon() {
       out << eps / SI::eV << "\t";
       const double E = 1e19 * SI::eV;
       auto s_max = pow2(SI::protonMassC2) + 4. * E * eps;
-      out << cmb->density(eps) / pow2(eps) * pppcmb->phi(s_max) << "\t";
-      out << ebl->density(eps) / pow2(eps) * pppebl->phi(s_max) << "\t";
+      out << cmb->density(eps) / pow2(eps) * sigma->getPhiAtS(s_max) << "\t";
+      out << ebl->density(eps) / pow2(eps) * sigma->getPhiAtS(s_max) << "\t";
       double z = 1.0;
-      out << cmb->density(eps / (1. + z)) / pow2(eps) * pppcmb->phi(s_max) << "\t";
-      out << ebl->density(eps / (1. + z), z) / pow2(eps) * pppebl->phi(s_max) << "\t";
+      out << cmb->density(eps / (1. + z)) / pow2(eps) * sigma->getPhiAtS(s_max) << "\t";
+      out << ebl->density(eps / (1. + z), z) / pow2(eps) * sigma->getPhiAtS(s_max) << "\t";
       z = 2.0;
-      out << cmb->density(eps / (1. + z)) / pow2(eps) * pppcmb->phi(s_max) << "\t";
-      out << ebl->density(eps / (1. + z), z) / pow2(eps) * pppebl->phi(s_max) << "\t";
+      out << cmb->density(eps / (1. + z)) / pow2(eps) * sigma->getPhiAtS(s_max) << "\t";
+      out << ebl->density(eps / (1. + z), z) / pow2(eps) * sigma->getPhiAtS(s_max) << "\t";
       out << "\n";
     }
   }
   {
     RandomNumberGenerator rng = utils::RNG<double>(1234);
     utils::OutputFile out("test_epsilon_sample.txt");
-    for (size_t i = 0; i < 10000; ++i) {
-      if (i % 100 == 0) std::cout << i << "\n";
+    for (size_t i = 0; i < 100000; ++i) {
+      if (i % 1000 == 0) std::cout << i << "\n";
       out << i << "\t";
       const double E = 1e19 * SI::eV;
       out << pppcmb->sampleEps(rng(), E, 0.) / SI::eV << "\t";
@@ -120,7 +120,7 @@ void plot_inelasticity() {
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
   utils::OutputFile out("test_inelasticity.txt");
   const auto protonEnergies = utils::LogAxis(1e18 * SI::eV, 1e21 * SI::eV, 12);
-  const size_t N = 1000;
+  const size_t N = 10000;
   const double z = 0;
   for (auto& E : protonEnergies) {
     double Y[N];
