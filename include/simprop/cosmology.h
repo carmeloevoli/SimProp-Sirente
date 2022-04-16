@@ -22,6 +22,7 @@ class Cosmology {
   double H(double z) const;
   double hubbleTime(double z) const;
   double dtdz(double z) const;
+  double lookbackTime(double z) const;
 
  public:
   const double& h = m_h;

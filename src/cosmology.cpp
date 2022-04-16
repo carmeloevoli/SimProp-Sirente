@@ -1,6 +1,7 @@
 #include "simprop/cosmology.h"
 
 #include "simprop/utils/logging.h"
+#include "simprop/utils/numeric.h"
 
 namespace simprop {
 namespace cosmo {
@@ -25,6 +26,11 @@ double Cosmology::H(double z) const {
 double Cosmology::hubbleTime(double z) const { return 1.0 / H(z); }
 
 double Cosmology::dtdz(double z) const { return 1. / H(z) / (1. + z); }
+
+double Cosmology::lookbackTime(double z) const {
+  auto integrand = [&](double x) { return 1. / H(x) / (1. + x); };
+  return utils::QAGIntegration<double>(integrand, 0., z, 1000, 1e-6);
+}
 
 }  // namespace cosmo
 }  // namespace simprop
