@@ -16,6 +16,7 @@ class Cosmology {
   double m_OmegaL = 1. - m_OmegaM;
 
  public:
+  Cosmology(){};
   Cosmology(double littleh, double OmegaBaryon_h2, double OmegaDarkMatter_h2, double OmegaLambda);
   virtual ~Cosmology() = default;
 

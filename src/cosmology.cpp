@@ -19,6 +19,7 @@ Cosmology::Cosmology(double littleh, double OmegaBaryon_h2, double OmegaDarkMatt
 }
 
 double Cosmology::H(double z) const {
+  if (z < 0.) throw std::invalid_argument("z must be positive");
   const auto x = 1. + z;
   return m_H0 * std::sqrt(m_OmegaM * pow3(x) + m_OmegaL);
 }
@@ -28,6 +29,7 @@ double Cosmology::hubbleTime(double z) const { return 1.0 / H(z); }
 double Cosmology::dtdz(double z) const { return 1. / H(z) / (1. + z); }
 
 double Cosmology::lookbackTime(double z) const {
+  if (z < 0.) throw std::invalid_argument("z must be positive");
   auto integrand = [&](double x) { return 1. / H(x) / (1. + x); };
   return utils::QAGIntegration<double>(integrand, 0., z, 1000, 1e-6);
 }

@@ -144,6 +144,10 @@ if(ENABLE_TESTING)
     target_link_libraries(testCommon simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
     add_test(testCommon testCommon)
 
+    add_executable(testCosmology test/testCosmology.cpp)
+    target_link_libraries(testCosmology simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(testCosmology testCosmology)
+
     add_executable(testRng test/testRng.cpp)
     target_link_libraries(testRng simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
     add_test(testRng testRng)
