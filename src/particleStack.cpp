@@ -34,7 +34,8 @@ ParticleStack::ParticleStack(PID pid, int nParticles, RandomNumberGenerator& rng
     : m_pid(pid), m_size(nParticles), m_rng(rng) {}
 
 void ParticleStack::buildSingleParticleStack(double z, double Gamma) {
-  m_particles.push_back(Particle{m_pid, z, Gamma});
+  for (size_t i = 0; i < m_size; ++i) m_particles.push_back(Particle{m_pid, z, Gamma});
+  assert(m_particles.size() == m_size);
 }
 
 void ParticleStack::buildMultipleParticleStack(Range zRange, Range gammaRange, double slope) {
