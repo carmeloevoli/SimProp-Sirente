@@ -69,6 +69,7 @@ double PhotoPionProduction::sampleEps(RndUnifNumber r, double nucleonEnergy, dou
   auto value = utils::rootFinder<double>(
       [&](double eps) { return epsPdfIntegral(eps, nucleonEnergy, z) - rIntegralMax; }, minPhEnergy,
       maxPhotonEnergy, 1000, 1e-3);
+  // TODO try to improve the precision
   return value;
 }
 
