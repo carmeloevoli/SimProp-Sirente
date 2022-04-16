@@ -102,16 +102,22 @@ class Evolutor {
         it->getNow().z -= dz;
         auto deltaGamma = computeDeltaGamma(pid, Gamma, nowRedshift, dz);
         it->getNow().Gamma *= (1. - deltaGamma);
+#ifdef PRINTALL
         out << *it << " " << 0 << "\n";
+#endif
       } else {
         const auto dz = dz_s;
         it->getNow().z -= dz;
         auto state = m_pppcmb->finalState(*it, nowRedshift - dz, m_rng);
         it->getNow().Gamma = state.at(0).getGamma();
+#ifdef PRINTALL
         out << *it << " " << 1 << "\n";
+#endif
       }
 
+#ifdef PRINTALL
       std::cout << *it << " " << dz_s << " " << dz_c << "\n";
+#endif
 
       it = std::find_if(m_stack->begin(), m_stack->end(), isActive);
     }
@@ -123,15 +129,6 @@ int main() {
   try {
     utils::startup_information();
     RandomNumberGenerator rng = utils::RNG<double>(66);
-    {
-      utils::Timer timer("timer for Gamma = 1e10");
-      Evolutor evolutor(rng);
-      evolutor.buildParticleStack(1., 1e10);
-      evolutor.buildPhotonFields();
-      evolutor.buildContinuousLosses();
-      evolutor.buildStochasticInteractions();
-      evolutor.run("test_proton_evolution_1e10.txt");
-    }
     {
       utils::Timer timer("timer for Gamma = 1e12");
       Evolutor evolutor(rng);
