@@ -86,6 +86,10 @@ add_library(simprop SHARED
     src/energyLosses/BGG2002ContinuousLosses.cpp
     src/energyLosses/PairProductionLosses.cpp
     src/interactions/PhotoPionProduction.cpp
+    src/particleStacks/Builder.cpp
+    src/particleStacks/SingleParticleBuilder.cpp
+    src/particleStacks/SingleSourceBuilder.cpp
+    src/particleStacks/SourceEvolutionBuilder.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/Dominguez2011PhotonField.cpp
 	src/utils/io.cpp
@@ -95,7 +99,7 @@ add_library(simprop SHARED
     #src/common.cpp
     src/cosmology.cpp
    	#src/params.cpp
- 	src/particleStack.cpp
+ 	#src/particleStack.cpp
     src/pid.cpp
     "${git_revision_cpp}"
     )

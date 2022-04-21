@@ -7,8 +7,12 @@ int main() {
     utils::startup_information();
     utils::Timer timer("main timer");
     RandomNumberGenerator rng = utils::RNG<double>(66);
-    auto particles = ParticleStack(proton, 1e6, rng);
-    particles.buildInitialState({0., 2.}, {1e8, 1e12}, 1.0);
+    auto builder = SourceEvolutionBuilder(proton, 1e6);
+    builder.setGammaRange({1e8, 1e12});
+    builder.setRedshiftRange({0., 2.});
+    builder.setSlope(1.0);
+    builder.setEvolutionIndex(3.0);
+    auto particles = builder.build(rng);
     utils::OutputFile out("test_initial.txt");
     out << "#\n";
     for (auto& p : particles) {

@@ -18,7 +18,7 @@ class Evolutor {
  protected:
   const double deltaGammaCritical = 0.1;
   RandomNumberGenerator& m_rng;
-  std::shared_ptr<ParticleStack> m_stack;
+  ParticleStack m_stack;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
   std::shared_ptr<photonfields::CMB> m_cmb;
   std::shared_ptr<photonfields::PhotonField> m_ebl;
@@ -31,8 +31,10 @@ class Evolutor {
   }
 
   void buildParticleStack(double z, double Gamma) {
-    m_stack = std::make_shared<ParticleStack>(proton, 1, m_rng);
-    m_stack->buildSingleParticleStack(z, Gamma);
+    auto builder = SingleParticleBuilder(proton, 1);
+    builder.setRedshift(z);
+    builder.setGamma(Gamma);
+    m_stack = builder.build(m_rng);
   }
 
   void buildPhotonFields() {
@@ -84,9 +86,9 @@ class Evolutor {
   }
 
   void run(std::string filename) {
-    ParticleStack::iterator it = m_stack->begin();
+    ParticleStack::iterator it = m_stack.begin();
     utils::OutputFile out(filename.c_str());
-    while (it != m_stack->end()) {
+    while (it != m_stack.end()) {
       const auto pid = it->getPid();
       const auto nowRedshift = it->getNow().z;
       const auto Gamma = it->getNow().Gamma;
@@ -119,7 +121,7 @@ class Evolutor {
       std::cout << *it << " " << dz_s << " " << dz_c << "\n";
 #endif
 
-      it = std::find_if(m_stack->begin(), m_stack->end(), isActive);
+      it = std::find_if(m_stack.begin(), m_stack.end(), isActive);
     }
   }
   virtual ~Evolutor() = default;
