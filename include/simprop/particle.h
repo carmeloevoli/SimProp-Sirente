@@ -5,6 +5,7 @@
 
 #include "simprop/pid.h"
 #include "simprop/units.h"
+#include "simprop/utils/io.h"
 
 namespace simprop {
 
@@ -14,22 +15,23 @@ class Particle {
     double Gamma;
   };
 
- protected:
   PID m_pid;
   State m_origin;
   State m_now;
+  bool m_isPrimary;
 
  public:
-  Particle(PID pid, double z, double Gamma) : m_pid(pid), m_origin({z, Gamma}), m_now({z, Gamma}) {}
+  Particle(PID pid, double z, double Gamma, bool isPrimary = false)
+      : m_pid(pid), m_origin({z, Gamma}), m_now({z, Gamma}), m_isPrimary(isPrimary) {}
 
   const State getNow() const { return m_now; }
   State& getNow() { return m_now; }
-
+  const PID& getPid() const { return m_pid; }
+  const State& getOrigin() const { return m_origin; }
   const double getRedshift() const { return m_now.z; }
   const double getGamma() const { return m_now.Gamma; }
-  const double getEnergy() const { return m_now.Gamma * getMassFromPid(m_pid); }
-
-  const PID getPid() const { return m_pid; }
+  // const double getEnergy() const { return m_now.Gamma * getMassFromPid(m_pid); }
+  const bool IsPrimary() const { return m_isPrimary; }
 
   friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
     auto pidName = getPidName(p.m_pid);

@@ -4,10 +4,12 @@
 
 using namespace simprop;
 
-bool isActive(Particle p) {
+auto IsActive = [](const Particle& p) {
   const double minPropagatingGamma = 1e8;
   return (p.getRedshift() > 1e-20 && p.getGamma() > minPropagatingGamma);
-}
+};
+
+// auto IsPrimary = [](const Particle& p) { return p.IsPrimary(); };
 
 template <typename T>
 bool essentiallyEqual(T a, T b, T epsilon) {
@@ -31,7 +33,7 @@ class Evolutor {
   }
 
   void buildParticleStack(double z, double Gamma) {
-    auto builder = SingleParticleBuilder(proton, 1);
+    auto builder = SingleParticleBuilder(proton, 100);
     builder.setRedshift(z);
     builder.setGamma(Gamma);
     m_stack = builder.build(m_rng);
@@ -90,8 +92,8 @@ class Evolutor {
     utils::OutputFile out(filename.c_str());
     while (it != m_stack.end()) {
       const auto pid = it->getPid();
-      const auto nowRedshift = it->getNow().z;
-      const auto Gamma = it->getNow().Gamma;
+      const auto nowRedshift = it->getRedshift();
+      const auto Gamma = it->getGamma();
 
       const auto dz_s = computeStochasticRedshiftInterval(pid, Gamma, nowRedshift);
       assert(dz_s > 0.);
@@ -121,7 +123,7 @@ class Evolutor {
       std::cout << *it << " " << dz_s << " " << dz_c << "\n";
 #endif
 
-      it = std::find_if(m_stack.begin(), m_stack.end(), isActive);
+      it = std::find_if(m_stack.begin(), m_stack.end(), IsActive);
     }
   }
   virtual ~Evolutor() = default;
