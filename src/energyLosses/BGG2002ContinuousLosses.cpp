@@ -21,13 +21,13 @@ double BGG2002ContinuousLosses::getInterpolated(double E) const {
 }
 
 double BGG2002ContinuousLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
-  const auto E = Gamma * SI::protonMassC2 * getNucleusMassNumber(pid);
+  const auto E = Gamma * SI::protonMassC2 * getPidNucleusMassNumber(pid);
   const auto redshiftedEnergy = E * (1. + z);
   double b_l = getInterpolated(redshiftedEnergy);
   if (b_l > 0.) {
     b_l *= pow3(1. + z);
-    const double Z = (double)getNucleusCharge(pid);
-    const double A = (double)getNucleusCharge(pid);
+    const double Z = (double)getPidNucleusCharge(pid);
+    const double A = (double)getPidNucleusCharge(pid);
     b_l *= pow2(Z) / A;
   }
   return std::max(b_l, 0.);

@@ -12,18 +12,18 @@ PID getPidNucleus(const int& Z, const int& A) {
   return PID(1000000000 + 10 * Z + 10000 * A);
 }
 
-bool isNucleus(const PID& pid) { return (pid.get() >= 1000009990); }
+bool pidIsNucleus(const PID& pid) { return (pid.get() >= 1000009990); }
 
-int getNucleusMassNumber(const PID& pid) {
-  if (!isNucleus(pid)) throw std::invalid_argument(getPidName(pid) + " is not a nucleus");
+int getPidNucleusMassNumber(const PID& pid) {
+  if (!pidIsNucleus(pid)) throw std::invalid_argument(getPidName(pid) + " is not a nucleus");
   if (pid == neutron || pid == antiproton)
     return 1;
   else
     return (pid.get() / 10000) % 1000;
 }
 
-int getNucleusCharge(const PID& pid) {
-  if (!isNucleus(pid)) throw std::invalid_argument(getPidName(pid) + " is not a nucleus");
+int getPidNucleusCharge(const PID& pid) {
+  if (!pidIsNucleus(pid)) throw std::invalid_argument(getPidName(pid) + " is not a nucleus");
   if (pid == neutron)
     return 0;
   else if (pid == antiproton)
@@ -44,9 +44,9 @@ static const std::map<int, std::string> chargeToName = {
     {15, "P"},  {16, "S"}, {17, "Cl"}, {18, "Ar"}, {19, "K"},  {20, "Ca"}, {21, "Sc"},
     {22, "Ti"}, {23, "V"}, {24, "Cr"}, {25, "Mn"}, {26, "Fe"}, {27, "Co"}, {28, "Ni"}};
 
-std::string getNucleusName(const PID& pid) {
-  auto A = getNucleusMassNumber(pid);
-  auto Z = getNucleusCharge(pid);
+std::string getPidNucleusName(const PID& pid) {
+  auto A = getPidNucleusMassNumber(pid);
+  auto Z = getPidNucleusCharge(pid);
   auto it = chargeToName.find(Z);
   if (it != chargeToName.end())
     return it->second + std::to_string(A);
@@ -54,10 +54,10 @@ std::string getNucleusName(const PID& pid) {
     throw std::invalid_argument("pid name not found");
 }
 
-double getMassFromPid(const PID& pid) {
-  if (isNucleus(pid)) {
-    auto A = (double)getNucleusMassNumber(pid);
-    auto Z = (double)getNucleusCharge(pid);
+double getPidMass(const PID& pid) {
+  if (pidIsNucleus(pid)) {
+    auto A = (double)getPidNucleusMassNumber(pid);
+    auto Z = (double)getPidNucleusCharge(pid);
     return (A - Z) * SI::neutronMassC2 + Z * SI::protonMassC2;
   } else if (pid == positron || pid == electron)
     return SI::electronMassC2;
@@ -72,7 +72,7 @@ std::string getPidName(const PID& pid) {
   if (pid == neutron) return "neutron";
   if (pid == antiproton) return "antiproton";
   if (pid == deuterium) return "deuterium";
-  if (isNucleus(pid)) return getNucleusName(pid);
+  if (pidIsNucleus(pid)) return getPidNucleusName(pid);
   auto it = pidNames.find(pid);
   if (it != pidNames.end())
     return it->second;

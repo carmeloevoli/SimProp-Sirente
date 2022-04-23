@@ -36,8 +36,8 @@ void plot_sampled_s() {
   for (size_t i = 0; i < 300000; ++i) {
     if (i % 1000 == 0) std::cout << i << "\n";
     out << i << "\t";
-    out << pppcmb.sampleS(rng(), 4. * SI::GeV2) / SI::GeV2 << "\t";
-    out << pppcmb.sampleS(rng(), 40. * SI::GeV2) / SI::GeV2 << "\t";
+    out << pppcmb.sampleS(RandomNumber(rng()), 4. * SI::GeV2) / SI::GeV2 << "\t";
+    out << pppcmb.sampleS(RandomNumber(rng()), 40. * SI::GeV2) / SI::GeV2 << "\t";
     out << "\n";
   }
 }
@@ -80,12 +80,12 @@ void plot_sampled_epsilon() {
       if (i % 1000 == 0) std::cout << i << "\n";
       out << i << "\t";
       const double E = 1e19 * SI::eV;
-      out << pppcmb->sampleEps(rng(), E, 0.) / SI::eV << "\t";
-      out << pppebl->sampleEps(rng(), E, 0.) / SI::eV << "\t";
-      out << pppcmb->sampleEps(rng(), E, 1.) / SI::eV << "\t";
-      out << pppebl->sampleEps(rng(), E, 1.) / SI::eV << "\t";
-      out << pppcmb->sampleEps(rng(), E, 2.) / SI::eV << "\t";
-      out << pppebl->sampleEps(rng(), E, 2.) / SI::eV << "\t";
+      out << pppcmb->sampleEps(RandomNumber(rng()), E, 0.) / SI::eV << "\t";
+      out << pppebl->sampleEps(RandomNumber(rng()), E, 0.) / SI::eV << "\t";
+      out << pppcmb->sampleEps(RandomNumber(rng()), E, 1.) / SI::eV << "\t";
+      out << pppebl->sampleEps(RandomNumber(rng()), E, 1.) / SI::eV << "\t";
+      out << pppcmb->sampleEps(RandomNumber(rng()), E, 2.) / SI::eV << "\t";
+      out << pppebl->sampleEps(RandomNumber(rng()), E, 2.) / SI::eV << "\t";
       out << "\n";
     }
   }

@@ -16,6 +16,7 @@ class SingleParticleBuilder final : public Builder {
   void setGamma(double Gamma) { m_Gamma = Gamma; };
 
   ParticleStack build(RandomNumberGenerator& rng) const override;
+  ParticleStack build() const;
 };
 
 }  // namespace simprop

@@ -8,15 +8,13 @@
 
 namespace simprop {
 
-// enum class PID : long int {};
-
 using PID = fluent::NamedType<long int, struct PidTag, fluent::Comparable>;
 
 PID getPidNucleus(const int& Z, const int& A);
-bool isNucleus(const PID& pid);
-int getNucleusMassNumber(const PID& pid);
-int getNucleusCharge(const PID& pid);
-double getMassFromPid(const PID& pid);
+bool pidIsNucleus(const PID& pid);
+int getPidNucleusMassNumber(const PID& pid);
+int getPidNucleusCharge(const PID& pid);
+double getPidMass(const PID& pid);
 std::string getPidName(const PID& pid);
 
 static const PID photon = PID(0);
