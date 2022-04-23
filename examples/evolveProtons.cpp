@@ -106,7 +106,7 @@ class Evolutor {
         it->getNow().z -= dz;
         auto deltaGamma = computeDeltaGamma(pid, Gamma, nowRedshift, dz);
         it->getNow().Gamma *= (1. - deltaGamma);
-        out << *it << " " << 0 << "\n";
+        out << *it << " " << 0 << "\n";  // TODO remove this porchery
       } else {
         const auto dz = dz_s;
         it->getNow().z -= dz;

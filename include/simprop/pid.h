@@ -4,9 +4,13 @@
 #include <cassert>
 #include <stdexcept>
 
+#include "NamedType/named_type.hpp"
+
 namespace simprop {
 
-enum class PID : long int {};
+// enum class PID : long int {};
+
+using PID = fluent::NamedType<long int, struct PidTag, fluent::Comparable>;
 
 PID getPidNucleus(const int& Z, const int& A);
 bool isNucleus(const PID& pid);

@@ -3,11 +3,16 @@
 
 #include <iomanip>
 
+#include "NamedType/named_type.hpp"
 #include "simprop/pid.h"
 #include "simprop/units.h"
 #include "simprop/utils/io.h"
 
 namespace simprop {
+
+using Redshift = fluent::NamedType<double, struct RedshiftTag>;
+using LorentzFactor = fluent::NamedType<double, struct LorentzFactorTag>;
+using IsPrimary = fluent::NamedType<bool, struct IsPrimaryTag>;
 
 class Particle {
   struct State {
@@ -21,8 +26,17 @@ class Particle {
   bool m_isPrimary;
 
  public:
-  Particle(PID pid, double z, double Gamma, bool isPrimary = false)
-      : m_pid(pid), m_origin({z, Gamma}), m_now({z, Gamma}), m_isPrimary(isPrimary) {}
+  Particle(PID pid, Redshift z, LorentzFactor Gamma, IsPrimary isPrimary)
+      : m_pid(pid),
+        m_origin({z.get(), Gamma.get()}),
+        m_now({z.get(), Gamma.get()}),
+        m_isPrimary(isPrimary.get()) {}
+
+  Particle(PID pid, Redshift z, LorentzFactor Gamma)
+      : m_pid(pid),
+        m_origin({z.get(), Gamma.get()}),
+        m_now({z.get(), Gamma.get()}),
+        m_isPrimary(false) {}
 
   // Copy constructor
   Particle(const Particle& particle) {

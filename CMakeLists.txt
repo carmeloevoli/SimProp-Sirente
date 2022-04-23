@@ -38,6 +38,9 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math")
 # PLOG (provided)
 include_directories(external/plog/include)
 
+# NamedType (provided)
+include_directories(external/NamedType/include)
+
 # C++ Threads required
 #find_package(Threads REQUIRED)
 #list(APPEND SIMPROP_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})

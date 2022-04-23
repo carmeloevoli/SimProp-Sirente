@@ -108,8 +108,10 @@ std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingPa
     const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;
     const auto outPionCharge = samplePionCharge(rng(), (pid == neutron));
     const auto outNucleonEnergy = nucleonEnergy - outPionEnergy;
-    auto outPion = Particle(outPionCharge, zInteractionPoint, outPionEnergy / SI::pionMassC2);
-    auto outNucleon = Particle(proton, zInteractionPoint, outNucleonEnergy / SI::protonMassC2);
+    auto outPion = Particle(outPionCharge, Redshift(zInteractionPoint),
+                            LorentzFactor(outPionEnergy / SI::pionMassC2));
+    auto outNucleon = Particle(proton, Redshift(zInteractionPoint),
+                               LorentzFactor(outNucleonEnergy / SI::protonMassC2));
     return {outNucleon, outPion};
   }
   auto p = Particle{incomingParticle};

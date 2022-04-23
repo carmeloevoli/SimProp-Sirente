@@ -101,13 +101,15 @@ void plot_pion_energies() {
   const double z = 0;
   for (size_t i = 0; i < N; ++i) {
     {
-      double E = 1e18 * SI::eV;
-      auto finalState = pppcmb->finalState({proton, z, E / SI::protonMassC2}, z, rng);
+      const auto E = 1e18 * SI::eV;
+      const auto Gamma = E / SI::protonMassC2;
+      auto finalState = pppcmb->finalState({proton, Redshift(z), LorentzFactor(Gamma)}, z, rng);
       out << finalState[1].getGamma() * SI::pionMassC2 / E << "\t";
     }
     {
-      double E = 1e20 * SI::eV;
-      auto finalState = pppcmb->finalState({proton, z, E / SI::protonMassC2}, z, rng);
+      const auto E = 1e20 * SI::eV;
+      const auto Gamma = E / SI::protonMassC2;
+      auto finalState = pppcmb->finalState({proton, Redshift(z), LorentzFactor(Gamma)}, z, rng);
       out << finalState[1].getGamma() * SI::pionMassC2 / E << "\n";
     }
   }
@@ -125,7 +127,8 @@ void plot_inelasticity() {
   for (auto& E : protonEnergies) {
     double Y[N];
     for (size_t i = 0; i < N; ++i) {
-      auto finalState = pppcmb->finalState({proton, z, E / SI::protonMassC2}, z, rng);
+      auto finalState =
+          pppcmb->finalState({proton, Redshift(z), LorentzFactor(E / SI::protonMassC2)}, z, rng);
       Y[i] = finalState[1].getGamma() * SI::pionMassC2 / E;
     }
     out << E / SI::eV << " ";
