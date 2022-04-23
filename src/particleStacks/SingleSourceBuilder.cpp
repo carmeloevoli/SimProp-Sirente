@@ -1,6 +1,12 @@
 #include "simprop/particleStacks/SingleSourceBuilder.h"
 
+#include "simprop/common.h"
+
 namespace simprop {
+
+SingleSourceBuilder::SingleSourceBuilder(PID pid, size_t size) : Builder(pid, size) {
+  LOGD << "calling " << __func__ << " constructor";
+}
 
 ParticleStack SingleSourceBuilder::build(RandomNumberGenerator& rng) const {
   ParticleStack stack;

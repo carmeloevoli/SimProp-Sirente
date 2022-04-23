@@ -1,7 +1,15 @@
 #include "simprop/photonFields/CmbPhotonField.h"
 
+#include "simprop/utils/io.h"
+
 namespace simprop {
 namespace photonfields {
+
+CMB::CMB(double T)
+    : m_temperature(T),
+      m_epsRange({1e-5 * (T / SI::K) * SI::eV, 0.1 * (T / 2.725 / SI::K) * SI::eV}) {
+  LOGD << "calling " << __func__ << " constructor";
+}
 
 double CMB::density(double ePhoton, double z) const {
   constexpr double factor = 1. / pow2(M_PI) / pow3(SI::hbarC);

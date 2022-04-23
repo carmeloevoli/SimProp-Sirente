@@ -11,7 +11,7 @@ class SingleParticleBuilder final : public Builder {
   double m_Gamma = 1e12;
 
  public:
-  SingleParticleBuilder(PID pid, size_t size = 1) : Builder(pid, size) {}
+  SingleParticleBuilder(PID pid, size_t size = 1);
   void setRedshift(double z) { m_z = z; };
   void setGamma(double Gamma) { m_Gamma = Gamma; };
 

@@ -41,6 +41,11 @@ double phi(double k) {
   }
 }
 
+PairProductionLosses::PairProductionLosses(const photonfields::PhotonFields& photonFields)
+    : ContinuousLosses(), m_photonFields(photonFields) {
+  LOGD << "calling " << __func__ << " constructor";
+}
+
 double PairProductionLosses::dotGamma(double Gamma) const {
   auto TwoGamma_mec2 = 2. * Gamma / SI::electronMassC2;
   double I = 0;

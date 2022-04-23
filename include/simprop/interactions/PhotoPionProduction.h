@@ -27,22 +27,18 @@ class PhotoPionProduction final : public Interaction {
 
  public:
   PhotoPionProduction(const std::shared_ptr<xsecs::CrossSection>& sigma,
-                      const std::shared_ptr<photonfields::PhotonField>& phField)
-      : Interaction(sigma, phField) {}
+                      const std::shared_ptr<photonfields::PhotonField>& phField);
   virtual ~PhotoPionProduction() = default;
   double rate(PID pid, double Gamma, double z = 0) const override;
   double computeRateComoving(double Gamma, double z) const;  // TODO to make protected
   std::vector<Particle> finalState(const Particle& particle, double zInteractionPoint,
                                    RandomNumberGenerator& rng) const override;
-
+  // TODO make protected:
   double sampleS(RndUnifNumber r, double sMax) const;
   double sampleEps(RndUnifNumber r, double nucleonEnergy, double z) const;
   double samplePionInelasticity(RndUnifNumber r, double s) const;
   double epsPdfIntegral(double photonEnergy, double nucleonEnergy, double z) const;
   PID samplePionCharge(RndUnifNumber r, bool isNeutron) const;
-
-  // protected:
-  // double phi(double s) const;
 };
 
 }  // namespace interactions

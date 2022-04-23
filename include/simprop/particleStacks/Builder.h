@@ -1,6 +1,8 @@
 #ifndef SIMPROP_PARTICLESTACK_H
 #define SIMPROP_PARTICLESTACK_H
 
+#include <memory>
+
 #include "simprop/particle.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/random.h"
@@ -9,9 +11,6 @@ namespace simprop {
 
 using ParticleStack = std::vector<Particle>;
 using Range = std::pair<double, double>;
-
-double getRndGamma(Range gammaRange, double slope, double r);
-double getRndRedshift(Range redshiftRange, int evolutionIndex, double r);
 
 class Builder {
  protected:

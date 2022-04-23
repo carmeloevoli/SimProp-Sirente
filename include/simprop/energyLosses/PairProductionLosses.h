@@ -17,8 +17,7 @@ class PairProductionLosses final : public ContinuousLosses {
   photonfields::PhotonFields m_photonFields;
 
  public:
-  explicit PairProductionLosses(const photonfields::PhotonFields& photonFields)
-      : ContinuousLosses(), m_photonFields(photonFields) {}
+  PairProductionLosses(const photonfields::PhotonFields& photonFields);
   virtual ~PairProductionLosses() = default;
   double dlnGamma_dt(PID pid, double Gamma, double z = 0) const override;
 

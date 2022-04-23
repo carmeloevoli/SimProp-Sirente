@@ -96,7 +96,7 @@ add_library(simprop SHARED
 	src/utils/logging.cpp
     src/utils/numeric.cpp
     src/utils/timer.cpp
-    #src/common.cpp
+    src/common.cpp
     src/cosmology.cpp
    	#src/params.cpp
  	#src/particleStack.cpp

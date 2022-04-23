@@ -12,7 +12,7 @@ class SingleSourceBuilder final : public Builder {
   double m_slope = 2.;
 
  public:
-  SingleSourceBuilder(PID pid, size_t size = 1) : Builder(pid, size) {}
+  SingleSourceBuilder(PID pid, size_t size = 1);
   void setRedshift(double z) { m_z = z; };
   void setGammaRange(Range GammaRange) { m_GammaRange = GammaRange; };
   void setSlope(double slope) { m_slope = slope; }

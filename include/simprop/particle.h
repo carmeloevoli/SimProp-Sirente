@@ -24,6 +24,14 @@ class Particle {
   Particle(PID pid, double z, double Gamma, bool isPrimary = false)
       : m_pid(pid), m_origin({z, Gamma}), m_now({z, Gamma}), m_isPrimary(isPrimary) {}
 
+  // Copy constructor
+  Particle(const Particle& particle) {
+    m_isPrimary = particle.m_isPrimary;
+    m_now = particle.m_now;
+    m_origin = particle.m_origin;
+    m_pid = particle.m_pid;
+  }
+
   const State getNow() const { return m_now; }
   State& getNow() { return m_now; }
   const PID& getPid() const { return m_pid; }
@@ -39,6 +47,9 @@ class Particle {
     auto Gamma = p.m_now.Gamma;
     return os << pidName << " " << std::fixed << z << " " << std::scientific << Gamma;
   }
+
+  // public:
+  //  const PID& pid = m_pid;
 };
 
 }  // namespace simprop

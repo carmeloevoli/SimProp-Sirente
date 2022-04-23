@@ -8,6 +8,12 @@
 namespace simprop {
 namespace interactions {
 
+PhotoPionProduction::PhotoPionProduction(const std::shared_ptr<xsecs::CrossSection>& sigma,
+                                         const std::shared_ptr<photonfields::PhotonField>& phField)
+    : Interaction(sigma, phField) {
+  LOGD << "calling " << __func__ << " constructor";
+}
+
 double PhotoPionProduction::computeRateComoving(double Gamma, double z) const {
   auto value = SI::cLight / 2. / pow2(Gamma);
 

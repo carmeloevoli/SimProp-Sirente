@@ -13,8 +13,7 @@ class AdiabaticContinuousLosses final : public ContinuousLosses {
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
 
  public:
-  explicit AdiabaticContinuousLosses(const std::shared_ptr<cosmo::Cosmology>& cosmology)
-      : ContinuousLosses(), m_cosmology(cosmology) {}
+  AdiabaticContinuousLosses(const std::shared_ptr<cosmo::Cosmology>& cosmology);
   virtual ~AdiabaticContinuousLosses() = default;
 
   double dlnGamma_dt(PID pid, double Gamma, double z = 0) const override;

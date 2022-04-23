@@ -11,7 +11,7 @@ namespace losses {
 
 class ContinuousLosses {
  public:
-  explicit ContinuousLosses() {}
+  ContinuousLosses() {}
   virtual ~ContinuousLosses() = default;
   virtual double dlnGamma_dt(PID pid, double Gamma, double z = 0) const = 0;
 };

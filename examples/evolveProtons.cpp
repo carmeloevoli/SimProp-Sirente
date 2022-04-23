@@ -33,7 +33,7 @@ class Evolutor {
   }
 
   void buildParticleStack(double z, double Gamma) {
-    auto builder = SingleParticleBuilder(proton, 100);
+    auto builder = SingleParticleBuilder(proton, 1);
     builder.setRedshift(z);
     builder.setGamma(Gamma);
     m_stack = builder.build(m_rng);
@@ -106,22 +106,14 @@ class Evolutor {
         it->getNow().z -= dz;
         auto deltaGamma = computeDeltaGamma(pid, Gamma, nowRedshift, dz);
         it->getNow().Gamma *= (1. - deltaGamma);
-#ifdef PRINTALL
         out << *it << " " << 0 << "\n";
-#endif
       } else {
         const auto dz = dz_s;
         it->getNow().z -= dz;
         auto state = m_pppcmb->finalState(*it, nowRedshift - dz, m_rng);
         it->getNow().Gamma = state.at(0).getGamma();
-#ifdef PRINTALL
         out << *it << " " << 1 << "\n";
-#endif
       }
-
-#ifdef PRINTALL
-      std::cout << *it << " " << dz_s << " " << dz_c << "\n";
-#endif
 
       it = std::find_if(m_stack.begin(), m_stack.end(), IsActive);
     }

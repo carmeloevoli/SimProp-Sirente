@@ -2,12 +2,19 @@
 
 namespace simprop {
 
+SingleParticleBuilder::SingleParticleBuilder(PID pid, size_t size) : Builder(pid, size) {
+  LOGD << "calling " << __func__ << " constructor";
+}
+
 ParticleStack SingleParticleBuilder::build(RandomNumberGenerator& rng) const {
   ParticleStack stack;
+  stack.reserve(m_size);
+  for (size_t i = 0; i < m_size; ++i) {
+    stack.emplace_back(Particle{m_pid, m_z, m_Gamma, true});
+  }
+  assert(stack.size() == m_size);
   LOGD << "building stack with " << m_size << " particles";
   LOGD << "type = " << getPidName(m_pid) << ", z = " << m_z << ", Gamma = " << m_Gamma;
-  for (size_t i = 0; i < m_size; ++i) stack.push_back(Particle{m_pid, m_z, m_Gamma, true});
-  assert(stack.size() == m_size);
   return stack;
 }
 

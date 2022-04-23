@@ -8,7 +8,10 @@
 namespace simprop {
 namespace xsecs {
 
-PhotoPionProductionXsec::PhotoPionProductionXsec() { loadDataFile(); }
+PhotoPionProductionXsec::PhotoPionProductionXsec() {
+  LOGD << "calling " << __func__ << " constructor";
+  loadDataFile();
+}
 
 void PhotoPionProductionXsec::loadDataFile() {
   auto v = utils::loadFileByRow(m_filename, ",");

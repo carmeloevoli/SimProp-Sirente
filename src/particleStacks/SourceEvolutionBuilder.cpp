@@ -1,6 +1,12 @@
 #include "simprop/particleStacks/SourceEvolutionBuilder.h"
 
+#include "simprop/common.h"
+
 namespace simprop {
+
+SourceEvolutionBuilder::SourceEvolutionBuilder(PID pid, size_t size) : Builder(pid, size) {
+  LOGD << "calling " << __func__ << " constructor";
+}
 
 ParticleStack SourceEvolutionBuilder::build(RandomNumberGenerator& rng) const {
   ParticleStack stack;

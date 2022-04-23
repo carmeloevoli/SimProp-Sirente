@@ -6,6 +6,10 @@
 namespace simprop {
 namespace losses {
 
+BGG2002ContinuousLosses::BGG2002ContinuousLosses() : ContinuousLosses() {
+  LOGD << "calling " << __func__ << " constructor";
+}
+
 double BGG2002ContinuousLosses::getInterpolated(double E) const {
   double b_l = 0;
   const auto logE = std::log10(E / SI::eV);

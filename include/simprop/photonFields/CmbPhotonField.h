@@ -14,9 +14,7 @@ using PhotonEnergyRange = std::pair<double, double>;
 
 class CMB final : public PhotonField {
  public:
-  CMB(double T)
-      : m_temperature(T),
-        m_epsRange({1e-5 * (T / SI::K) * SI::eV, 0.1 * (T / 2.725 / SI::K) * SI::eV}) {}
+  CMB(double T);
   CMB() : CMB(2.725 * SI::K) {}
 
   double density(double ePhoton, double z = 0.) const override;

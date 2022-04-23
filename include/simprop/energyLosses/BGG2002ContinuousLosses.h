@@ -15,7 +15,7 @@ class BGG2002ContinuousLosses final : public ContinuousLosses {
   utils::LookupArray<501> m_totalLosses{totalLossesFilename};
 
  public:
-  explicit BGG2002ContinuousLosses() : ContinuousLosses() {}
+  BGG2002ContinuousLosses();
   virtual ~BGG2002ContinuousLosses() = default;
 
   double dlnGamma_dt(PID pid, double Gamma, double z = 0) const override;

@@ -25,6 +25,7 @@ void Dominguez2011PhotonField::loadPhotonField(size_t zSize, size_t eSize, std::
 
 Dominguez2011PhotonField::Dominguez2011PhotonField() {
   loadPhotonField(18, 50, "EBL_Dominguez2011.txt");
+  LOGD << "calling " << __func__ << " constructor";
 }
 
 Dominguez2011PhotonField::Dominguez2011PhotonField(EblModel model) {

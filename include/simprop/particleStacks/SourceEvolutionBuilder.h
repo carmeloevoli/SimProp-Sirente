@@ -13,7 +13,7 @@ class SourceEvolutionBuilder final : public Builder {
   double m_evolutionIndex = 1;
 
  public:
-  SourceEvolutionBuilder(PID pid, size_t size = 1) : Builder(pid, size) {}
+  SourceEvolutionBuilder(PID pid, size_t size = 1);
   void setRedshiftRange(Range zRange) { m_zRange = zRange; };
   void setGammaRange(Range GammaRange) { m_GammaRange = GammaRange; };
   void setSlope(double slope) { m_slope = slope; }

@@ -15,7 +15,7 @@ int main() {
     auto particles = builder.build(rng);
     utils::OutputFile out("test_initial.txt");
     out << "#\n";
-    for (auto& p : particles) {
+    for (const auto& p : particles) {
       out << p << "\n";
     }
   } catch (const std::exception& e) {

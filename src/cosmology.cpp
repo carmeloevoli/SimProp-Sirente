@@ -14,6 +14,7 @@ Cosmology::Cosmology(double littleh, double OmegaBaryon_h2, double OmegaDarkMatt
   m_OmegaC = OmegaDarkMatter_h2 / pow2(m_h);
   m_OmegaM = m_OmegaB + m_OmegaC;
   m_OmegaL = OmegaLambda;
+  LOGD << "calling " << __func__ << " constructor";
   LOGD << "OmegaM + OmegaL = " << m_OmegaM + m_OmegaL;
   LOGD << "H_0^-1 = " << 1. / m_H0 / SI::Gyr << " Gyr";
 }
