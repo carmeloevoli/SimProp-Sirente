@@ -36,6 +36,7 @@ class RNG {
 }  // namespace utils
 
 using RandomNumberGenerator = simprop::utils::RNG<double>;
+using RandomNumber = fluent::NamedType<double, struct RandomNumberTag, fluent::Comparable>;
 
 }  // namespace simprop
 

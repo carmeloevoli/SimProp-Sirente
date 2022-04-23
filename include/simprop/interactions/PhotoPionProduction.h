@@ -10,17 +10,6 @@
 namespace simprop {
 namespace interactions {
 
-struct RndUnifNumber {
- public:
-  RndUnifNumber(double r) : m_r(r) {
-    if (r < 0. || r > 1.) throw std::invalid_argument("invalid random number");
-  }
-  double get() const { return m_r; };
-
- protected:
-  double m_r;
-};
-
 class PhotoPionProduction final : public Interaction {
  protected:
   const double m_sThreshold = pow2(SI::protonMassC2 + SI::pionMassC2);
@@ -34,11 +23,11 @@ class PhotoPionProduction final : public Interaction {
   std::vector<Particle> finalState(const Particle& particle, double zInteractionPoint,
                                    RandomNumberGenerator& rng) const override;
   // TODO make protected:
-  double sampleS(RndUnifNumber r, double sMax) const;
-  double sampleEps(RndUnifNumber r, double nucleonEnergy, double z) const;
-  double samplePionInelasticity(RndUnifNumber r, double s) const;
+  double sampleS(RandomNumber r, double sMax) const;
+  double sampleEps(RandomNumber r, double nucleonEnergy, double z) const;
+  double samplePionInelasticity(RandomNumber r, double s) const;
   double epsPdfIntegral(double photonEnergy, double nucleonEnergy, double z) const;
-  PID samplePionCharge(RndUnifNumber r, bool isNeutron) const;
+  PID samplePionCharge(RandomNumber r, bool isNeutron) const;
 };
 
 }  // namespace interactions

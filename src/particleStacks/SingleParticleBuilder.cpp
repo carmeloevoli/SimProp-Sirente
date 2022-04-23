@@ -6,7 +6,7 @@ SingleParticleBuilder::SingleParticleBuilder(PID pid, size_t size) : Builder(pid
   LOGD << "calling " << __func__ << " constructor";
 }
 
-ParticleStack SingleParticleBuilder::build(RandomNumberGenerator& rng) const {
+ParticleStack SingleParticleBuilder::build() const {
   ParticleStack stack;
   stack.reserve(m_size);
   for (size_t i = 0; i < m_size; ++i) {
@@ -17,5 +17,7 @@ ParticleStack SingleParticleBuilder::build(RandomNumberGenerator& rng) const {
   LOGD << "type = " << getPidName(m_pid) << ", z = " << m_z << ", Gamma = " << m_Gamma;
   return stack;
 }
+
+ParticleStack SingleParticleBuilder::build(RandomNumberGenerator& rng) const { return build(); }
 
 }  // namespace  simprop
