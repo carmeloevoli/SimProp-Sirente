@@ -1,0 +1,26 @@
+{
+    "creators": [
+        {
+            "affiliation": "University of L'Aquila",
+            "name": "Boncioli, Denise",
+            "orcid": "0000-0003-1186-9353"
+        },
+        {
+            "affiliation": "Gran Sasso Science Institute",
+            "name": "Evoli, Carmelo",
+            "orcid": "0000-0002-6023-5253"
+        }
+    ],
+    "description": "SimProp is a Monte Carlo simulation code of ultra-high energy cosmic ray propagation.",
+    "keywords": [
+        "cosmic-rays",
+        "uhecr",
+        "astroparticle-physics",
+        "monte-carlo",
+        "scientific-computing"
+    ],
+    "license": {
+        "id": "MIT"
+    },
+    "title": "SimProp-Sirente"
+}
