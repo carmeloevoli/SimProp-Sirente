@@ -14,7 +14,7 @@ ParticleStack SourceEvolutionBuilder::build(RandomNumberGenerator& rng) const {
   for (size_t i = 0; i < m_size; ++i) {
     auto z_i = getRndRedshift(m_zRange, 2, rng());
     auto Gamma_i = getRndGamma(m_GammaRange, m_slope, rng());
-    stack.emplace_back(Particle{m_pid, Redshift(z_i), LorentzFactor(Gamma_i), IsPrimary(true)});
+    stack.emplace_back(Particle{m_pid, Redshift(z_i), LorentzFactor(Gamma_i), true});
   }
   assert(stack.size() == m_size);
   LOGD << "built primaries with size " << stack.size();

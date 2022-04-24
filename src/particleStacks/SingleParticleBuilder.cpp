@@ -10,7 +10,7 @@ ParticleStack SingleParticleBuilder::build() const {
   ParticleStack stack;
   stack.reserve(m_size);
   for (size_t i = 0; i < m_size; ++i) {
-    stack.emplace_back(Particle{m_pid, Redshift(m_z), LorentzFactor(m_Gamma), IsPrimary(true)});
+    stack.emplace_back(Particle{m_pid, Redshift(m_z), LorentzFactor(m_Gamma), true});
   }
   assert(stack.size() == m_size);
   LOGD << "building stack with " << m_size << " particles";

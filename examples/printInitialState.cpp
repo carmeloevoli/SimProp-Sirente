@@ -6,7 +6,7 @@ int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer");
-    RandomNumberGenerator rng = utils::RNG<double>(66);
+    RandomNumberGenerator rng = utils::RNG<double>(Seed(66));
     auto builder = SourceEvolutionBuilder(proton, 1e6);
     builder.setGammaRange({1e8, 1e12});
     builder.setRedshiftRange({0., 2.});

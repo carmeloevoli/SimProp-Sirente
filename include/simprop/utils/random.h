@@ -3,6 +3,8 @@
 
 #include <random>
 
+#include "simprop/strongtypes.h"
+
 namespace simprop {
 namespace utils {
 
@@ -14,7 +16,7 @@ class RNG {
   typedef std::mt19937_64 generator_type;
   typedef std::uniform_real_distribution<FloatType> distribution_type;
 
-  explicit RNG(const unsigned int seed) { eng = generator_type(seed); }
+  explicit RNG(const Seed seed) { eng = generator_type(seed.get()); }
 
   // generate next random value in distribution
   result_type operator()() { return dist(eng); }
@@ -36,7 +38,6 @@ class RNG {
 }  // namespace utils
 
 using RandomNumberGenerator = simprop::utils::RNG<double>;
-using RandomNumber = fluent::NamedType<double, struct RandomNumberTag, fluent::Comparable>;
 
 }  // namespace simprop
 

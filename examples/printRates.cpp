@@ -29,7 +29,7 @@ void plot_sampled_s() {
   utils::Timer timer("main timer");
   const auto cmb = std::make_shared<photonfields::CMB>();
   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-  RandomNumberGenerator rng = utils::RNG<double>(1234);
+  RandomNumberGenerator rng = utils::RNG<double>(Seed(1234));
 
   const auto pppcmb = interactions::PhotoPionProduction(sigma, cmb);
   utils::OutputFile out("test_sample_s.txt");
@@ -74,7 +74,7 @@ void plot_sampled_epsilon() {
     }
   }
   {
-    RandomNumberGenerator rng = utils::RNG<double>(1234);
+    RandomNumberGenerator rng = utils::RNG<double>(Seed(1234));
     utils::OutputFile out("test_epsilon_sample.txt");
     for (size_t i = 0; i < 100000; ++i) {
       if (i % 1000 == 0) std::cout << i << "\n";
@@ -94,7 +94,7 @@ void plot_sampled_epsilon() {
 void plot_pion_energies() {
   const auto cmb = std::make_shared<photonfields::CMB>();
   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-  RandomNumberGenerator rng = utils::RNG<double>(1234);
+  RandomNumberGenerator rng = utils::RNG<double>(Seed(1234));
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
   utils::OutputFile out("test_pionenergy_sample.txt");
   const size_t N = 10000;
@@ -118,7 +118,7 @@ void plot_pion_energies() {
 void plot_inelasticity() {
   const auto cmb = std::make_shared<photonfields::CMB>();
   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-  RandomNumberGenerator rng = utils::RNG<double>(1234);
+  RandomNumberGenerator rng = utils::RNG<double>(Seed(234));
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
   utils::OutputFile out("test_inelasticity.txt");
   const auto protonEnergies = utils::LogAxis(1e18 * SI::eV, 1e21 * SI::eV, 12);

@@ -6,13 +6,13 @@
 namespace simprop {
 
 TEST(RNG, rangeUnity) {
-  RandomNumberGenerator rng = utils::RNG<double>(1234);
+  RandomNumberGenerator rng = utils::RNG<double>(Seed(1234));
   EXPECT_DOUBLE_EQ(rng.min(), 0.);
   EXPECT_DOUBLE_EQ(rng.max(), 1.);
 }
 
 TEST(RNG, withinRange) {
-  RandomNumberGenerator rng = utils::RNG<double>(5678);
+  RandomNumberGenerator rng = utils::RNG<double>(Seed(5678));
   for (size_t i = 0; i < 1000000; ++i) {
     auto r = rng();
     EXPECT_GE(r, 0.0);
@@ -21,7 +21,7 @@ TEST(RNG, withinRange) {
 }
 
 TEST(RNG, mean) {
-  RandomNumberGenerator rng = utils::RNG<double>(12);
+  RandomNumberGenerator rng = utils::RNG<double>(Seed(12));
   size_t N = 1000000;
   double sum = 0;
   for (size_t i = 0; i < N; ++i) {
@@ -31,7 +31,7 @@ TEST(RNG, mean) {
 }
 
 TEST(RNG, variance) {
-  RandomNumberGenerator rng = utils::RNG<double>(102);
+  RandomNumberGenerator rng = utils::RNG<double>(Seed(102));
   size_t N = 1000000;
   double sumSquared = 0;
   for (size_t i = 0; i < N; ++i) {
@@ -41,7 +41,7 @@ TEST(RNG, variance) {
 }
 
 TEST(RNG, uniform) {
-  RandomNumberGenerator rng = utils::RNG<double>(5678);
+  RandomNumberGenerator rng = utils::RNG<double>(Seed(5678));
   for (size_t i = 0; i < 1000000; ++i) {
     auto r = rng.uniform(-0.1, 0.1);
     EXPECT_GE(r, -0.1);

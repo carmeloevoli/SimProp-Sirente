@@ -125,8 +125,8 @@ int main() {
   try {
     utils::startup_information();
     {
-      RandomNumberGenerator rng = utils::RNG<double>(10);
-      utils::Timer timer("timer for Gamma = 1e10");
+      RandomNumberGenerator rng = utils::RNG<double>(Seed(10));
+      utils::Timer timer("timer for Gamma = 1e12");
       Evolutor evolutor(rng);
       evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12));
       evolutor.buildPhotonFields();
@@ -135,53 +135,15 @@ int main() {
       evolutor.run("test_proton_evolution_1_1e12_1.txt");
     }
     {
-      RandomNumberGenerator rng = utils::RNG<double>(-23);
-      utils::Timer timer("timer for Gamma = 1e10");
-      Evolutor evolutor(rng);
-      evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12));
-      evolutor.buildPhotonFields();
-      evolutor.buildContinuousLosses();
-      evolutor.buildStochasticInteractions();
-      evolutor.run("test_proton_evolution_1_1e12_2.txt");
-    }
-    {
-      RandomNumberGenerator rng = utils::RNG<double>(1000);
-      utils::Timer timer("timer for Gamma = 1e10");
-      Evolutor evolutor(rng);
-      evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12));
-      evolutor.buildPhotonFields();
-      evolutor.buildContinuousLosses();
-      evolutor.buildStochasticInteractions();
-      evolutor.run("test_proton_evolution_1_1e12_3.txt");
-    }
-    {
-      RandomNumberGenerator rng = utils::RNG<double>(3);
-      utils::Timer timer("timer for Gamma = 1e10");
+      RandomNumberGenerator rng = utils::RNG<double>(Seed(66));
+      utils::Timer timer("timer for Gamma = 1e12");
       Evolutor evolutor(rng);
       evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12), 100);
       evolutor.buildPhotonFields();
       evolutor.buildContinuousLosses();
       evolutor.buildStochasticInteractions();
-      evolutor.run("test_proton_evolution_1_1e12_10.txt");
+      evolutor.run("test_proton_evolution_1_1e12_100.txt");
     }
-    // {
-    //   utils::Timer timer("timer for Gamma = 1e11");
-    //   Evolutor evolutor(rng);
-    //   evolutor.buildParticleStack(1., 1e12);
-    //   evolutor.buildPhotonFields();
-    //   evolutor.buildContinuousLosses();
-    //   evolutor.buildStochasticInteractions();
-    //   evolutor.run("test_proton_evolution_1e11.txt");
-    // }
-    // {
-    //   utils::Timer timer("timer for Gamma = 1e12");
-    //   Evolutor evolutor(rng);
-    //   evolutor.buildParticleStack(1., 1e12);
-    //   evolutor.buildPhotonFields();
-    //   evolutor.buildContinuousLosses();
-    //   evolutor.buildStochasticInteractions();
-    //   evolutor.run("test_proton_evolution_1e12.txt");
-    // }
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }

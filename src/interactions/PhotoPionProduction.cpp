@@ -57,7 +57,7 @@ double PhotoPionProduction::epsPdfIntegral(double photonEnergy, double nucleonEn
     return m_phField->density(eps / (1. + z), z) / pow2(eps) * m_sigma->getPhiAtS(s_max);
   };
   auto minPhEnergy = pickMinPhotonEnergy(m_phField->getMinPhotonEnergy(), nucleonEnergy);
-  auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000, 1e-3);
+  auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000, 4e-4);
   // TODO try to improve the precision
   return value;
 }
@@ -69,7 +69,6 @@ double PhotoPionProduction::sampleEps(RandomNumber r, double nucleonEnergy, doub
   auto value = utils::rootFinder<double>(
       [&](double eps) { return epsPdfIntegral(eps, nucleonEnergy, z) - rIntegralMax; }, minPhEnergy,
       maxPhotonEnergy, 1000, 1e-3);
-  // TODO try to improve the precision
   return value;
 }
 
