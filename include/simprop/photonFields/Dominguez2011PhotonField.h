@@ -4,40 +4,27 @@
 #include <string>
 #include <vector>
 
-#include "simprop/photonFields/PhotonField.h"
+#include "simprop/photonFields/LookupTablePhotonField.h"
 #include "simprop/units.h"
 
 namespace simprop {
 namespace photonfields {
 
-enum EblModel { MEAN, UPPER, LOWER };
+// enum class EblModel { MEAN, UPPER, LOWER };
 
-class Dominguez2011PhotonField final : public PhotonField {
- protected:
-  size_t m_zSize;
-  size_t m_eSize;
-  std::string m_filename;
-  std::vector<double> m_redshifts;
-  std::vector<double> m_logPhotonEnergies;
-  std::vector<double> m_logDensity;
-  std::vector<double> m_logIgamma;
-
+class Dominguez2011PhotonField final : public LookupTablePhotonField {
  public:
-  Dominguez2011PhotonField(EblModel model);
-  Dominguez2011PhotonField();
+  Dominguez2011PhotonField() : LookupTablePhotonField(18, 50, "EBL_Dominguez2011.txt") {}
+};
 
-  double density(double ePhoton, double z = 0.) const override;
-  double I_gamma(double ePhoton, double z = 0.) const override;
-  double getMinPhotonEnergy(double z = 0) const override {
-    return std::pow(10., m_logPhotonEnergies.front()) * SI::eV;
-  }
-  double getMaxPhotonEnergy(double z = 0) const override {
-    return std::pow(10., m_logPhotonEnergies.back()) * SI::eV;
-  }
+class Dominguez2011LowerPhotonField final : public LookupTablePhotonField {
+ public:
+  Dominguez2011LowerPhotonField() : LookupTablePhotonField(18, 50, "EBL_lower_Dominguez2011.txt") {}
+};
 
- protected:
-  void loadPhotonField(size_t zSize, size_t eSize, std::string filename);
-  void loadDataFile();
+class Dominguez2011UpperPhotonField final : public LookupTablePhotonField {
+ public:
+  Dominguez2011UpperPhotonField() : LookupTablePhotonField(18, 50, "EBL_upper_Dominguez2011.txt") {}
 };
 
 }  // namespace photonfields

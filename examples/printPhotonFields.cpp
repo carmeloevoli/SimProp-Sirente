@@ -5,8 +5,8 @@ using namespace simprop;
 void plot_local_photonfields() {
   const auto cmb = photonfields::CMB();
   const auto ebl = photonfields::Dominguez2011PhotonField();
-  const auto ebl_lo = photonfields::Dominguez2011PhotonField(photonfields::EblModel::LOWER);
-  const auto ebl_up = photonfields::Dominguez2011PhotonField(photonfields::EblModel::UPPER);
+  const auto ebl_lo = photonfields::Dominguez2011LowerPhotonField();
+  const auto ebl_up = photonfields::Dominguez2011UpperPhotonField();
   const auto ePhoton = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
   utils::OutputFile out("test_local_photonfields.txt");
   const auto units = SI::nW / pow2(SI::meter) / SI::sr / SI::cOver4pi;

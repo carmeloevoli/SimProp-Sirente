@@ -1,17 +1,19 @@
 #ifndef SIMPROP_UTILS_LOOKUPTABLE_H
 #define SIMPROP_UTILS_LOOKUPTABLE_H
 
-#include <algorithm>
-#include <cmath>
-#include <stdexcept>
+// #include <algorithm>
+// #include <cmath>
+// #include <stdexcept>
+#include <vector>
 
+#include "simprop/units.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/numeric.h"
 
 namespace simprop {
 namespace utils {
 
-typedef std::vector<double>::const_iterator const_iterator;
+// typedef std::vector<double>::const_iterator const_iterator;
 
 template <size_t xSize>
 class LookupArray {
@@ -48,102 +50,50 @@ class LookupArray {
   std::string m_filePath;
 };
 
-template <size_t xSize, size_t ySize>
-class LookupTable {
- public:
-  explicit LookupTable(std::string filePath) : m_filePath(filePath) {
-    if (!utils::fileExists(filePath))
-      throw std::runtime_error("file data for lookup table does not exist");
-    if (xSize < 2) throw std::runtime_error("x-axis size must be > 1");
-    if (ySize < 2) throw std::runtime_error("y-axis size must be > 1");
-    m_xAxis.reserve(xSize);
-    m_yAxis.reserve(ySize);
-    m_table.reserve(xSize * ySize);
-    loadTable();
-  }
+// template <size_t xSize, size_t ySize>
+// class LookupTable {
+//  public:
+//   explicit LookupTable(std::string filePath) : m_filePath(filePath) {
+//     if (!utils::fileExists(filePath))
+//       throw std::runtime_error("file data for lookup table does not exist");
+//     if (xSize < 2) throw std::runtime_error("x-axis size must be > 1");
+//     if (ySize < 2) throw std::runtime_error("y-axis size must be > 1");
+//     m_xAxis.reserve(xSize);
+//     m_yAxis.reserve(ySize);
+//     m_table.reserve(xSize * ySize);
+//     loadTable();
+//   }
 
-  double get(double x, double y) const {
-    return utils::interpolate2d(x, y, m_xAxis, m_yAxis, m_table);
-  }
+//   double get(double x, double y) const {
+//     return utils::interpolate2d(x, y, m_xAxis, m_yAxis, m_table);
+//   }
 
-  bool xIsInside(double x) const { return x >= m_xAxis.front() && x <= m_xAxis.back(); }
-  bool yIsInside(double y) const { return y >= m_yAxis.front() && y <= m_yAxis.back(); }
+//   bool xIsInside(double x) const { return x >= m_xAxis.front() && x <= m_xAxis.back(); }
+//   bool yIsInside(double y) const { return y >= m_yAxis.front() && y <= m_yAxis.back(); }
 
- protected:
-  void loadTable() {
-    auto v = utils::loadFileByRow(m_filePath, ",");
-    size_t counter = 0;
-    for (size_t i = 0; i < xSize; ++i) {
-      for (size_t j = 0; j < ySize; ++j) {
-        auto line = v.at(counter);
-        if (line.size() != 3) throw std::runtime_error("error in reading table values");
-        if (j == 0) m_xAxis.emplace_back(line[0]);
-        if (i == 0) m_yAxis.emplace_back(line[1]);
-        m_table.emplace_back(line[2]);
-        counter++;
-      }
-    }
-    assert(m_xAxis.size() == xSize && m_yAxis.size() == ySize);
-  }
+//  protected:
+//   void loadTable() {
+//     auto v = utils::loadFileByRow(m_filePath, ",");
+//     size_t counter = 0;
+//     for (size_t i = 0; i < xSize; ++i) {
+//       for (size_t j = 0; j < ySize; ++j) {
+//         auto line = v.at(counter);
+//         if (line.size() != 3) throw std::runtime_error("error in reading table values");
+//         if (j == 0) m_xAxis.emplace_back(line[0]);
+//         if (i == 0) m_yAxis.emplace_back(line[1]);
+//         m_table.emplace_back(line[2]);
+//         counter++;
+//       }
+//     }
+//     assert(m_xAxis.size() == xSize && m_yAxis.size() == ySize);
+//   }
 
- protected:
-  std::vector<double> m_xAxis;
-  std::vector<double> m_yAxis;
-  std::vector<double> m_table;
-  std::string m_filePath;
-};
-
-template <size_t xSize, size_t ySize>
-class LookupPhotonField {  // TODO finish this
- public:
-  explicit LookupPhotonField(std::string filePath) : m_filePath(filePath) {
-    if (!utils::fileExists(filePath))
-      throw std::runtime_error("file data for lookup table does not exist");
-    if (xSize < 2) throw std::runtime_error("x-axis size must be > 1");
-    if (ySize < 2) throw std::runtime_error("y-axis size must be > 1");
-    m_xAxis.reserve(xSize);
-    m_yAxis.reserve(ySize);
-    m_density.reserve(xSize * ySize);
-    m_Igamma.reserve(xSize * ySize);
-    loadTable();
-  }
-
-  double getDensity(double x, double y) const {
-    return utils::interpolate2d(x, y, m_xAxis, m_yAxis, m_density);
-  }
-
-  double getIgamma(double x, double y) const {
-    return utils::interpolate2d(x, y, m_xAxis, m_yAxis, m_Igamma);
-  }
-
-  bool xIsInside(double x) const { return x >= m_xAxis.front() && x <= m_xAxis.back(); }
-  bool yIsInside(double y) const { return y >= m_yAxis.front() && y <= m_yAxis.back(); }
-
- protected:
-  void loadTable() {
-    auto v = utils::loadFileByRow(m_filePath, ",");
-    size_t counter = 0;
-    for (size_t i = 0; i < xSize; ++i) {
-      for (size_t j = 0; j < ySize; ++j) {
-        auto line = v.at(counter);
-        if (line.size() != 4) throw std::runtime_error("error in reading table values");
-        if (j == 0) m_xAxis.emplace_back(line[0]);
-        if (i == 0) m_yAxis.emplace_back(line[1]);
-        m_density.emplace_back(line[2]);
-        m_Igamma.emplace_back(line[3]);
-        counter++;
-      }
-    }
-    assert(m_xAxis.size() == xSize && m_yAxis.size() == ySize);
-  }
-
- protected:
-  std::vector<double> m_xAxis;
-  std::vector<double> m_yAxis;
-  std::vector<double> m_density;
-  std::vector<double> m_Igamma;
-  std::string m_filePath;
-};
+//  protected:
+//   std::vector<double> m_xAxis;
+//   std::vector<double> m_yAxis;
+//   std::vector<double> m_table;
+//   std::string m_filePath;
+// };
 
 }  // namespace utils
 }  // namespace simprop

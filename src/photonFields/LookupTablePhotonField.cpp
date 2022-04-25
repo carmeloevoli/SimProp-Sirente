@@ -1,4 +1,4 @@
-#include "simprop/photonFields/Dominguez2011PhotonField.h"
+#include "simprop/photonFields/LookupTablePhotonField.h"
 
 #include "simprop/common.h"
 #include "simprop/utils/io.h"
@@ -7,7 +7,7 @@
 namespace simprop {
 namespace photonfields {
 
-void Dominguez2011PhotonField::loadPhotonField(size_t zSize, size_t eSize, std::string filename) {
+LookupTablePhotonField::LookupTablePhotonField(size_t zSize, size_t eSize, std::string filename) {
   m_zSize = zSize;
   m_eSize = eSize;
   m_filename = "data/" + filename;
@@ -23,21 +23,7 @@ void Dominguez2011PhotonField::loadPhotonField(size_t zSize, size_t eSize, std::
   }
 }
 
-Dominguez2011PhotonField::Dominguez2011PhotonField() {
-  loadPhotonField(18, 50, "EBL_Dominguez2011.txt");
-  LOGD << "calling " << __func__ << " constructor";
-}
-
-Dominguez2011PhotonField::Dominguez2011PhotonField(EblModel model) {
-  if (model == MEAN)
-    loadPhotonField(18, 50, "EBL_Dominguez2011.txt");
-  else if (model == UPPER)
-    loadPhotonField(18, 50, "EBL_upper_Dominguez2011.txt");
-  else
-    loadPhotonField(18, 50, "EBL_lower_Dominguez2011.txt");
-}
-
-void Dominguez2011PhotonField::loadDataFile() {
+void LookupTablePhotonField::loadDataFile() {
   auto v = utils::loadFileByRow(m_filename, ",");
   size_t counter = 0;
   for (size_t i = 0; i < m_zSize; ++i) {
@@ -54,7 +40,7 @@ void Dominguez2011PhotonField::loadDataFile() {
   assert(m_redshifts.size() == m_zSize && m_logPhotonEnergies.size() == m_eSize);
 }
 
-double Dominguez2011PhotonField::density(double ePhoton, double z) const {
+double LookupTablePhotonField::density(double ePhoton, double z) const {
   constexpr auto units = 1. / SI::eV / SI::m3;
   double value = 0;
   auto loge = std::log10(ePhoton / SI::eV);
@@ -65,7 +51,7 @@ double Dominguez2011PhotonField::density(double ePhoton, double z) const {
   return std::max(value, 0.);
 }
 
-double Dominguez2011PhotonField::I_gamma(double ePhoton, double z) const {
+double LookupTablePhotonField::I_gamma(double ePhoton, double z) const {
   constexpr auto units = 1. / pow2(SI::eV) / SI::m3;
   double value = 0;
   auto loge = std::log10(ePhoton / SI::eV);

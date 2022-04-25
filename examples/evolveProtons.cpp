@@ -5,7 +5,7 @@
 using namespace simprop;
 
 auto IsActive = [](const Particle& p) {
-  const double minPropagatingGamma = 1e7;
+  constexpr double minPropagatingGamma = 1e7;
   return (p.IsNucleus() && p.getRedshift() > 1e-20 && p.getGamma() > minPropagatingGamma);
 };
 
@@ -22,7 +22,7 @@ class Evolutor {
 
  public:
   Evolutor(RandomNumberGenerator& rng) : m_rng(rng) {
-    m_cosmology = std::make_shared<cosmo::Planck2018>();
+    m_cosmology = std::shared_ptr<cosmo::Planck2018>();
   }
 
   void buildParticleStack(Redshift z, LorentzFactor Gamma, size_t N = 1) {

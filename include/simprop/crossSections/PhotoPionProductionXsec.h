@@ -13,7 +13,7 @@ namespace xsecs {
 class PhotoPionProductionXsec final : public CrossSection {
  protected:
   const std::string m_filename = "data/xsec_ppp.txt";
-  size_t m_sSize = 9999;
+  const size_t m_sSize = 9999;
   std::vector<double> m_sEnergies;
   std::vector<double> m_sigma;
   std::vector<double> m_phi;
