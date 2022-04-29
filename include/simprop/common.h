@@ -3,15 +3,20 @@
 
 #include <utility>
 
+#include "simprop/particle.h"
 #include "simprop/units.h"
+
+using Range = std::pair<double, double>;
 
 namespace simprop {
 
 inline double energyToFrequency(double energy) { return energy / SI::hPlanck; }
 inline double energyToWavelenght(double energy) { return SI::hPlanck * SI::cLight / energy; }
 
-double getRndGamma(std::pair<double, double> gammaRange, double slope, double r);
-double getRndRedshift(std::pair<double, double> redshiftRange, int evolutionIndex, double r);
+double getRndGamma(Range gammaRange, RandomNumber r);
+double getRndRedshift(Range redshiftRange, RandomNumber r);
+Range getRedshiftRange(const ParticleStack& stack);
+Range getGammaRange(const ParticleStack& stack);
 
 }  // namespace simprop
 

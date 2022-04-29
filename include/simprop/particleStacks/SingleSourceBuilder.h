@@ -1,22 +1,28 @@
 #ifndef SIMPROP_SINGLESOURCEBUILDER_H
 #define SIMPROP_SINGLESOURCEBUILDER_H
 
+#include "simprop/common.h"
 #include "simprop/particleStacks/Builder.h"
 
 namespace simprop {
 
+struct SingleSourceParams {
+  Range GammaRange;
+  double z;
+  double slope;
+  double GammaCutoff;
+};
+
 class SingleSourceBuilder final : public Builder {
  protected:
-  double m_z = 1;
   Range m_GammaRange = {1e8, 1e14};
-  double m_slope = 2.;
+  double m_z = 1;
+  double m_slope = -1;
+  double m_GammaCutoff = -1;
+  double m_maxWeight = -1;
 
  public:
-  SingleSourceBuilder(PID pid, size_t size = 1);
-  void setRedshift(double z) { m_z = z; };
-  void setGammaRange(Range GammaRange) { m_GammaRange = GammaRange; };
-  void setSlope(double slope) { m_slope = slope; }
-
+  SingleSourceBuilder(PID pid, SingleSourceParams params, size_t size = 1);
   ParticleStack build(RandomNumberGenerator& rng) const override;
 };
 

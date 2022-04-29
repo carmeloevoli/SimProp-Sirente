@@ -19,21 +19,21 @@ class Particle {
   PID m_pid;
   State m_origin;
   State m_now;
-  bool m_isPrimary;
+  double m_weight;
 
  public:
-  Particle(PID pid, Redshift z, LorentzFactor Gamma, bool isPrimary = false)
+  Particle(PID pid, Redshift z, LorentzFactor Gamma, double weight = 1.)
       : m_pid(pid),
         m_origin({z.get(), Gamma.get()}),
         m_now({z.get(), Gamma.get()}),
-        m_isPrimary(isPrimary) {}
+        m_weight(weight) {}
 
   // Copy constructor
   Particle(const Particle& particle) {
-    m_isPrimary = particle.m_isPrimary;
-    m_now = particle.m_now;
-    m_origin = particle.m_origin;
     m_pid = particle.m_pid;
+    m_origin = particle.m_origin;
+    m_now = particle.m_now;
+    m_weight = particle.m_weight;
   }
 
   const State getNow() const { return m_now; }
@@ -42,19 +42,18 @@ class Particle {
   const State& getOrigin() const { return m_origin; }
   const double getRedshift() const { return m_now.z; }
   const double getGamma() const { return m_now.Gamma; }
-  const bool IsPrimary() const { return m_isPrimary; }
   const bool IsNucleus() const { return pidIsNucleus(m_pid); }
 
   friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
     auto pidName = getPidName(p.m_pid);
     auto z = p.m_now.z;
     auto Gamma = p.m_now.Gamma;
-    return os << pidName << " " << std::fixed << z << " " << std::scientific << Gamma;
+    auto weight = p.m_weight;
+    return os << pidName << " " << std::scientific << z << " " << Gamma << " " << weight;
   }
-
-  // public:
-  //  const PID& pid = m_pid;
 };
+
+using ParticleStack = std::vector<Particle>;
 
 }  // namespace simprop
 

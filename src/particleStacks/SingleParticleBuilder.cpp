@@ -2,7 +2,10 @@
 
 namespace simprop {
 
-SingleParticleBuilder::SingleParticleBuilder(PID pid, size_t size) : Builder(pid, size) {
+SingleParticleBuilder::SingleParticleBuilder(PID pid, SingleParticleParams params, size_t size)
+    : Builder(pid, size) {
+  m_Gamma = params.Gamma;
+  m_z = params.z;
   LOGD << "calling " << __func__ << " constructor";
 }
 
@@ -10,7 +13,7 @@ ParticleStack SingleParticleBuilder::build() const {
   ParticleStack stack;
   stack.reserve(m_size);
   for (size_t i = 0; i < m_size; ++i) {
-    stack.emplace_back(Particle{m_pid, Redshift(m_z), LorentzFactor(m_Gamma), true});
+    stack.emplace_back(Particle{m_pid, Redshift(m_z), LorentzFactor(m_Gamma)});
   }
   assert(stack.size() == m_size);
   LOGD << "building stack with " << m_size << " particles";

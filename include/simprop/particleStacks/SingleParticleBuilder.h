@@ -5,16 +5,18 @@
 
 namespace simprop {
 
+struct SingleParticleParams {
+  double Gamma;
+  double z;
+};
+
 class SingleParticleBuilder final : public Builder {
  protected:
-  double m_z = 1;
   double m_Gamma = 1e12;
+  double m_z = 1;
 
  public:
-  SingleParticleBuilder(PID pid, size_t size = 1);
-  void setRedshift(double z) { m_z = z; };
-  void setGamma(double Gamma) { m_Gamma = Gamma; };
-
+  SingleParticleBuilder(PID pid, SingleParticleParams params, size_t size = 1);
   ParticleStack build(RandomNumberGenerator& rng) const override;
   ParticleStack build() const;
 };

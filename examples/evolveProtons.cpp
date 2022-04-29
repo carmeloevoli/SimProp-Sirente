@@ -11,7 +11,7 @@ auto IsActive = [](const Particle& p) {
 
 class Evolutor {
  protected:
-  const double deltaGammaCritical = 0.1;
+  const double deltaGammaCritical = 0.2;
   RandomNumberGenerator& m_rng;
   ParticleStack m_stack;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
@@ -22,14 +22,25 @@ class Evolutor {
 
  public:
   Evolutor(RandomNumberGenerator& rng) : m_rng(rng) {
-    m_cosmology = std::shared_ptr<cosmo::Planck2018>();
+    m_cosmology = std::make_shared<cosmo::Planck2018>();
   }
 
   void buildParticleStack(Redshift z, LorentzFactor Gamma, size_t N = 1) {
-    auto builder = SingleParticleBuilder(proton, N);
-    builder.setRedshift(z.get());
-    builder.setGamma(Gamma.get());
+    auto builder = SingleParticleBuilder(proton, {Gamma.get(), z.get()}, N);
     m_stack = builder.build();
+  }
+
+  void buildCosmologicalParticleStack(size_t N = 1) {
+    // parameters are taken from R. Alves Batista, et al., JCAP 2015, arXiv:1508.01824
+    double maxEnergy = std::pow(10., 21) * SI::eV;
+    double minEnergy = std::pow(10., 17.5) * SI::eV;
+    double slope = 2.5;
+    double evolutionIndex = 3;
+    Range GammaRange = {minEnergy / SI::protonMassC2, maxEnergy / SI::protonMassC2};
+    Range zRange = {0., 2.};
+    auto builder = SourceEvolutionBuilder(
+        proton, {GammaRange, zRange, slope, 1e50 * SI::eV, evolutionIndex}, N);
+    m_stack = builder.build(m_rng);
   }
 
   void buildPhotonFields() {
@@ -50,9 +61,9 @@ class Evolutor {
   }
 
   double computeStochasticRedshiftInterval(const Particle& particle, RandomNumber r) {
-    const auto pid = particle.getPid();
     const auto zNow = particle.getRedshift();
     const auto Gamma = particle.getGamma();
+    const auto pid = particle.getPid();
     const auto dtdz = m_cosmology->dtdz(zNow);
     const auto lambda_s = std::fabs(1. / m_pppcmb->rate(pid, Gamma, zNow) / dtdz);
     // TODO why to put the fabs?
@@ -90,9 +101,10 @@ class Evolutor {
   void run(std::string filename) {
     utils::OutputFile out(filename.c_str());
     size_t nActive = std::count_if(m_stack.begin(), m_stack.end(), IsActive);
+    size_t counter = 0;
     while (nActive > 0) {
+      if (counter % 1000 == 0) std::cout << counter << "\n";
       const auto it = std::find_if(m_stack.begin(), m_stack.end(), IsActive);
-      out << *it << " " << 0 << "\n";
       const auto nowRedshift = it->getRedshift();
 
       auto r = m_rng();
@@ -103,11 +115,13 @@ class Evolutor {
       assert(dz_c > 0. && dz_c <= nowRedshift);
 
       if (dz_s > dz_c || dz_s > nowRedshift) {
+        // out << *it << " " << 0 << "\n";
         const auto Gamma = it->getGamma();
         const auto dz = dz_c;
         const auto deltaGamma = computeDeltaGamma(*it, dz);
         it->getNow() = {nowRedshift - dz, Gamma * (1. - deltaGamma)};
       } else {
+        // out << *it << " " << 1 << "\n";
         const auto dz = dz_s;
         auto finalState = m_pppcmb->finalState(*it, nowRedshift - dz, m_rng);
         m_stack.erase(it);
@@ -115,8 +129,16 @@ class Evolutor {
       }
 
       nActive = std::count_if(m_stack.begin(), m_stack.end(), IsActive);
+      counter++;
     }
   }  // run()
+
+  void dumpStack(std::string filename) {
+    utils::OutputFile out(filename.c_str());
+    for (const auto& particle : m_stack) {
+      if (particle.getPid() == proton) out << particle << "\n";
+    }
+  }
 
   virtual ~Evolutor() = default;
 };
@@ -124,26 +146,38 @@ class Evolutor {
 int main() {
   try {
     utils::startup_information();
+    // {
+    //   RandomNumberGenerator rng = utils::RNG<double>(Seed(69));
+    //   utils::Timer timer("timer for Gamma = 1e10");
+    //   Evolutor evolutor(rng);
+    //   evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e10), 10);
+    //   evolutor.buildPhotonFields();
+    //   evolutor.buildContinuousLosses();
+    //   evolutor.buildStochasticInteractions();
+    //   evolutor.run("test_proton_evolution_1_1e10_10.txt");
+    // }
+    // {
+    //   RandomNumberGenerator rng = utils::RNG<double>(Seed(96));
+    //   utils::Timer timer("timer for Gamma = 1e12");
+    //   Evolutor evolutor(rng);
+    //   evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12), 10);
+    //   evolutor.buildPhotonFields();
+    //   evolutor.buildContinuousLosses();
+    //   evolutor.buildStochasticInteractions();
+    //   evolutor.run("test_proton_evolution_1_1e12_10.txt");
+    // }
     {
-      RandomNumberGenerator rng = utils::RNG<double>(Seed(10));
-      utils::Timer timer("timer for Gamma = 1e12");
+      RandomNumberGenerator rng = utils::RNG<double>(Seed(96));
+      utils::Timer timer("timer for first test");
       Evolutor evolutor(rng);
-      evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12));
+      evolutor.buildCosmologicalParticleStack(10000);
       evolutor.buildPhotonFields();
       evolutor.buildContinuousLosses();
       evolutor.buildStochasticInteractions();
-      evolutor.run("test_proton_evolution_1_1e12_1.txt");
+      evolutor.run("test_proton_cosmology_10.txt");
+      evolutor.dumpStack("test_spectrum.txt");
     }
-    {
-      RandomNumberGenerator rng = utils::RNG<double>(Seed(66));
-      utils::Timer timer("timer for Gamma = 1e12");
-      Evolutor evolutor(rng);
-      evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12), 100);
-      evolutor.buildPhotonFields();
-      evolutor.buildContinuousLosses();
-      evolutor.buildStochasticInteractions();
-      evolutor.run("test_proton_evolution_1_1e12_100.txt");
-    }
+
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
