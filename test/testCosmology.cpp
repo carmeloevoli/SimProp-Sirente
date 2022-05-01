@@ -8,18 +8,18 @@ namespace simprop {
 TEST(Cosmology, hubbleTime) {
   auto cosmology = cosmo::Cosmology();
   EXPECT_DOUBLE_EQ(cosmology.OmegaM + cosmology.OmegaL, 1.);
-  EXPECT_DOUBLE_EQ(cosmology.H(0.), cosmology.H0);
-  EXPECT_LT(cosmology.H(0.), cosmology.H(1.));
-  EXPECT_LT(cosmology.H(1.), cosmology.H(100.));
-  EXPECT_THROW(cosmology.H(-1.), std::invalid_argument);
+  EXPECT_DOUBLE_EQ(cosmology.hubbleRate(0.), cosmology.H0);
+  EXPECT_LT(cosmology.hubbleRate(0.), cosmology.hubbleRate(1.));
+  EXPECT_LT(cosmology.hubbleRate(1.), cosmology.hubbleRate(50.));
 }
 
-TEST(Cosmology, lookbackTime) {
+TEST(Cosmology, comovingDistance) {
   auto cosmology = cosmo::Cosmology();
-  EXPECT_DOUBLE_EQ(cosmology.lookbackTime(0.), 0.);
-  EXPECT_LT(cosmology.lookbackTime(0.), cosmology.lookbackTime(1.));
-  EXPECT_LT(cosmology.lookbackTime(1.), cosmology.lookbackTime(100.));
-  EXPECT_THROW(cosmology.lookbackTime(-1.), std::invalid_argument);
+  EXPECT_DOUBLE_EQ(cosmology.redshift2ComovingDistance(0.), 0.);
+  EXPECT_LT(cosmology.redshift2ComovingDistance(0.), cosmology.redshift2ComovingDistance(1.));
+  EXPECT_LT(cosmology.redshift2ComovingDistance(1.), cosmology.redshift2ComovingDistance(50.));
+  EXPECT_THROW(cosmology.redshift2ComovingDistance(-1.), std::invalid_argument);
+  EXPECT_THROW(cosmology.redshift2ComovingDistance(101.), std::invalid_argument);
 }
 
 TEST(Cosmology, Planck2018) {

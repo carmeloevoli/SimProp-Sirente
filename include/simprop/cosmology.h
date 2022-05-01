@@ -1,6 +1,8 @@
 #ifndef SIMPROP_COSMOLOGY_COSMOLOGY_H
 #define SIMPROP_COSMOLOGY_COSMOLOGY_H
 
+#include <vector>
+
 #include "simprop/units.h"
 
 namespace simprop {
@@ -14,16 +16,41 @@ class Cosmology {
   double m_OmegaC = 0.3;
   double m_OmegaM = m_OmegaC;
   double m_OmegaL = 1. - m_OmegaM;
+  double m_Dh = SI::cLight / m_H0;
+
+  const size_t m_size = 1000;
+  const double m_zmin = 0.0001;
+  const double m_zmax = 100;
+
+  std::vector<double> m_z;   // redshift
+  std::vector<double> m_Dc;  // comoving distance
+  std::vector<double> m_Dl;  // luminosity distance
+  std::vector<double> m_Dt;  // light travel distance
 
  public:
-  Cosmology(){};
+  Cosmology();
   Cosmology(double littleh, double OmegaBaryon_h2, double OmegaDarkMatter_h2, double OmegaLambda);
   virtual ~Cosmology() = default;
 
-  double H(double z) const;
-  double hubbleTime(double z) const;
-  double dtdz(double z) const;
-  double lookbackTime(double z) const;
+  inline double E(double z) const { return std::sqrt(m_OmegaL + m_OmegaM * pow3(1. + z)); }
+  inline double hubbleRate(double z) const { return m_H0 * E(z); }
+  inline double dtdz(double z) const { return 1. / hubbleRate(z) / (1. + z); }
+
+  double comovingDistance2Redshift(double d) const;
+  double redshift2ComovingDistance(double z) const;
+  double luminosityDistance2Redshift(double d) const;
+  double redshift2LuminosityDistance(double z) const;
+  double lightTravelDistance2Redshift(double d) const;
+  double redshift2LightTravelDistance(double z) const;
+  double comoving2LightTravelDistance(double d) const;
+  double lightTravel2ComovingDistance(double d) const;
+
+ protected:
+  void setParameters(double littleh, double OmegaBaryon_h2, double OmegaDarkMatter_h2,
+                     double OmegaLambda);
+  void init();
+  double computeLightTravelDistance(double z) const;
+  double computeComovingDistance(double z) const;
 
  public:
   const double& h = m_h;
