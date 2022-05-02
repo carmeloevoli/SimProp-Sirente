@@ -23,7 +23,7 @@ ParticleStack SourceEvolutionBuilder::build(RandomNumberGenerator& rng) const {
     auto z_i = getRndRedshift(m_zRange, RandomNumber(rng()));
     auto Gamma_i = getRndGamma(m_GammaRange, RandomNumber(rng()));
     auto w_i = std::pow(Gamma_i, -m_slope + 1.) * std::exp(-Gamma_i / m_GammaCutoff);
-    w_i *= std::pow(1. + z_i, m_evolutionIndex + 2.);
+    w_i *= std::pow(1. + z_i, m_evolutionIndex + 1.);
     stack.emplace_back(Particle{m_pid, Redshift(z_i), LorentzFactor(Gamma_i), w_i / m_maxWeight});
   }
   assert(stack.size() == m_size);

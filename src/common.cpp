@@ -13,10 +13,9 @@ double getRndGamma(Range gammaRange, RandomNumber r) {
 
 double getRndRedshift(Range redshiftRange, RandomNumber r) {
   using std::pow;
-  const double p = 2.0;
-  const auto Zm = pow(1. + redshiftRange.first, -p + 1.);
-  const auto ZM = pow(1. + redshiftRange.second, -p + 1.);
-  const auto C = pow(r.get() * ZM + (1. - r.get()) * Zm, 1. / (-p + 1.));
+  const auto Zm = 1. + redshiftRange.first;
+  const auto ZM = 1. + redshiftRange.second;
+  const auto C = Zm * pow(ZM / Zm, r.get());
   return C - 1;
 }
 

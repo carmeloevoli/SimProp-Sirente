@@ -18,7 +18,7 @@ ParticleStack MonochromaticBuilder::build(RandomNumberGenerator& rng) const {
   stack.reserve(m_size);
   for (size_t i = 0; i < m_size; ++i) {
     auto z_i = getRndRedshift(m_zRange, RandomNumber(rng()));
-    auto w_i = std::pow(1. + z_i, m_evolutionIndex + 2.);
+    auto w_i = std::pow(1. + z_i, m_evolutionIndex + 1.);
     stack.emplace_back(Particle{m_pid, Redshift(z_i), LorentzFactor(m_Gamma), w_i / m_maxWeight});
   }
   assert(stack.size() == m_size);
