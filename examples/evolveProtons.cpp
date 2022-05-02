@@ -60,73 +60,73 @@ class Evolutor {
     m_pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, m_cmb);
   }
 
-  double computeStochasticRedshiftInterval(const Particle& particle, RandomNumber r) {
-    const auto zNow = particle.getRedshift();
-    const auto Gamma = particle.getGamma();
-    const auto pid = particle.getPid();
-    const auto dtdz = m_cosmology->dtdz(zNow);
-    const auto lambda_s = std::fabs(1. / m_pppcmb->rate(pid, Gamma, zNow) / dtdz);
-    // TODO why to put the fabs?
-    return -lambda_s * std::log(1. - r.get());
-  }
+  // double computeStochasticRedshiftInterval(const Particle& particle, RandomNumber r) {
+  //   const auto zNow = particle.getRedshift();
+  //   const auto Gamma = particle.getGamma();
+  //   const auto pid = particle.getPid();
+  //   const auto dtdz = m_cosmology->dtdz(zNow);
+  //   const auto lambda_s = std::fabs(1. / m_pppcmb->rate(pid, Gamma, zNow)) / dtdz;
+  //   // TODO why to put the fabs?
+  //   return -lambda_s * std::log(1. - r.get());
+  // }
 
-  double computeDeltaGamma(const Particle& particle, double dz) {
+  double computeDeltaGamma(const Particle& particle, double stepLength) {
     const auto pid = particle.getPid();
     const auto zNow = particle.getRedshift();
+    const auto dNow = m_cosmology->redshift2LightTravelDistance(zNow);
+    const auto zHalf = m_cosmology->lightTravelDistance2Redshift(dNow - 0.5 * stepLength);
+    const auto zNext = m_cosmology->lightTravelDistance2Redshift(dNow - stepLength);
     const auto Gamma = particle.getGamma();
-    const auto dtdz = m_cosmology->dtdz(zNow);
-    double dlnGammaNow = 0, dlnGammaHalf = 0, dlnGammaNext = 0;
+    double f_a = 0, f_half = 0, f_b = 0;
     for (auto losses : m_continuousLosses) {
-      dlnGammaNow += losses->dlnGamma_dt(pid, Gamma, zNow);
-      auto halfRedshift = zNow - 0.5 * dz;
-      dlnGammaHalf += losses->dlnGamma_dt(pid, Gamma, halfRedshift);
-      auto nextRedhisft = zNow - dz;
-      dlnGammaNext += losses->dlnGamma_dt(pid, Gamma, nextRedhisft);
+      f_a += losses->inverseLenght(pid, Gamma, zNow);
+      f_half += losses->inverseLenght(pid, Gamma, zHalf);
+      f_b += losses->inverseLenght(pid, Gamma, zNext);
     }
-    return dz / 6. * dtdz * (dlnGammaNow + 4. * dlnGammaHalf + dlnGammaNext);
+    return stepLength / 6. * (f_a + 4. * f_half + f_b);
   }
 
-  double computeLossesRedshiftInterval(const Particle& particle) {
-    const auto zNow = particle.getRedshift();
-    double dz = zNow;
-    double deltaGamma = computeDeltaGamma(particle, zNow);
-    if (deltaGamma > deltaGammaCritical) {
-      dz = utils::rootFinder<double>(
-          [&](double x) { return computeDeltaGamma(particle, x) - deltaGammaCritical; }, 0., zNow,
-          100, 1e-5);
-    }
-    return dz;
-  }
+  // double computeLossesRedshiftInterval(const Particle& particle) {
+  //   const auto zNow = particle.getRedshift();
+  //   double dz = zNow;
+  //   double deltaGamma = computeDeltaGamma(particle, zNow);
+  //   if (deltaGamma > deltaGammaCritical) {
+  //     dz = utils::rootFinder<double>(
+  //         [&](double x) { return computeDeltaGamma(particle, x) - deltaGammaCritical; }, 0.,
+  //         zNow, 100, 1e-5);
+  //   }
+  //   return dz;
+  // }
 
   void run(std::string filename) {
     utils::OutputFile out(filename.c_str());
     size_t nActive = std::count_if(m_stack.begin(), m_stack.end(), IsActive);
     size_t counter = 0;
-    while (nActive > 0) {
-      if (counter % 1000 == 0) std::cout << counter << "\n";
+    while (nActive > 0 && counter < 1e4) {
+      if (counter % 1000 == 0) std::cout << counter << " " << nActive << "\n";
       const auto it = std::find_if(m_stack.begin(), m_stack.end(), IsActive);
       const auto nowRedshift = it->getRedshift();
 
-      auto r = m_rng();
-      const auto dz_s = computeStochasticRedshiftInterval(*it, RandomNumber(r));
-      assert(dz_s > 0.);
+      // auto r = m_rng();
+      //  const auto dz_s = computeStochasticRedshiftInterval(*it, RandomNumber(r));
+      //  assert(dz_s > 0.);
 
-      const auto dz_c = computeLossesRedshiftInterval(*it);
-      assert(dz_c > 0. && dz_c <= nowRedshift);
+      // const auto dz_c = computeLossesRedshiftInterval(*it);
+      //  assert(dz_c > 0. && dz_c <= nowRedshift);
 
-      if (dz_s > dz_c || dz_s > nowRedshift) {
-        // out << *it << " " << 0 << "\n";
-        const auto Gamma = it->getGamma();
-        const auto dz = dz_c;
-        const auto deltaGamma = computeDeltaGamma(*it, dz);
-        it->getNow() = {nowRedshift - dz, Gamma * (1. - deltaGamma)};
-      } else {
-        // out << *it << " " << 1 << "\n";
-        const auto dz = dz_s;
-        auto finalState = m_pppcmb->finalState(*it, nowRedshift - dz, m_rng);
-        m_stack.erase(it);
-        m_stack.insert(m_stack.begin(), finalState.begin(), finalState.end());
-      }
+      // if (dz_s > dz_c || dz_s > nowRedshift) {
+      //   // out << *it << " " << 0 << "\n";
+      //   const auto Gamma = it->getGamma();
+      //   const auto dz = dz_c;
+      //   const auto deltaGamma = computeDeltaGamma(*it, dz);
+      //   it->getNow() = {nowRedshift - dz, Gamma * (1. - deltaGamma)};
+      // } else {
+      //   // out << *it << " " << 1 << "\n";
+      //   const auto dz = dz_s;
+      //   auto finalState = m_pppcmb->finalState(*it, nowRedshift - dz, m_rng);
+      //   m_stack.erase(it);
+      //   m_stack.insert(m_stack.begin(), finalState.begin(), finalState.end());
+      // }
 
       nActive = std::count_if(m_stack.begin(), m_stack.end(), IsActive);
       counter++;

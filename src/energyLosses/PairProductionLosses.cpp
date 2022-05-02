@@ -61,12 +61,12 @@ double PairProductionLosses::dotGamma(double Gamma) const {
         },
         lkmin, lkmax, 200);
   }
-  constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::cLight * SI::electronMassC2 *
+  constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::electronMassC2 *
                           (SI::electronMass / SI::protonMass);
   return factor * I / Gamma;
 }
 
-double PairProductionLosses::dlnGamma_dt(PID pid, double Gamma, double z) const {
+double PairProductionLosses::inverseLenght(PID pid, double Gamma, double z) const {
   auto b_l = pow3(1. + z) * dotGamma(Gamma * (1. + z));  // TODO no EBL evolution?
   auto Z = (double)getPidNucleusCharge(pid);
   auto A = (double)getPidNucleusCharge(pid);

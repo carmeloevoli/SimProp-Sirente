@@ -19,7 +19,7 @@ class PairProductionLosses final : public ContinuousLosses {
  public:
   PairProductionLosses(const photonfields::PhotonFields& photonFields);
   virtual ~PairProductionLosses() = default;
-  double dlnGamma_dt(PID pid, double Gamma, double z = 0) const override;
+  double inverseLenght(PID pid, double Gamma, double z = 0) const override;
 
  protected:
   double dotGamma(double Gamma) const;

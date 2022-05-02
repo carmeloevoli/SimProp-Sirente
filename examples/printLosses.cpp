@@ -29,10 +29,10 @@ int main() {
     out << std::scientific;
     for (auto Gamma : gammaAxis) {
       out << Gamma << "\t";
-      out << SI::cLight / adiabatic.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
-      out << SI::cLight / losses.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
-      out << SI::cLight / pair_cmb.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
-      out << SI::cLight / pair_irb.dlnGamma_dt(proton, Gamma) / SI::Mpc << "\t";
+      out << 1. / adiabatic.inverseLenght(proton, Gamma) / SI::Mpc << "\t";
+      out << 1. / losses.inverseLenght(proton, Gamma) / SI::Mpc << "\t";
+      out << 1. / pair_cmb.inverseLenght(proton, Gamma) / SI::Mpc << "\t";
+      out << 1. / pair_irb.inverseLenght(proton, Gamma) / SI::Mpc << "\t";
       out << "\n";
     }
   } catch (const std::exception& e) {
