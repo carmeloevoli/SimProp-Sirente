@@ -20,7 +20,7 @@ double BGG2002ContinuousLosses::getInterpolated(double E) const {
   return b_l;
 }
 
-double BGG2002ContinuousLosses::inverseLenght(PID pid, double Gamma, double z) const {
+double BGG2002ContinuousLosses::beta(PID pid, double Gamma, double z) const {
   const auto E = Gamma * SI::protonMassC2 * getPidNucleusMassNumber(pid);
   const auto redshiftedEnergy = E * (1. + z);
   double b_l = getInterpolated(redshiftedEnergy);
@@ -30,7 +30,7 @@ double BGG2002ContinuousLosses::inverseLenght(PID pid, double Gamma, double z) c
     const double A = (double)getPidNucleusCharge(pid);
     b_l *= pow2(Z) / A;
   }
-  return std::max(b_l, 0.) / SI::cLight;
+  return std::max(b_l, 0.);
 }
 
 // double BGG2002ContinuousLosses::evolve(double E_i, double z_i, double z_f, PID pid) const {

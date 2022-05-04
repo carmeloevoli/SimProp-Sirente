@@ -11,11 +11,11 @@ auto IsActive = [](const Particle& p) {
 
 class Evolutor {
  protected:
-  const double deltaGammaCritical = 0.2;
+  const double deltaGammaCritical = 0.1;
   RandomNumberGenerator& m_rng;
   ParticleStack m_stack;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
-  std::shared_ptr<photonfields::CMB> m_cmb;
+  std::shared_ptr<photonfields::PhotonField> m_cmb;
   std::shared_ptr<photonfields::PhotonField> m_ebl;
   std::vector<std::shared_ptr<losses::ContinuousLosses> > m_continuousLosses;
   std::shared_ptr<interactions::PhotoPionProduction> m_pppcmb;
@@ -33,13 +33,13 @@ class Evolutor {
   void buildCosmologicalParticleStack(size_t N = 1) {
     // parameters are taken from R. Alves Batista, et al., JCAP 2015, arXiv:1508.01824
     double maxEnergy = std::pow(10., 21) * SI::eV;
-    double minEnergy = std::pow(10., 17.5) * SI::eV;
+    double minEnergy = std::pow(10., 17) * SI::eV;
     double slope = 2.5;
     double evolutionIndex = 3;
     Range GammaRange = {minEnergy / SI::protonMassC2, maxEnergy / SI::protonMassC2};
     Range zRange = {0., 2.};
     auto builder = SourceEvolutionBuilder(
-        proton, {GammaRange, zRange, slope, 1e50 * SI::eV, evolutionIndex}, N);
+        proton, {GammaRange, zRange, slope, 1e60 * SI::eV, evolutionIndex}, N);
     m_stack = builder.build(m_rng);
   }
 
@@ -49,7 +49,8 @@ class Evolutor {
   }
 
   void buildContinuousLosses() {
-    std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{m_cmb, m_ebl};
+    // std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{m_cmb, m_ebl};
+    std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{m_cmb};
     m_continuousLosses = std::vector<std::shared_ptr<losses::ContinuousLosses> >{
         std::make_shared<losses::PairProductionLosses>(phFields),
         std::make_shared<losses::AdiabaticContinuousLosses>(m_cosmology)};
@@ -70,40 +71,45 @@ class Evolutor {
   //   return -lambda_s * std::log(1. - r.get());
   // }
 
-  double computeDeltaGamma(const Particle& particle, double stepLength) {
+  double computeDeltaGamma(const Particle& particle, double deltaRedshift) {
     const auto pid = particle.getPid();
-    const auto zNow = particle.getRedshift();
-    const auto dNow = m_cosmology->redshift2LightTravelDistance(zNow);
-    const auto zHalf = m_cosmology->lightTravelDistance2Redshift(dNow - 0.5 * stepLength);
-    const auto zNext = m_cosmology->lightTravelDistance2Redshift(dNow - stepLength);
     const auto Gamma = particle.getGamma();
-    double f_a = 0, f_half = 0, f_b = 0;
+    const auto zNow = particle.getRedshift();
+    const auto zHalf = zNow - 0.5 * deltaRedshift;
+    const auto zNext = zNow - deltaRedshift;
+    double betaNow = 0, betaHalf = 0, betaNext = 0;
     for (auto losses : m_continuousLosses) {
-      f_a += losses->inverseLenght(pid, Gamma, zNow);
-      f_half += losses->inverseLenght(pid, Gamma, zHalf);
-      f_b += losses->inverseLenght(pid, Gamma, zNext);
+      betaNow += losses->beta(pid, Gamma, zNow);
+      betaHalf += losses->beta(pid, Gamma, zHalf);
+      betaNext += losses->beta(pid, Gamma, zNext);
     }
-    return stepLength / 6. * (f_a + 4. * f_half + f_b);
+    double value = deltaRedshift / 6.;
+    value *= betaNow * m_cosmology->dtdz(zNow) + 4. * betaHalf * m_cosmology->dtdz(zHalf) +
+             betaNext * m_cosmology->dtdz(zNext);
+    return 1.0 - std::exp(-value);
   }
 
-  // double computeLossesRedshiftInterval(const Particle& particle) {
-  //   const auto zNow = particle.getRedshift();
-  //   double dz = zNow;
-  //   double deltaGamma = computeDeltaGamma(particle, zNow);
-  //   if (deltaGamma > deltaGammaCritical) {
-  //     dz = utils::rootFinder<double>(
-  //         [&](double x) { return computeDeltaGamma(particle, x) - deltaGammaCritical; }, 0.,
-  //         zNow, 100, 1e-5);
-  //   }
-  //   return dz;
-  // }
+  double computeLossesRedshiftInterval(const Particle& particle) {
+    const auto zNow = particle.getRedshift();
+    double dz = zNow;
+
+    double deltaGamma = computeDeltaGamma(particle, zNow);
+    if (deltaGamma > deltaGammaCritical) {
+      dz = utils::rootFinder<double>(
+          [&](double x) { return computeDeltaGamma(particle, x) - deltaGammaCritical; }, 0., zNow,
+          100, 1e-5);
+    }
+    return dz;
+  }
 
   void run(std::string filename) {
     utils::OutputFile out(filename.c_str());
     size_t nActive = std::count_if(m_stack.begin(), m_stack.end(), IsActive);
+    // auto it = m_stack.begin();
     size_t counter = 0;
-    while (nActive > 0 && counter < 1e4) {
-      if (counter % 1000 == 0) std::cout << counter << " " << nActive << "\n";
+    // while (it != m_stack.end())
+    while (nActive > 0) {
+      if (counter % 1000 == 0) std::cout << counter / 1000 << "\n";
       const auto it = std::find_if(m_stack.begin(), m_stack.end(), IsActive);
       const auto nowRedshift = it->getRedshift();
 
@@ -111,22 +117,22 @@ class Evolutor {
       //  const auto dz_s = computeStochasticRedshiftInterval(*it, RandomNumber(r));
       //  assert(dz_s > 0.);
 
-      // const auto dz_c = computeLossesRedshiftInterval(*it);
-      //  assert(dz_c > 0. && dz_c <= nowRedshift);
+      const auto dz_c = computeLossesRedshiftInterval(*it);
+      assert(dz_c > 0. && dz_c <= nowRedshift);
 
       // if (dz_s > dz_c || dz_s > nowRedshift) {
-      //   // out << *it << " " << 0 << "\n";
-      //   const auto Gamma = it->getGamma();
-      //   const auto dz = dz_c;
-      //   const auto deltaGamma = computeDeltaGamma(*it, dz);
-      //   it->getNow() = {nowRedshift - dz, Gamma * (1. - deltaGamma)};
-      // } else {
-      //   // out << *it << " " << 1 << "\n";
-      //   const auto dz = dz_s;
-      //   auto finalState = m_pppcmb->finalState(*it, nowRedshift - dz, m_rng);
-      //   m_stack.erase(it);
-      //   m_stack.insert(m_stack.begin(), finalState.begin(), finalState.end());
-      // }
+      const auto Gamma = it->getGamma();
+      const auto dz = dz_c;
+      const auto deltaGamma = computeDeltaGamma(*it, dz);
+      it->getNow() = {nowRedshift - dz, Gamma * (1. - deltaGamma)};
+      // out << *it << " " << 0 << "\n";
+      //  } else {
+      //    // out << *it << " " << 1 << "\n";
+      //    const auto dz = dz_s;
+      //    auto finalState = m_pppcmb->finalState(*it, nowRedshift - dz, m_rng);
+      //    m_stack.erase(it);
+      //    m_stack.insert(m_stack.begin(), finalState.begin(), finalState.end());
+      //  }
 
       nActive = std::count_if(m_stack.begin(), m_stack.end(), IsActive);
       counter++;
@@ -150,31 +156,41 @@ int main() {
     //   RandomNumberGenerator rng = utils::RNG<double>(Seed(69));
     //   utils::Timer timer("timer for Gamma = 1e10");
     //   Evolutor evolutor(rng);
-    //   evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e10), 10);
+    //   evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e10), 1);
     //   evolutor.buildPhotonFields();
     //   evolutor.buildContinuousLosses();
     //   evolutor.buildStochasticInteractions();
-    //   evolutor.run("test_proton_evolution_1_1e10_10.txt");
+    //   evolutor.run("test_proton_evolution_1_1e10_1.txt");
+    // }
+    // {
+    //   RandomNumberGenerator rng = utils::RNG<double>(Seed(88));
+    //   utils::Timer timer("timer for Gamma = 1e11");
+    //   Evolutor evolutor(rng);
+    //   evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e11), 1);
+    //   evolutor.buildPhotonFields();
+    //   evolutor.buildContinuousLosses();
+    //   evolutor.buildStochasticInteractions();
+    //   evolutor.run("test_proton_evolution_1_1e11_1.txt");
     // }
     // {
     //   RandomNumberGenerator rng = utils::RNG<double>(Seed(96));
     //   utils::Timer timer("timer for Gamma = 1e12");
     //   Evolutor evolutor(rng);
-    //   evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12), 10);
+    //   evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12), 1);
     //   evolutor.buildPhotonFields();
     //   evolutor.buildContinuousLosses();
     //   evolutor.buildStochasticInteractions();
-    //   evolutor.run("test_proton_evolution_1_1e12_10.txt");
+    //   evolutor.run("test_proton_evolution_1_1e12_1.txt");
     // }
     {
       RandomNumberGenerator rng = utils::RNG<double>(Seed(96));
       utils::Timer timer("timer for first test");
       Evolutor evolutor(rng);
-      evolutor.buildCosmologicalParticleStack(10000);
+      evolutor.buildCosmologicalParticleStack(100000);
       evolutor.buildPhotonFields();
       evolutor.buildContinuousLosses();
       evolutor.buildStochasticInteractions();
-      evolutor.run("test_proton_cosmology_10.txt");
+      evolutor.run("test_proton_cosmology.txt");
       evolutor.dumpStack("test_spectrum.txt");
     }
 

@@ -13,7 +13,7 @@ class ContinuousLosses {
  public:
   ContinuousLosses() {}
   virtual ~ContinuousLosses() = default;
-  virtual double inverseLenght(PID pid, double Gamma, double z = 0) const = 0;
+  virtual double beta(PID pid, double Gamma, double z = 0) const = 0;
 };
 
 }  // namespace losses

@@ -7,13 +7,12 @@ int main() {
     utils::startup_information();
     auto cosmology = std::make_shared<cosmo::Planck2018>();
     auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
-    auto losses = losses::BGG2002ContinuousLosses();
+    auto bggLosses = losses::BGG2002ContinuousLosses();
 
-    // std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
-    //     std::make_shared<photonfields::CMB>(),
-    //     std::make_shared<photonfields::Dominguez2011PhotonField>()};
-
-    // auto pair = losses::PairProductionLosses(cosmology, phFields);
+    std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
+        std::make_shared<photonfields::CMB>(),
+        std::make_shared<photonfields::Dominguez2011PhotonField>()};
+    auto pair = losses::PairProductionLosses(phFields);
 
     std::vector<std::shared_ptr<photonfields::PhotonField> > cmb{
         std::make_shared<photonfields::CMB>()};
@@ -29,10 +28,11 @@ int main() {
     out << std::scientific;
     for (auto Gamma : gammaAxis) {
       out << Gamma << "\t";
-      out << 1. / adiabatic.inverseLenght(proton, Gamma) / SI::Mpc << "\t";
-      out << 1. / losses.inverseLenght(proton, Gamma) / SI::Mpc << "\t";
-      out << 1. / pair_cmb.inverseLenght(proton, Gamma) / SI::Mpc << "\t";
-      out << 1. / pair_irb.inverseLenght(proton, Gamma) / SI::Mpc << "\t";
+      out << SI::cLight / adiabatic.beta(proton, Gamma) / SI::Mpc << "\t";
+      out << SI::cLight / bggLosses.beta(proton, Gamma) / SI::Mpc << "\t";
+      out << SI::cLight / pair_cmb.beta(proton, Gamma) / SI::Mpc << "\t";
+      out << SI::cLight / pair_irb.beta(proton, Gamma) / SI::Mpc << "\t";
+      out << SI::cLight / pair.beta(proton, Gamma) / SI::Mpc << "\t";
       out << "\n";
     }
   } catch (const std::exception& e) {

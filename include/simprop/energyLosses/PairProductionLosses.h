@@ -19,10 +19,10 @@ class PairProductionLosses final : public ContinuousLosses {
  public:
   PairProductionLosses(const photonfields::PhotonFields& photonFields);
   virtual ~PairProductionLosses() = default;
-  double inverseLenght(PID pid, double Gamma, double z = 0) const override;
+  double beta(PID pid, double Gamma, double z = 0) const override;
 
- protected:
-  double dotGamma(double Gamma) const;
+ public:
+  double betaComoving(double Gamma) const;
 };
 
 }  // namespace losses

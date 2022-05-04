@@ -11,9 +11,9 @@ AdiabaticContinuousLosses::AdiabaticContinuousLosses(
   LOGD << "calling " << __func__ << " constructor";
 }
 
-double AdiabaticContinuousLosses::inverseLenght(PID pid, double Gamma, double z) const {
+double AdiabaticContinuousLosses::beta(PID pid, double Gamma, double z) const {
   const auto b_a = 1. / (1. + z);
-  return b_a / SI::cLight / m_cosmology->dtdz(z);
+  return b_a / m_cosmology->dtdz(z);
 }
 
 // double AdiabaticContinuousLosses::evolve(double E_i, double z_i, double z_f, PID pid) const {

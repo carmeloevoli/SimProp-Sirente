@@ -16,7 +16,7 @@ class AdiabaticContinuousLosses final : public ContinuousLosses {
   AdiabaticContinuousLosses(const std::shared_ptr<cosmo::Cosmology>& cosmology);
   virtual ~AdiabaticContinuousLosses() = default;
 
-  double inverseLenght(PID pid, double Gamma, double z = 0) const override;
+  double beta(PID pid, double Gamma, double z = 0) const override;
 };
 
 }  // namespace losses

@@ -46,7 +46,7 @@ PairProductionLosses::PairProductionLosses(const photonfields::PhotonFields& pho
   LOGD << "calling " << __func__ << " constructor";
 }
 
-double PairProductionLosses::dotGamma(double Gamma) const {
+double PairProductionLosses::betaComoving(double Gamma) const {
   auto TwoGamma_mec2 = 2. * Gamma / SI::electronMassC2;
   double I = 0;
   for (auto phField : m_photonFields) {
@@ -61,13 +61,13 @@ double PairProductionLosses::dotGamma(double Gamma) const {
         },
         lkmin, lkmax, 200);
   }
-  constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::electronMassC2 *
+  constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::cLight * SI::electronMassC2 *
                           (SI::electronMass / SI::protonMass);
   return factor * I / Gamma;
 }
 
-double PairProductionLosses::inverseLenght(PID pid, double Gamma, double z) const {
-  auto b_l = pow3(1. + z) * dotGamma(Gamma * (1. + z));  // TODO no EBL evolution?
+double PairProductionLosses::beta(PID pid, double Gamma, double z) const {
+  auto b_l = pow3(1. + z) * betaComoving(Gamma * (1. + z));  // TODO no EBL evolution?
   auto Z = (double)getPidNucleusCharge(pid);
   auto A = (double)getPidNucleusCharge(pid);
   b_l *= pow2(Z) / A;

@@ -18,7 +18,7 @@ class BGG2002ContinuousLosses final : public ContinuousLosses {
   BGG2002ContinuousLosses();
   virtual ~BGG2002ContinuousLosses() = default;
 
-  double inverseLenght(PID pid, double Gamma, double z = 0) const override;
+  double beta(PID pid, double Gamma, double z = 0) const override;
 
  protected:
   double getInterpolated(double E) const;
