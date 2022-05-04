@@ -142,6 +142,9 @@ target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
 add_executable(evolve_protons examples/evolveProtons.cpp)
 target_link_libraries (evolve_protons simprop ${SIMPROP_EXTRA_LIBRARIES})
 
+add_executable(analytical_solution examples/analyticalSolution.cpp)
+target_link_libraries (analytical_solution simprop ${SIMPROP_EXTRA_LIBRARIES})
+
 # add_executable(sandbox src/sandbox.cpp)
 # target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
 

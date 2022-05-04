@@ -1,13 +1,18 @@
 #ifndef SIMPROP_UTILS_GSL_H
 #define SIMPROP_UTILS_GSL_H
 
+#include <gsl/gsl_deriv.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_odeiv2.h>
 #include <gsl/gsl_roots.h>
 
 #include <cassert>
+#include <cmath>
 #include <functional>
+#include <iostream>
 #include <vector>
 
 namespace simprop {
@@ -30,6 +35,23 @@ double interpolateEquidistant(double x, double lo, double hi, const std::vector<
 
 double interpolate2d(double x, double y, const std::vector<double> &X, const std::vector<double> &Y,
                      const std::vector<double> &Z);
+
+template <typename T>
+T deriv(std::function<T(T)> f, T x, double rel_error = 1e-4) {
+  double result;
+  double abs_error = 0.0;  // disabled
+  gsl_function F;
+
+  F.function = [](double x, void *vf) -> double {
+    auto &func = *static_cast<std::function<double(double)> *>(vf);
+    return func(x);
+  };
+  F.params = &f;
+
+  gsl_deriv_central(&F, static_cast<double>(x), rel_error, &result, &abs_error);
+
+  return T(result);
+}
 
 template <typename T>
 T QAGIntegration(std::function<T(T)> f, T start, T stop, int LIMIT, double rel_error = 1e-4) {
@@ -107,6 +129,56 @@ T rootFinder(std::function<T(T)> f, T xLower, T xUpper, int maxIter, double relE
   gsl_root_fsolver_free(solver);
 
   return r;
+}
+
+template <typename T>
+T rk4fixed(std::function<T(T, T)> dydx, T yStart, T xStart, T xEnd, T h) {
+  size_t steps = (size_t)((xEnd - xStart) / h);
+  T x = xStart;
+  T y = yStart;
+  while (steps--) {
+    auto k1 = h * dydx(x, y);
+    auto k2 = h * dydx(x + 0.5 * h, y + 0.5 * k1);
+    auto k3 = h * dydx(x + 0.5 * h, y + 0.5 * k2);
+    auto k4 = h * dydx(x + h, y + k3);
+    y += (k1 + 2. * k2 + 2. * k3 + k4) / 6.;
+    x += h;
+  }
+  return y;
+}
+
+template <typename T>
+T odeiv(std::function<T(T, T)> dydx, T yStart, T xStart, T xEnd, T rel_error = 1e-4) {
+  const size_t NEQS = 1;
+  double abs_error = 0.0;  // disabled
+
+  const gsl_odeiv2_step_type *stepType = gsl_odeiv2_step_rkf45;
+  gsl_odeiv2_step *s = gsl_odeiv2_step_alloc(stepType, NEQS);
+  gsl_odeiv2_control *c = gsl_odeiv2_control_y_new(abs_error, static_cast<double>(rel_error));
+  gsl_odeiv2_evolve *e = gsl_odeiv2_evolve_alloc(NEQS);
+
+  double y[1] = {yStart};
+
+  auto func = [](double t, const double *y, double *f, void *params) -> int {
+    auto dydx = *static_cast<std::function<double(double, double)> *>(params);
+    f[0] = dydx(t, y[0]);
+    return GSL_SUCCESS;
+  };
+
+  gsl_odeiv2_system sys = {func, nullptr, NEQS, &dydx};
+
+  double t = xStart, t1 = xEnd;
+  double h = 1e-5 * (xEnd - xStart);
+
+  while (t < t1) {
+    int status = gsl_odeiv2_evolve_apply(e, c, s, &sys, &t, t1, &h, y);
+    if (status != GSL_SUCCESS) break;
+  }
+
+  gsl_odeiv2_evolve_free(e);
+  gsl_odeiv2_control_free(c);
+  gsl_odeiv2_step_free(s);
+  return y[0];
 }
 
 }  // namespace utils
