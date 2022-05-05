@@ -59,7 +59,7 @@ double PairProductionLosses::betaComoving(double Gamma) const {
           auto k = std::exp(lnk);
           return phi(k) / k * phField->density(k / TwoGamma_mec2);
         },
-        lkmin, lkmax, 200);
+        lkmin, lkmax, 1000);
   }
   constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::cLight * SI::electronMassC2 *
                           (SI::electronMass / SI::protonMass);

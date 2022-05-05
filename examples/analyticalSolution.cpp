@@ -11,6 +11,10 @@ class Berezinsky {
   // std::vector<std::shared_ptr<losses::ContinuousLosses> > m_continuousLosses;
   //  std::shared_ptr<interactions::PhotoPionProduction> m_pppcmb;
 
+  double m_slope = 2.7;
+  double m_sourceEmissivity = 1.;
+  double m_sourceEvolution = 3.;
+
  public:
   Berezinsky() {
     m_cosmology = std::make_shared<cosmo::Planck2018>();
@@ -29,16 +33,32 @@ class Berezinsky {
     return utils::odeiv<double>(dydx, E, 0., zMax, relError);
   }
 
-  double energyJacobian(double E, double zMax, double relError = 1e-3) const {
+  double jacobian(double E, double zMax, double relError = 1e-3) const {
     auto dydz = [&](double z, double y) {
-      auto E_g = sourceEnergy(E, z, 1e-5);
+      auto E_g = sourceEnergy(E, z, 1e-4);
       auto E_prime = E_g * (1. + z);
       auto beta = m_pp->betaComoving(E_prime / SI::protonMassC2);
-      auto dbeta = utils::deriv<double>(
-          [&](double x) { return m_pp->betaComoving(x / SI::protonMassC2); }, E_prime, 1e-4);
+      auto dbeta = utils::deriv5pt<double>(
+          [&](double x) { return m_pp->betaComoving(x / SI::protonMassC2); }, E_prime,
+          1e-2 * E_prime);
       return y / (1. + z) + y * m_cosmology->dtdz(z) * pow3(1. + z) * (beta + E_prime * dbeta);
     };
     return utils::odeiv<double>(dydz, 1., 0., zMax, relError);
+  }
+
+  double computeFlux(double E, double zMax) const {
+    const auto K = m_slope - 2;
+    const auto L_0 = m_sourceEmissivity;
+    const auto m = m_sourceEvolution;
+    const auto E_0 = 1e17 * SI::eV;
+    const auto factor = SI::cLight / 4. / M_PI * K * L_0;
+    auto integrand = [&](double z) {
+      auto E_g = sourceEnergy(E, z, 1e-4);
+      auto y = jacobian(E, z, 1e-4);
+      return m_cosmology->dtdz(z) * std::pow(1. + z, m) * std::pow(E_g / E_0, -m_slope) * y;
+    };
+    auto I = utils::QAGIntegration<double>(integrand, 0., zMax, 1000, 1e-3);
+    return factor * I;
   }
 };
 
@@ -47,26 +67,36 @@ int main() {
     utils::startup_information();
     utils::Timer timer("main timer for analytical solution");
     Berezinsky b;
-    auto z = utils::LogAxis(1e-3, 1., 100);
+    auto z = utils::LogAxis(1e-4, 1.0, 100);
+    // {
+    //   utils::OutputFile out("proton_characteristics.txt");
+    //   for (const auto &z_i : z) {
+    //     std::cout << z_i << "\n";
+    //     out << std::scientific << z_i << "\t";
+    //     out << b.sourceEnergy(1e17 * SI::eV, z_i, 1e-4) / SI::eV << "\t";
+    //     out << b.sourceEnergy(1e18 * SI::eV, z_i, 1e-4) / SI::eV << "\t";
+    //     out << b.sourceEnergy(1e19 * SI::eV, z_i, 1e-4) / SI::eV << "\t";
+    //     out << "\n";
+    //   }
+    // }
+    // {
+    //   utils::OutputFile out("proton_jacobian.txt");
+    //   for (const auto &z_i : z) {
+    //     std::cout << z_i << "\n";
+    //     out << std::scientific << z_i << "\t";
+    //     out << b.jacobian(1e17 * SI::eV, z_i, 1e-4) << "\t";
+    //     out << b.jacobian(1e18 * SI::eV, z_i, 1e-4) << "\t";
+    //     out << b.jacobian(1e19 * SI::eV, z_i, 1e-4) << "\t";
+    //     out << "\n";
+    //   }
+    // }
     {
-      utils::OutputFile out("proton_characteristics.txt");
-      for (const auto &z_i : z) {
-        std::cout << z_i << "\n";
-        out << std::scientific << z_i << "\t";
-        out << b.sourceEnergy(1e17 * SI::eV, z_i, 1e-4) / SI::eV << "\t";
-        out << b.sourceEnergy(1e18 * SI::eV, z_i, 1e-4) / SI::eV << "\t";
-        out << b.sourceEnergy(1e19 * SI::eV, z_i, 1e-4) / SI::eV << "\t";
-        out << "\n";
-      }
-    }
-    {
-      utils::OutputFile out("proton_jacobian.txt");
-      for (const auto &z_i : z) {
-        std::cout << z_i << "\n";
-        out << std::scientific << z_i << "\t";
-        out << b.energyJacobian(1e17 * SI::eV, z_i, 1e-3) << "\t";
-        out << b.energyJacobian(1e18 * SI::eV, z_i, 1e-3) << "\t";
-        out << b.energyJacobian(1e19 * SI::eV, z_i, 1e-3) << "\t";
+      utils::OutputFile out("proton_spectrum.txt");
+      auto E = utils::LogAxis(1e17 * SI::eV, 1e21 * SI::eV, 10);
+      for (const auto &E_i : E) {
+        std::cout << E_i / SI::eV << "\n";
+        out << std::scientific << E_i / SI::eV << "\t";
+        out << b.computeFlux(E_i, 1.) << "\t";
         out << "\n";
       }
     }
