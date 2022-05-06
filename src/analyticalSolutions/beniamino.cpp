@@ -15,7 +15,7 @@ Beniamino::Beniamino() {
 double Beniamino::generationEnergy(double E, double zMax, double relError) const {
   auto dEdz = [&](double z, double E_g) {
     auto Gamma = E_g / SI::protonMassC2 * (1. + z);
-    auto beta = m_pp->beta(proton, Gamma) + m_pion->beta(proton, Gamma);
+    auto beta = m_pp->beta(proton, Gamma) + ((m_doPhotoPion) ? m_pion->beta(proton, Gamma) : 0.);
     auto dtdz = m_cosmology->dtdz(z);
     return E_g * (1. / (1. + z) + dtdz * pow3(1. + z) * beta);
   };
@@ -28,11 +28,11 @@ double Beniamino::dilationFactor(double E, double zMax, double relError) const {
     auto E_g = generationEnergy(E, z, 1e-5);
     auto E_prime = E_g * (1. + z);
     auto Gamma = E_prime / SI::protonMassC2;
-    auto beta = m_pp->beta(proton, Gamma) + m_pion->beta(proton, Gamma);
+    auto beta = m_pp->beta(proton, Gamma) + ((m_doPhotoPion) ? m_pion->beta(proton, Gamma) : 0.);
     auto dbeta = utils::deriv5pt<double>(
         [&](double x) {
           auto Gamma = x / SI::protonMassC2;
-          return m_pp->beta(proton, Gamma) + m_pion->beta(proton, Gamma);
+          return m_pp->beta(proton, Gamma) + ((m_doPhotoPion) ? m_pion->beta(proton, Gamma) : 0.);
         },
         E_prime, 1e-2 * E_prime);
     auto y = beta + E_prime * dbeta;

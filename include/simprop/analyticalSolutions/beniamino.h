@@ -21,6 +21,7 @@ class Beniamino {
   double m_sourceEvolution = 0.;
   double m_sourceMaxRedshift = 6.;
   double m_sourceCutoff = -1.;
+  bool m_doPhotoPion = true;
 
  public:
   Beniamino();
@@ -36,6 +37,8 @@ class Beniamino {
   inline void setSourceEvolution(const double &m) { m_sourceEvolution = m; };
   inline void setMaxRedshift(const double &z) { m_sourceMaxRedshift = z; };
   inline void setSourceCutoff(const double &E) { m_sourceCutoff = E; };
+  inline void disablePhotoPion() { m_doPhotoPion = false; }
+  inline void enablePhotoPion() { m_doPhotoPion = true; }
 };
 
 }  // namespace solutions
