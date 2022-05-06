@@ -1,12 +1,14 @@
 #ifndef INCLUDE_SIMPROP_H
 #define INCLUDE_SIMPROP_H
 
+#include "simprop/analyticalSolutions/beniamino.h"
 #include "simprop/common.h"
 #include "simprop/cosmology.h"
 #include "simprop/crossSections/PhotoPionProductionXsec.h"
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
 #include "simprop/energyLosses/BGG2002ContinuousLosses.h"
 #include "simprop/energyLosses/PairProductionLosses.h"
+#include "simprop/energyLosses/PhotoPionContinuousLosses.h"
 #include "simprop/interactions/PhotoPionProduction.h"
 #include "simprop/particle.h"
 #include "simprop/particleStacks/MonochromaticBuilder.h"

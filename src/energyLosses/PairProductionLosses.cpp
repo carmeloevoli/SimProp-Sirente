@@ -69,7 +69,7 @@ double PairProductionLosses::betaComoving(double Gamma) const {
 double PairProductionLosses::beta(PID pid, double Gamma, double z) const {
   auto b_l = pow3(1. + z) * betaComoving(Gamma * (1. + z));  // TODO no EBL evolution?
   auto Z = (double)getPidNucleusCharge(pid);
-  auto A = (double)getPidNucleusCharge(pid);
+  auto A = (double)getPidNucleusMassNumber(pid);
   b_l *= pow2(Z) / A;
   return std::max(b_l, 0.);
 }

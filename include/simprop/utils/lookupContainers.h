@@ -18,36 +18,45 @@ namespace utils {
 template <size_t xSize>
 class LookupArray {
  public:
-  explicit LookupArray(std::string filePath) : m_filePath(filePath) {
-    if (!utils::fileExists(filePath))
-      throw std::runtime_error("file data for lookup array does not exist");
+  LookupArray() {
     if (xSize < 2) throw std::runtime_error("x-axis size must be > 1");
     m_xAxis.reserve(xSize);
-    m_table.reserve(xSize);
-    loadTable();
+    m_array.reserve(xSize);
   }
 
-  double get(double x) const { return utils::interpolate(x, m_xAxis, m_table); }
-  double spline(double x) const { return utils::cspline(x, m_xAxis, m_table); }
+  inline double get(double x) const { return utils::interpolate(x, m_xAxis, m_array); }
+  inline double spline(double x) const { return utils::cspline(x, m_xAxis, m_array); }
+  inline bool xIsInside(double x) const { return x >= m_xAxis.front() && x <= m_xAxis.back(); }
 
-  bool xIsInside(double x) const { return x >= m_xAxis.front() && x <= m_xAxis.back(); }
-
- protected:
-  void loadTable() {
-    auto v = utils::loadFileByRow(m_filePath, ",");
+ public:
+  void loadTable(const std::string& filePath) {
+    if (!utils::fileExists(filePath))
+      throw std::runtime_error("file data for lookup array does not exist");
+    auto v = utils::loadFileByRow(filePath, ",");
     for (size_t i = 0; i < xSize; ++i) {
       auto line = v.at(i);
       if (line.size() != 2) throw std::runtime_error("error in reading table values");
       m_xAxis.emplace_back(line[0]);
-      m_table.emplace_back(line[1]);
+      m_array.emplace_back(line[1]);
     }
-    assert(m_xAxis.size() == xSize && m_table.size() == xSize);
+    assert(m_xAxis.size() == xSize && m_array.size() == xSize);
+  }
+
+  void cacheTable(const std::function<double(double)>& func,
+                  const std::pair<double, double>& range) {
+    const double dx = (range.second - range.first) / (double)(xSize - 1);
+    for (size_t i = 0; i < xSize; ++i) {
+      auto x = (double)i * dx + range.first;
+      auto f_x = func(x);
+      m_xAxis.emplace_back(x);
+      m_array.emplace_back(f_x);
+    }
+    assert(m_xAxis.size() == xSize && m_array.size() == xSize);
   }
 
  protected:
   std::vector<double> m_xAxis;
-  std::vector<double> m_table;
-  std::string m_filePath;
+  std::vector<double> m_array;
 };
 
 // template <size_t xSize, size_t ySize>

@@ -83,6 +83,28 @@ T QAGIntegration(std::function<T(T)> f, T start, T stop, int LIMIT, double rel_e
 }
 
 template <typename T>
+T QAGSIntegration(std::function<T(T)> f, T start, T stop, int LIMIT, double rel_error = 1e-4) {
+  double a = static_cast<double>(start);
+  double b = static_cast<double>(stop);
+  double abs_error = 0.0;  // disabled
+  double result;
+  double error;
+
+  gsl_function F;
+  F.function = [](double x, void *vf) -> double {
+    auto &func = *static_cast<std::function<double(double)> *>(vf);
+    return func(x);
+  };
+  F.params = &f;
+
+  gsl_integration_workspace *workspace_ptr = gsl_integration_workspace_alloc(LIMIT);
+  gsl_integration_qags(&F, a, b, abs_error, rel_error, LIMIT, workspace_ptr, &result, &error);
+  gsl_integration_workspace_free(workspace_ptr);
+
+  return T(result);
+}
+
+template <typename T>
 T simpsonIntegration(std::function<T(T)> f, T start, T stop, int N = 100) {
   const T a = start;
   const T b = stop;

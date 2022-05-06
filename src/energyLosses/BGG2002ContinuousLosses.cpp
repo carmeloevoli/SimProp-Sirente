@@ -8,6 +8,7 @@ namespace losses {
 
 BGG2002ContinuousLosses::BGG2002ContinuousLosses() : ContinuousLosses() {
   LOGD << "calling " << __func__ << " constructor";
+  m_totalLosses.loadTable(totalLossesFilename);
 }
 
 double BGG2002ContinuousLosses::getInterpolated(double E) const {
@@ -27,20 +28,11 @@ double BGG2002ContinuousLosses::beta(PID pid, double Gamma, double z) const {
   if (b_l > 0.) {
     b_l *= pow3(1. + z);
     const double Z = (double)getPidNucleusCharge(pid);
-    const double A = (double)getPidNucleusCharge(pid);
+    const double A = (double)getPidNucleusMassNumber(pid);
     b_l *= pow2(Z) / A;
   }
   return std::max(b_l, 0.);
 }
-
-// double BGG2002ContinuousLosses::evolve(double E_i, double z_i, double z_f, PID pid) const {
-//   if (z_f > z_i) throw std::invalid_argument("z_f must be smaller than z_i");
-//   const auto b = dlnGamma_dz(E_i, z_i, pid);
-//   if (b < 0) throw std::runtime_error("b must be positive");
-//   const auto factor = 1. - (z_i - z_f) * b;
-//   if (factor > 1.) throw std::runtime_error("dz too large for continuous energy losses");
-//   return E_i * factor;
-// }
 
 }  // namespace losses
 }  // namespace simprop

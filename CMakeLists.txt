@@ -84,10 +84,12 @@ message(STATUS "Simprop version: ${GIT_DESC} ${GIT_SHA1} ${GIT_REFSPEC}")
 include_directories(include ${SIMPROP_EXTRA_INCLUDES})
 
 add_library(simprop SHARED
+    src/analyticalSolutions/beniamino.cpp
     src/crossSections/PhotoPionProductionXsec.cpp
     src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2002ContinuousLosses.cpp
     src/energyLosses/PairProductionLosses.cpp
+    src/energyLosses/PhotoPionContinuousLosses.cpp
     src/interactions/PhotoPionProduction.cpp
     src/particleStacks/Builder.cpp
     src/particleStacks/MonochromaticBuilder.cpp
