@@ -16,16 +16,6 @@ int main() {
         out << p << "\n";
       }
     }
-    {
-      auto builder = MonochromaticBuilder(proton, {1e10, {0., 2.0}, 3.}, 1e6);
-      auto particles = builder.build(rng);
-      utils::OutputFile out("test_monochromatic_initial.txt");
-      out << "#\n";
-      for (const auto& p : particles) {
-        out << p << "\n";
-      }
-    }
-
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }

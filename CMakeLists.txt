@@ -92,7 +92,6 @@ add_library(simprop SHARED
     src/energyLosses/PhotoPionContinuousLosses.cpp
     src/interactions/PhotoPionProduction.cpp
     src/particleStacks/Builder.cpp
-    src/particleStacks/MonochromaticBuilder.cpp
     src/particleStacks/SingleParticleBuilder.cpp
     src/particleStacks/SingleSourceBuilder.cpp
     src/particleStacks/SourceEvolutionBuilder.cpp
