@@ -19,8 +19,9 @@ class Beniamino {
   double m_slope = 2.7;
   double m_sourceEmissivity = SI::GeV / SI::m3 / SI::sec;
   double m_sourceEvolution = 0.;
-  double m_sourceMaxRedshift = 6.;
+  double m_sourceMaxRedshift = 0.;
   double m_sourceCutoff = -1.;
+  double m_maxEnergy = 1e23 * SI::eV;
   bool m_doPhotoPion = true;
 
  public:
@@ -28,6 +29,7 @@ class Beniamino {
   virtual ~Beniamino() = default;
 
   double generationEnergy(double E, double zMax, double relError = 1e-3) const;
+  double dbdE(double E) const;
   double dilationFactor(double E, double zMax, double relError = 1e-3) const;
   double computeFlux(double E) const;
   double computeFluxUnm(double E) const;
