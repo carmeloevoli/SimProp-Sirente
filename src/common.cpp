@@ -5,18 +5,11 @@
 
 namespace simprop {
 
-double getRndGamma(Range gammaRange, RandomNumber r) {
+double getRndLogUniform(Range range, RandomNumber r) {
+  assert(range.second > range.first);
   using std::pow;
-  const auto C = pow(gammaRange.second / gammaRange.first, r.get());
-  return C * gammaRange.first;
-}
-
-double getRndRedshift(Range redshiftRange, RandomNumber r) {
-  using std::pow;
-  const auto Zm = 1. + redshiftRange.first;
-  const auto ZM = 1. + redshiftRange.second;
-  const auto C = Zm * pow(ZM / Zm, r.get());
-  return C - 1;
+  const auto C = pow(range.second / range.first, r.get());
+  return C * range.first;
 }
 
 Range getRedshiftRange(const ParticleStack& stack) {

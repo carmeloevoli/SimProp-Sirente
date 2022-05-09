@@ -13,8 +13,7 @@ namespace simprop {
 inline double energyToFrequency(double energy) { return energy / SI::hPlanck; }
 inline double energyToWavelenght(double energy) { return SI::hPlanck * SI::cLight / energy; }
 
-double getRndGamma(Range gammaRange, RandomNumber r);
-double getRndRedshift(Range redshiftRange, RandomNumber r);
+double getRndLogUniform(Range range, RandomNumber r);
 Range getRedshiftRange(const ParticleStack& stack);
 Range getGammaRange(const ParticleStack& stack);
 
