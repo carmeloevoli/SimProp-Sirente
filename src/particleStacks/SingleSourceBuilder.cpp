@@ -19,7 +19,7 @@ ParticleStack SingleSourceBuilder::build(RandomNumberGenerator& rng) const {
   ParticleStack stack;
   stack.reserve(m_size);
   for (size_t i = 0; i < m_size; ++i) {
-    auto Gamma_i = getRndGamma(m_GammaRange, RandomNumber(rng()));
+    auto Gamma_i = getRndLogUniform(m_GammaRange, RandomNumber(rng()));
     auto w_i = std::pow(Gamma_i, -m_slope + 1.) * std::exp(-Gamma_i / m_GammaCutoff);
     stack.emplace_back(Particle{m_pid, Redshift(m_z), LorentzFactor(Gamma_i), w_i / m_maxWeight});
   }

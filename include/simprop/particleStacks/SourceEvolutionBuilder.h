@@ -2,6 +2,7 @@
 #define SIMPROP_SOURCEEVOLUTIONBUILDER_H
 
 #include "simprop/common.h"
+#include "simprop/cosmology.h"
 #include "simprop/particleStacks/Builder.h"
 
 namespace simprop {
@@ -11,7 +12,7 @@ struct SourceEvolutionParams {
   Range zRange;
   double slope;
   // double GammaCutoff;
-  // double evolutionIndex;
+  double evolutionIndex;
 };
 
 class SourceEvolutionBuilder final : public Builder {
@@ -20,11 +21,12 @@ class SourceEvolutionBuilder final : public Builder {
   Range m_zRange = {0., 1.};
   double m_slope = 2;
   // double m_GammaCutoff = 1e14;
-  // double m_evolutionIndex = 1;
-  // double m_maxWeight;
+  double m_evolutionIndex = 0;
+  std::shared_ptr<cosmo::Cosmology> m_cosmology;
 
  public:
-  SourceEvolutionBuilder(PID pid, SourceEvolutionParams params, size_t size = 1);
+  SourceEvolutionBuilder(PID pid, SourceEvolutionParams params,
+                         std::shared_ptr<cosmo::Cosmology> cosmology, size_t size = 1);
   ParticleStack build(RandomNumberGenerator& rng) const override;
 };
 
