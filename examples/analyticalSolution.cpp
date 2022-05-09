@@ -25,10 +25,10 @@ void testCharacteristics() {
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
       out << std::scientific << E_i / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0.001, 1e-6) / SI::eV << "\t";
       out << b.generationEnergy(E_i, 0.05, 1e-6) / SI::eV << "\t";
       out << b.generationEnergy(E_i, 0.5, 1e-6) / SI::eV << "\t";
       out << b.generationEnergy(E_i, 1., 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 3., 1e-6) / SI::eV << "\t";
       out << "\n";
     }
   }
@@ -54,25 +54,12 @@ void testCharacteristics() {
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
       out << std::scientific << E_i / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0.001, 1e-6) / SI::eV << "\t";
       out << b.generationEnergy(E_i, 0.05, 1e-6) / SI::eV << "\t";
       out << b.generationEnergy(E_i, 0.5, 1e-6) / SI::eV << "\t";
       out << b.generationEnergy(E_i, 1., 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 3., 1e-6) / SI::eV << "\t";
       out << "\n";
     }
-  }
-}
-
-void testLosses() {
-  solutions::Beniamino b;
-  b.disablePhotoPion();
-  utils::OutputFile out("proton_dbdE.txt");
-  auto E = utils::LogAxis(1e16 * SI::eV, 1e23 * SI::eV, 1000);
-  for (const auto &E_i : E) {
-    std::cout << E_i / SI::eV << "\n";
-    out << std::scientific << E_i / SI::eV << "\t";
-    out << b.dbdE(E_i) / (1. / SI::year) << "\t";
-    out << "\n";
   }
 }
 
@@ -98,41 +85,12 @@ void testJacobian() {
 
 void printSpectrum() {
   solutions::Beniamino b;
-  // {
-  //   b.setMaxRedshift(1.);
-  //   b.setSlope(2.7);
-  //   b.setSourceEvolution(0.);
-  //   utils::OutputFile out("proton_spectrum_nocutoff_zmax1.txt");
-  //   auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
-  //   for (const auto &E_i : E) {
-  //     std::cout << E_i / SI::eV << "\n";
-  //     out << std::scientific << E_i / SI::eV << "\t";
-  //     out << b.computeFlux(E_i) << "\t";
-  //     out << b.computeFluxUnm(E_i) << "\t";
-  //     out << "\n";
-  //   }
-  // }
   {
     b.setMaxRedshift(0.1);
     b.setSlope(2.7);
     b.setSourceEvolution(0.);
-    b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax0.1_nopion.txt");
-    auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
-    for (const auto &E_i : E) {
-      std::cout << E_i / SI::eV << "\n";
-      out << std::scientific << E_i / SI::eV << "\t";
-      out << b.computeFlux(E_i) << "\t";
-      out << b.computeFluxUnm(E_i) << "\t";
-      out << "\n";
-    }
-  }
-  {
-    b.setMaxRedshift(0.3);
-    b.setSlope(2.7);
-    b.setSourceEvolution(0.);
-    b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax0.3_nopion.txt");
+    // b.disablePhotoPion();
+    utils::OutputFile out("proton_spectrum_zmax0.1_m0.txt");
     auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
@@ -146,8 +104,8 @@ void printSpectrum() {
     b.setMaxRedshift(0.5);
     b.setSlope(2.7);
     b.setSourceEvolution(0.);
-    b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax0.5_nopion.txt");
+    // b.disablePhotoPion();
+    utils::OutputFile out("proton_spectrum_zmax0.5_m0.txt");
     auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
@@ -161,8 +119,8 @@ void printSpectrum() {
     b.setMaxRedshift(1.0);
     b.setSlope(2.7);
     b.setSourceEvolution(0.);
-    b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax1.0_nopion.txt");
+    // b.disablePhotoPion();
+    utils::OutputFile out("proton_spectrum_zmax1.0_m0.txt");
     auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
@@ -176,8 +134,8 @@ void printSpectrum() {
     b.setMaxRedshift(3.0);
     b.setSlope(2.7);
     b.setSourceEvolution(0.);
-    b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax3.0_nopion.txt");
+    // b.disablePhotoPion();
+    utils::OutputFile out("proton_spectrum_zmax3.0_m0.txt");
     auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
@@ -187,43 +145,15 @@ void printSpectrum() {
       out << "\n";
     }
   }
-  {
-    b.setMaxRedshift(5.0);
-    b.setSlope(2.7);
-    b.setSourceEvolution(0.);
-    b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax5.0_nopion.txt");
-    auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
-    for (const auto &E_i : E) {
-      std::cout << E_i / SI::eV << "\n";
-      out << std::scientific << E_i / SI::eV << "\t";
-      out << b.computeFlux(E_i) << "\t";
-      out << b.computeFluxUnm(E_i) << "\t";
-      out << "\n";
-    }
-  }
-  // {
-  //   b.setSourceCutoff(1e20 * SI::eV);
-  //   utils::OutputFile out("proton_spectrum_EC20.txt");
-  //   auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
-  //   for (const auto &E_i : E) {
-  //     std::cout << E_i / SI::eV << "\n";
-  //     out << std::scientific << E_i / SI::eV << "\t";
-  //     out << b.computeFlux(E_i) << "\t";
-  //     out << b.computeFluxUnm(E_i) << "\t";
-  //     out << "\n";
-  //   }
-  // }
 }
 
 int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer for analytical solution");
-    // testCharacteristics();
-    testLosses();
+    testCharacteristics();
     // testJacobian();
-    //   printSpectrum();
+    // printSpectrum();
   } catch (const std::exception &e) {
     LOGE << "exception caught with message: " << e.what();
   }

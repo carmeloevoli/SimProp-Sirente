@@ -42,20 +42,10 @@ double Beniamino::dilationFactor(double E, double zMax, double relError) const {
     auto E_g = generationEnergy(E, z, 1e-6);
     auto E_prime = E_g * (1. + z);
     auto dtdz = m_cosmology->dtdz(z);
-    // auto Gamma = E_prime / SI::protonMassC2;
-    // auto beta = m_pp->beta(proton, Gamma) + ((m_doPhotoPion) ? m_pion->beta(proton, Gamma) : 0.);
-    // auto dbeta = utils::deriv5pt<double>(
-    //     [&](double x) {
-    //       auto Gamma = x / SI::protonMassC2;
-    //       return m_pp->beta(proton, Gamma) + ((m_doPhotoPion) ? m_pion->beta(proton, Gamma) :
-    //       0.);
-    //     },
-    //     E_prime, 1e-2 * E_prime);
-    // auto y = beta + E_prime * dbeta;
     return dtdz * pow3(1. + z) * dbdE(E_prime);
   };
-  // auto I = utils::simpsonIntegration<double>(integrand, 0., zMax, INTSTEPS);
-  auto I = utils::QAGSIntegration<double>(integrand, 0., zMax, INTSTEPS, 1e-3);
+  auto I = utils::simpsonIntegration<double>(integrand, 0., zMax, INTSTEPS);
+  //  auto I = utils::QAGSIntegration<double>(integrand, 0., zMax, INTSTEPS, 1e-3);
   return (1. + zMax) * std::exp(I);
 }
 
@@ -89,7 +79,7 @@ double Beniamino::computeFlux(double E) const {
     return dtdz * sourceEvolution * inj * dEgdE;
   };
   // auto I = utils::simpsonIntegration<double>(integrand, 0., zMax, INTSTEPS);
-  auto I = utils::QAGIntegration<double>(integrand, 0., zMax, INTSTEPS, 1e-4);
+  auto I = utils::QAGIntegration<double>(integrand, 0., zMax, INTSTEPS, 1e-3);
   return factor * I;
 }
 
