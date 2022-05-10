@@ -2,7 +2,6 @@
 #define SIMPROP_LOSSES_BGG2002_CONTINUOUS_H
 
 #include "simprop/energyLosses/ContinuousLosses.h"
-#include "simprop/units.h"
 #include "simprop/utils/lookupContainers.h"
 
 namespace simprop {
@@ -24,7 +23,6 @@ class BGG2002ContinuousLosses final : public ContinuousLosses {
 };
 
 }  // namespace losses
-
 }  // namespace simprop
 
 #endif

@@ -1,9 +1,6 @@
 #ifndef SIMPROP_UTILS_LOOKUPTABLE_H
 #define SIMPROP_UTILS_LOOKUPTABLE_H
 
-// #include <algorithm>
-// #include <cmath>
-// #include <stdexcept>
 #include <vector>
 
 #include "simprop/units.h"
@@ -29,15 +26,14 @@ class LookupArray {
   inline bool xIsInside(double x) const { return x >= m_xAxis.front() && x <= m_xAxis.back(); }
 
  public:
-  void loadTable(const std::string& filePath) {
+  void loadTable(const std::string& filePath, size_t iCol = 1) {
     if (!utils::fileExists(filePath))
       throw std::runtime_error("file data for lookup array does not exist");
     auto v = utils::loadFileByRow(filePath, ",");
     for (size_t i = 0; i < xSize; ++i) {
       auto line = v.at(i);
-      if (line.size() != 2) throw std::runtime_error("error in reading table values");
       m_xAxis.emplace_back(line[0]);
-      m_array.emplace_back(line[1]);
+      m_array.emplace_back(line[iCol]);
     }
     assert(m_xAxis.size() == xSize && m_array.size() == xSize);
   }

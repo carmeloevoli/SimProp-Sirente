@@ -1,13 +1,8 @@
 #ifndef SIMPROP_LOSSES_PAIRPRODUCTION_H
 #define SIMPROP_LOSSES_PAIRPRODUCTION_H
 
-#include <memory>
-#include <vector>
-
-#include "simprop/cosmology.h"
 #include "simprop/energyLosses/ContinuousLosses.h"
 #include "simprop/photonFields/PhotonField.h"
-#include "simprop/units.h"
 
 namespace simprop {
 namespace losses {

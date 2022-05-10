@@ -3,7 +3,6 @@
 
 #include "simprop/cosmology.h"
 #include "simprop/energyLosses/ContinuousLosses.h"
-#include "simprop/units.h"
 
 namespace simprop {
 namespace losses {
