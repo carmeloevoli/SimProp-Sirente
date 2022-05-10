@@ -37,7 +37,7 @@ void testCharacteristics() {
 void testJacobian() {
   solutions::Beniamino b;
   b.disablePhotoPion();
-  utils::OutputFile out("proton_dilationFactor.txt");
+  utils::OutputFile out("proton_dilation_factor.txt");
   auto z = utils::LogAxis(1e-4, 1., 100);
   for (auto it = z.begin(); it != z.end(); it++) {
     auto z_i = *it;

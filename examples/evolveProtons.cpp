@@ -147,7 +147,6 @@ class Evolutor {
     utils::OutputFile out(filename.c_str());
     size_t nActive = std::count_if(m_stack.begin(), m_stack.end(), IsActive);
     size_t counter = 0;
-    // const double dz = 1e-3;
     auto it = m_stack.begin();
     while (it != m_stack.end()) {
       if (counter % 10000 == 0) std::cout << counter / 10000 << " " << nActive << "\n";
@@ -189,95 +188,12 @@ void testSingleProtonEvolution() {
     evolutor.runContinuous("test_proton_evolution_1_1e17.txt");
     out << std::scientific << E / SI::eV << " " << evolutor.getObservedEnergy() / SI::eV << "\n";
   }
-
-  // {
-  //   utils::Timer timer("timer for Gamma = 1e10");
-  //   Evolutor evolutor(rng);
-  //   evolutor.buildParticleStack(
-  //       Redshift(1.), LorentzFactor(2.0017476695909485e+17 * SI::eV / SI::protonMassC2), 1);
-  //   evolutor.buildPhotonFields();
-  //   evolutor.buildContinuousLosses();
-  //   evolutor.buildStochasticInteractions();
-  //   evolutor.runNew("test_proton_evolution_1_1e17.txt");
-  // }
-  // {
-  //   utils::Timer timer("timer for Gamma = 1e10");
-  //   Evolutor evolutor(rng);
-  //   evolutor.buildParticleStack(
-  //       Redshift(1.), LorentzFactor(8.707673289496823e+19 * SI::eV / SI::protonMassC2), 1);
-  //   evolutor.buildPhotonFields();
-  //   evolutor.buildContinuousLosses();
-  //   evolutor.buildStochasticInteractions();
-  //   evolutor.runNew("test_proton_evolution_1_1e18.txt");
-  // }
-  // {
-  //   utils::Timer timer("timer for Gamma = 1e10");
-  //   Evolutor evolutor(rng);
-  //   evolutor.buildParticleStack(
-  //       Redshift(1.), LorentzFactor(8.308907186554102e+20 * SI::eV / SI::protonMassC2), 1);
-  //   evolutor.buildPhotonFields();
-  //   evolutor.buildContinuousLosses();
-  //   evolutor.buildStochasticInteractions();
-  //   evolutor.runNew("test_proton_evolution_1_1e19.txt");
-  // }
-  // {
-  //   utils::Timer timer("timer for Gamma = 1e10");
-  //   Evolutor evolutor(rng);
-  //   evolutor.buildParticleStack(
-  //       Redshift(1.), LorentzFactor(1.837157436044067e+21 * SI::eV / SI::protonMassC2), 1);
-  //   evolutor.buildPhotonFields();
-  //   evolutor.buildContinuousLosses();
-  //   evolutor.buildStochasticInteractions();
-  //   evolutor.runNew("test_proton_evolution_1_1e20.txt");
-  // }
-  // {
-  //   utils::Timer timer("timer for Gamma = 1e10");
-  //   Evolutor evolutor(rng);
-  //   evolutor.buildParticleStack(
-  //       Redshift(1.), LorentzFactor(5.280634760793176e+21 * SI::eV / SI::protonMassC2), 1);
-  //   evolutor.buildPhotonFields();
-  //   evolutor.buildContinuousLosses();
-  //   evolutor.buildStochasticInteractions();
-  //   evolutor.runNew("test_proton_evolution_1_1e21.txt");
-  // }
-  // {
-  //   utils::Timer timer("timer for Gamma = 1e10");
-  //   Evolutor evolutor(rng);
-  //   evolutor.buildParticleStack(
-  //       Redshift(1.), LorentzFactor(2.704500955346506e+22 * SI::eV / SI::protonMassC2), 1);
-  //   evolutor.buildPhotonFields();
-  //   evolutor.buildContinuousLosses();
-  //   evolutor.buildStochasticInteractions();
-  //   evolutor.runNew("test_proton_evolution_1_1e22.txt");
-  // }
 }
 
 int main() {
   try {
     utils::startup_information();
-    testSingleProtonEvolution();
-    exit(1);
-    //   {
-    //     RandomNumberGenerator rng = utils::RNG<double>(Seed(88));
-    //     utils::Timer timer("timer for Gamma = 1e11");
-    //     Evolutor evolutor(rng);
-    //     evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e11), 1);
-    //     evolutor.buildPhotonFields();
-    //     evolutor.buildContinuousLosses();
-    //     evolutor.buildStochasticInteractions();
-    //     evolutor.run("test_proton_evolution_1_1e11_1.txt");
-    //   }
-    //   {
-    //     RandomNumberGenerator rng = utils::RNG<double>(Seed(88));
-    //     utils::Timer timer("timer for Gamma = 1e12");
-    //     Evolutor evolutor(rng);
-    //     evolutor.buildParticleStack(Redshift(1.), LorentzFactor(1e12), 1);
-    //     evolutor.buildPhotonFields();
-    //     evolutor.buildContinuousLosses();
-    //     evolutor.buildStochasticInteractions();
-    //     evolutor.run("test_proton_evolution_1_1e12_1.txt");
-    //   }
-
+    // testSingleProtonEvolution();
     {
       RandomNumberGenerator rng = utils::RNG<double>(Seed(96));
       utils::Timer timer("timer for first test");

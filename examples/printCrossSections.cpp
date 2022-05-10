@@ -9,11 +9,12 @@ int main() {
     {
       auto sAxis = utils::LogAxis(0.1 * pow2(SI::GeV), 1e11 * pow2(SI::GeV), 10000);
       utils::OutputFile out("test_xsecs.txt");
-      out << "#\n";
+      out << "# s [GeV^2] - sigma [mbarn] - phi []\n";
       out << std::scientific;
       for (auto s : sAxis) {
-        out << s / pow2(SI::GeV) << "\t";
-        out << sigmaPpp.getAtS(s) / SI::mbarn << "\n";
+        out << s / SI::GeV2 << "\t";
+        out << sigmaPpp.getAtS(s) / SI::mbarn << "\t";
+        out << sigmaPpp.getPhiAtS(s) / pow2(s) / SI::mbarn << "\n";
       }
     }
     {
