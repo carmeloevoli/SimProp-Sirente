@@ -2,7 +2,6 @@
 #define SIMPROP_ANALYTICALSOLUTIONS_BENIAMINO_H
 
 #include "simprop/cosmology.h"
-#include "simprop/energyLosses/AdiabaticContinuousLosses.h"
 #include "simprop/energyLosses/BGG2002ContinuousLosses.h"
 #include "simprop/energyLosses/PhotoPionContinuousLosses.h"
 
@@ -12,16 +11,15 @@ namespace solutions {
 class Beniamino {
  protected:
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
-  std::shared_ptr<losses::AdiabaticContinuousLosses> m_ad;
   std::shared_ptr<losses::BGG2002ContinuousLosses> m_pp;
   std::shared_ptr<losses::PhotoPionContinuousLosses> m_pion;
 
+  const double m_sourceEmissivity = SI::GeV / SI::m3 / SI::sec;
+  const double m_maxEnergy = 1e23 * SI::eV;
   double m_slope = 2.7;
-  double m_sourceEmissivity = SI::GeV / SI::m3 / SI::sec;
   double m_sourceEvolution = 0.;
   double m_sourceMaxRedshift = 0.;
   double m_sourceCutoff = -1.;
-  double m_maxEnergy = 1e23 * SI::eV;
   bool m_doPhotoPion = true;
 
  public:
