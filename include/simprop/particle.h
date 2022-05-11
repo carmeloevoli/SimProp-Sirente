@@ -20,13 +20,15 @@ class Particle {
   State m_origin;
   State m_now;
   double m_weight;
+  bool m_doPropagate;
 
  public:
   Particle(PID pid, Redshift z, LorentzFactor Gamma, double weight = 1.)
       : m_pid(pid),
         m_origin({z.get(), Gamma.get()}),
         m_now({z.get(), Gamma.get()}),
-        m_weight(weight) {}
+        m_weight(weight),
+        m_doPropagate(true) {}
 
   // Copy constructor
   Particle(const Particle& particle) {
@@ -34,6 +36,7 @@ class Particle {
     m_origin = particle.m_origin;
     m_now = particle.m_now;
     m_weight = particle.m_weight;
+    m_doPropagate = particle.m_doPropagate;
   }
 
   const State getNow() const { return m_now; }
@@ -44,14 +47,20 @@ class Particle {
   const double getGamma() const { return m_now.Gamma; }
   const double getEnergy() const { return m_now.Gamma * getPidMass(m_pid); }
   const double getWeight() const { return m_weight; }
-  const bool IsNucleus() const { return pidIsNucleus(m_pid); }
+  const bool isNucleus() const { return pidIsNucleus(m_pid); }
+  const bool isActive() const { return m_doPropagate; }
+
+  void deactivate() { m_doPropagate = false; }
+  void activate() { m_doPropagate = true; }
 
   friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
     auto pidName = getPidName(p.m_pid);
     auto z = p.m_now.z;
     auto Gamma = p.m_now.Gamma;
     auto weight = p.m_weight;
-    return os << pidName << " " << std::scientific << z << " " << Gamma << " " << weight;
+    auto doPropagate = p.m_doPropagate;
+    return os << pidName << " " << std::scientific << z << " " << Gamma << " " << weight << " "
+              << std::boolalpha << doPropagate;
   }
 };
 
