@@ -95,6 +95,7 @@ std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingPa
   const auto pid = incomingParticle.getPid();
   if (pid == proton || pid == neutron) {
     const auto nucleonEnergy = incomingParticle.getGamma() * SI::protonMassC2;
+    const auto w = incomingParticle.getWeight();
     const auto photonEnergy = sampleEps(RandomNumber(rng()), nucleonEnergy, zInteractionPoint);
     const auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
     const auto s = sampleS(RandomNumber(rng()), sMax);
@@ -102,9 +103,9 @@ std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingPa
     const auto outPionCharge = samplePionCharge(RandomNumber(rng()), (pid == neutron));
     const auto outNucleonEnergy = nucleonEnergy - outPionEnergy;
     auto outPion = Particle(outPionCharge, Redshift(zInteractionPoint),
-                            LorentzFactor(outPionEnergy / SI::pionMassC2));
+                            LorentzFactor(outPionEnergy / SI::pionMassC2), w);
     auto outNucleon = Particle(proton, Redshift(zInteractionPoint),
-                               LorentzFactor(outNucleonEnergy / SI::protonMassC2));
+                               LorentzFactor(outNucleonEnergy / SI::protonMassC2), w);
     return {outNucleon, outPion};
   }
   auto p = Particle{incomingParticle};

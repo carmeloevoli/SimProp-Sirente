@@ -42,6 +42,8 @@ class Particle {
   const State& getOrigin() const { return m_origin; }
   const double getRedshift() const { return m_now.z; }
   const double getGamma() const { return m_now.Gamma; }
+  const double getEnergy() const { return m_now.Gamma * getPidMass(m_pid); }
+  const double getWeight() const { return m_weight; }
   const bool IsNucleus() const { return pidIsNucleus(m_pid); }
 
   friend std::ostream& operator<<(std::ostream& os, const Particle& p) {
