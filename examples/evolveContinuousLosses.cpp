@@ -17,9 +17,7 @@ class Evolutor {
   ParticleStack m_stack;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
   std::shared_ptr<photonfields::PhotonField> m_cmb;
-  // std::shared_ptr<photonfields::PhotonField> m_ebl;
   std::vector<std::shared_ptr<losses::ContinuousLosses> > m_continuousLosses;
-  std::shared_ptr<interactions::PhotoPionProduction> m_pppcmb;
 
  public:
   Evolutor(RandomNumberGenerator& rng) : m_rng(rng) {
@@ -33,48 +31,25 @@ class Evolutor {
     m_stack = builder.build();
   }
 
-  void buildCosmologicalParticleStack(double slope, double evolutionIndex, double zMax,
+  void buildCosmologicalParticleStack(double slope, double evolutionIndex, Redshift zMax,
                                       size_t N = 1) {
     double maxEnergy = std::pow(10., 23) * SI::eV;
     double minEnergy = std::pow(10., 17) * SI::eV;
     Range GammaRange = {minEnergy / SI::protonMassC2, maxEnergy / SI::protonMassC2};
-    Range zRange = {0., zMax};
+    Range zRange = {0., zMax.get()};
     auto builder =
         SourceEvolutionBuilder(proton, {GammaRange, zRange, slope, evolutionIndex}, m_cosmology, N);
     m_stack = builder.build(m_rng);
   }
 
-  void buildPhotonFields() {
-    m_cmb = std::make_shared<photonfields::CMB>();
-    // m_ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
-  }
+  void buildPhotonFields() { m_cmb = std::make_shared<photonfields::CMB>(); }
 
-  void buildContinuousLosses() {
+  void buildContinuousLosses(bool doPionLosses = false) {
     m_continuousLosses = std::vector<std::shared_ptr<losses::ContinuousLosses> >{
         std::make_shared<losses::BGG2002ContinuousLosses>(),
         std::make_shared<losses::AdiabaticContinuousLosses>(m_cosmology)};
-  }
-
-  void buildContinuousLossesIncludingPion() {
-    m_continuousLosses = std::vector<std::shared_ptr<losses::ContinuousLosses> >{
-        std::make_shared<losses::AdiabaticContinuousLosses>(m_cosmology),
-        std::make_shared<losses::BGG2002ContinuousLosses>(),
-        std::make_shared<losses::PhotoPionContinuousLosses>()};
-  }
-
-  void buildStochasticInteractions() {
-    auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-    m_pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, m_cmb);
-  }
-
-  double computeStochasticRedshiftInterval(const Particle& particle) {
-    const auto pid = particle.getPid();
-    const auto Gamma = particle.getGamma();
-    const auto zNow = particle.getRedshift();
-    const auto dtdz = m_cosmology->dtdz(zNow);
-    const auto dt = std::fabs(1. / m_pppcmb->rate(pid, Gamma, zNow));
-    // TODO why to put the fabs?
-    return -dt / dtdz * std::log(1. - m_rng());
+    if (doPionLosses)
+      m_continuousLosses.push_back(std::make_shared<losses::PhotoPionContinuousLosses>());
   }
 
   double computeDeltaGamma(const Particle& particle, double deltaRedshift) {
@@ -109,47 +84,19 @@ class Evolutor {
   }
 
   void run(std::string filename) {
-    assert(m_pppcmb != nullptr);
-    auto it = m_stack.begin();
+    utils::OutputFile out(filename.c_str());
+    // size_t nActive = std::count_if(m_stack.begin(), m_stack.end(), IsActive);
     size_t iniSize = m_stack.size();
-    size_t counter = 0;
     const double initEnergy = sumEnergy();
+    size_t counter = 0;
+    auto it = m_stack.begin();
     while (it != m_stack.end()) {
       if (counter % iniSize == 0) {
         LOGD << counter / iniSize << "\t" << sumEnergy() / initEnergy << "\t" << m_stack.size();
       }
-
-      const auto distance = it - m_stack.begin();
-      const auto nowRedshift = it->getRedshift();
-      const auto dz_s = computeStochasticRedshiftInterval(*it);
-      const auto dz_c = computeLossesRedshiftInterval(*it);
-      assert(dz_s > 0. && dz_c > 0. && dz_c <= nowRedshift);
-
-      if (dz_s > dz_c || dz_s > nowRedshift) {
-        const auto Gamma = it->getGamma();
-        const auto dz = dz_c;
-        const auto deltaGamma = computeDeltaGamma(*it, dz);
-        it->getNow() = {nowRedshift - dz, Gamma * (1. - deltaGamma)};
-      } else {
-        it->deactivate();
-        const auto dz = dz_s;
-        auto finalState = m_pppcmb->finalState(*it, nowRedshift - dz, m_rng);
-        m_stack.insert(m_stack.end(), finalState.begin(), finalState.end());
-      }
-      it = std::find_if(m_stack.begin() + distance, m_stack.end(), IsActive);
-      counter++;
-    }
-  }  // run()
-
-  void runContinuous(std::string filename) {
-    utils::OutputFile out(filename.c_str());
-    size_t nActive = std::count_if(m_stack.begin(), m_stack.end(), IsActive);
-    size_t counter = 0;
-    auto it = m_stack.begin();
-    while (it != m_stack.end()) {
-      if (counter % 10000 == 0) std::cout << counter / 10000 << " " << nActive << "\n";
       const auto nowRedshift = it->getRedshift();
       const auto Gamma = it->getGamma();
+      // const double dz_c = 1e-3 * (1. + nowRedshift);
       const auto dz_c = computeLossesRedshiftInterval(*it);
       assert(dz_c > 0. && dz_c <= nowRedshift);
       const auto deltaGamma = computeDeltaGamma(*it, dz_c);
@@ -184,15 +131,52 @@ class Evolutor {
 
 void testSingleProtonEvolution() {
   RandomNumberGenerator rng = utils::RNG<double>(Seed(96));
-  const double zMax = 1.;
-  utils::OutputFile out("test_traj_z1.0.txt");
-  for (double E = 1e17 * SI::eV; E < 1e23 * SI::eV; E *= 1.2) {
+  const double zMax = 3.0;
+  utils::OutputFile out("test_traj_z3.0.txt");
+  for (double E = 1e17 * SI::eV; E < 1e23 * SI::eV; E *= 1.25) {
     Evolutor evolutor(rng);
     evolutor.buildParticleStack(Redshift(zMax), LorentzFactor(E / SI::protonMassC2), 1);
     evolutor.buildPhotonFields();
-    evolutor.buildContinuousLosses();
+    evolutor.buildContinuousLosses(false);
     evolutor.run("test_proton_evolution_1_1e17.txt");
     out << std::scientific << E / SI::eV << " " << evolutor.getObservedEnergy() / SI::eV << "\n";
+  }
+}
+
+void evolvePopulation() {
+  RandomNumberGenerator rng = utils::RNG<double>(Seed(69));
+  {
+    Evolutor evolutor(rng);
+    evolutor.buildCosmologicalParticleStack(2.7, 0., Redshift(0.05), 1e6);
+    evolutor.buildPhotonFields();
+    evolutor.buildContinuousLosses();
+    evolutor.run("test_proton_cosmology.txt");
+    evolutor.dump("test_spectrum_z0.05_m0_smart_N1e6.txt");
+  }
+  {
+    Evolutor evolutor(rng);
+    evolutor.buildCosmologicalParticleStack(2.7, 0., Redshift(0.5), 1e6);
+    evolutor.buildPhotonFields();
+    evolutor.buildContinuousLosses();
+    evolutor.run("test_proton_cosmology.txt");
+    evolutor.dump("test_spectrum_z0.5_m0_smart_N1e6.txt");
+  }
+  {
+    Evolutor evolutor(rng);
+    evolutor.buildCosmologicalParticleStack(2.7, 0., Redshift(1.0), 1e6);
+    evolutor.buildPhotonFields();
+    evolutor.buildContinuousLosses();
+    evolutor.run("test_proton_cosmology.txt");
+    evolutor.dump("test_spectrum_z1.0_m0_smart_N1e6.txt");
+  }
+  {
+    utils::Timer timer("timer for z=3");
+    Evolutor evolutor(rng);
+    evolutor.buildCosmologicalParticleStack(2.7, 0., Redshift(3.0), 1e6);
+    evolutor.buildPhotonFields();
+    evolutor.buildContinuousLosses();
+    evolutor.run("test_proton_cosmology.txt");
+    evolutor.dump("test_spectrum_z3.0_m0_smart_N1e6.txt");
   }
 }
 
@@ -200,18 +184,7 @@ int main() {
   try {
     utils::startup_information();
     // testSingleProtonEvolution();
-    for (size_t i = 0; i < 10; ++i) {
-      RandomNumberGenerator rng = utils::RNG<double>(Seed(i));
-      utils::Timer timer("timer for first test");
-      Evolutor evolutor(rng);
-      evolutor.buildCosmologicalParticleStack(2.7, 0., 1.0, 1e5);
-      evolutor.buildPhotonFields();
-      evolutor.buildContinuousLosses();
-      evolutor.buildStochasticInteractions();
-      evolutor.run("test_proton_cosmology.txt");
-      evolutor.dump("test_" + std::to_string(i) + "_spectrum_z1.0_m0.txt");
-    }
-
+    evolvePopulation();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
