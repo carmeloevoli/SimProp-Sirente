@@ -4,6 +4,7 @@ using namespace simprop;
 
 void testCharacteristics() {
   solutions::Beniamino b;
+  b.disablePhotoPion();
   {
     utils::OutputFile out("proton_characteristics_redshift.txt");
     auto z = utils::LogAxis(1e-4, 6., 1000);
@@ -51,15 +52,15 @@ void testJacobian() {
   }
 }
 
-void printSpectrum() {
+void testSpectrum() {
   solutions::Beniamino b;
+  // b.disablePhotoPion();
+  auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
   {
-    b.setMaxRedshift(0.1);
+    b.setMaxRedshift(0.05);
     b.setSlope(2.7);
     b.setSourceEvolution(0.);
-    // b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax0.1_m0.txt");
-    auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
+    utils::OutputFile out("proton_spectrum_pion_zmax0.05_m0.txt");
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
       out << std::scientific << E_i / SI::eV << "\t";
@@ -72,9 +73,7 @@ void printSpectrum() {
     b.setMaxRedshift(0.5);
     b.setSlope(2.7);
     b.setSourceEvolution(0.);
-    // b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax0.5_m0.txt");
-    auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
+    utils::OutputFile out("proton_spectrum_pion_zmax0.5_m0.txt");
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
       out << std::scientific << E_i / SI::eV << "\t";
@@ -87,9 +86,7 @@ void printSpectrum() {
     b.setMaxRedshift(1.0);
     b.setSlope(2.7);
     b.setSourceEvolution(0.);
-    // b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax1.0_m0.txt");
-    auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
+    utils::OutputFile out("proton_spectrum_pion_zmax1.0_m0.txt");
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
       out << std::scientific << E_i / SI::eV << "\t";
@@ -102,9 +99,7 @@ void printSpectrum() {
     b.setMaxRedshift(3.0);
     b.setSlope(2.7);
     b.setSourceEvolution(0.);
-    // b.disablePhotoPion();
-    utils::OutputFile out("proton_spectrum_zmax3.0_m0.txt");
-    auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 5 * 16);
+    utils::OutputFile out("proton_spectrum_pion_zmax3.0_m0.txt");
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
       out << std::scientific << E_i / SI::eV << "\t";
@@ -119,9 +114,9 @@ int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer for analytical solution");
-    testCharacteristics();
-    testJacobian();
-    printSpectrum();
+    // testCharacteristics();
+    //  testJacobian();
+    testSpectrum();
   } catch (const std::exception &e) {
     LOGE << "exception caught with message: " << e.what();
   }
