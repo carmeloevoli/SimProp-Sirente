@@ -17,6 +17,7 @@ class Cosmology {
   double m_OmegaM = m_OmegaC;
   double m_OmegaL = 1. - m_OmegaM;
   double m_Dh = SI::cLight / m_H0;
+  double m_age = -1;
 
   const size_t m_size = 1000;
   const double m_zmin = 0.0001;
@@ -44,6 +45,7 @@ class Cosmology {
   double redshift2LightTravelDistance(double z) const;
   double comoving2LightTravelDistance(double d) const;
   double lightTravel2ComovingDistance(double d) const;
+  double redshift2UniverseAge(double z) const;
 
  protected:
   void setParameters(double littleh, double OmegaBaryon_h2, double OmegaDarkMatter_h2,

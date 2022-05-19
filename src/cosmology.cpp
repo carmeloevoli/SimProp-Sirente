@@ -30,6 +30,9 @@ void Cosmology::setParameters(double littleh, double OmegaBaryon_h2, double Omeg
 }
 
 void Cosmology::init() {
+  auto integrand = [&](double x) { return 1. / E(x) / (1. + x); };
+  m_age = 1. / m_H0 * utils::QAGIntegration<double>(integrand, 0., 1e6, 1000, 1e-8);
+
   m_z.resize(m_size);
   m_Dc.resize(m_size);
   m_Dl.resize(m_size);
@@ -106,6 +109,12 @@ double Cosmology::lightTravel2ComovingDistance(double d) const {
   if (d < 0) throw std::invalid_argument("Cosmology: d < 0");
   if (d > m_Dt.back()) throw std::invalid_argument("Cosmology: d > dmax");
   return utils::interpolate(d, m_Dt, m_Dc);
+}
+
+double Cosmology::redshift2UniverseAge(double z) const {
+  if (z < 0) throw std::invalid_argument("Cosmology: z < 0");
+  if (z > m_zmax) throw std::invalid_argument("Cosmology: z > zmax");
+  return m_age - redshift2LightTravelDistance(z) / SI::cLight;
 }
 
 }  // namespace cosmo
