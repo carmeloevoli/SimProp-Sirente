@@ -16,7 +16,7 @@ Cosmology::Cosmology(double littleh, double OmegaBaryon_h2, double OmegaDarkMatt
   LOGD << "OmegaM + OmegaL = " << m_OmegaM + m_OmegaL;
   LOGD << "H_0^-1 = " << 1. / m_H0 / SI::Gyr << " Gyr";
   LOGD << "d_H = " << m_Dh / SI::Mpc << " Mpc";
-  LOGD << "Universe Age : " << cosmology.redshift2UniverseAge(0.) / SI::Gyr << " Gyr";
+  LOGD << "Universe Age : " << redshift2UniverseAge(0.) / SI::Gyr << " Gyr";
 }
 
 void Cosmology::setParameters(double littleh, double OmegaBaryon_h2, double OmegaDarkMatter_h2,
