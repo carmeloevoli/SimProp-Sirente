@@ -45,7 +45,8 @@ double Beniamino::dilationFactor(double E, double zMax, double relError) const {
   };
   auto I = utils::simpsonIntegration<double>(integrand, 0., zMax, INTSTEPS);
   //  auto I = utils::QAGSIntegration<double>(integrand, 0., zMax, INTSTEPS, 1e-3);
-  return (1. + zMax) * std::exp(I);
+  auto value = (1. + zMax) * std::exp(I);
+  return (value < 1.) ? 1e10 : value;
 }
 
 double Beniamino::computeFluxUnm(double E) const {
