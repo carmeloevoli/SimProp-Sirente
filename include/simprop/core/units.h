@@ -26,6 +26,7 @@ static constexpr double watt = joule / second;
 static constexpr double steradian = pow2(meter / meter);
 
 // prefixes
+static constexpr double exa = 1e18;
 static constexpr double peta = 1e15;
 static constexpr double tera = 1e12;
 static constexpr double giga = 1e9;
@@ -60,6 +61,8 @@ static constexpr double megaelectronvolt = mega * electronvolt;
 static constexpr double gigaelectronvolt = giga * electronvolt;
 static constexpr double teraelectronvolt = tera * electronvolt;
 static constexpr double petaelectronvolt = peta * electronvolt;
+static constexpr double exaelectronvolt = exa * electronvolt;
+static constexpr double embarrassinglyLargeEnergy = 1e30 * electronvolt;
 
 // ABBREVIATION
 static constexpr double sec = second;
