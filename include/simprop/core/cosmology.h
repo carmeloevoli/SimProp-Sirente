@@ -30,8 +30,7 @@ class Cosmology {
 
  public:
   Cosmology();
-  Cosmology(double littleh, double OmegaBaryon_h2,
-            double OmegaDarkMatter_h2, double OmegaLambda);
+  Cosmology(double littleh, double OmegaBaryon_h2, double OmegaDarkMatter_h2, double OmegaLambda);
   virtual ~Cosmology() = default;
 
   inline double hubbleRate(double z) const { return m_H0 * E(z); }
@@ -66,9 +65,7 @@ class Cosmology {
 
 class Planck2018 final : public Cosmology {
  public:
-  Planck2018()
-      : Cosmology(0.674, 0.02237, 0.1200,
-                  0.685) {}
+  Planck2018() : Cosmology(0.674, 0.02237, 0.1200, 0.685) {}
 };
 
 }  // namespace cosmo
