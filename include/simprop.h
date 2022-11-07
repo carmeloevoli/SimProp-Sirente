@@ -9,7 +9,7 @@
 #include "simprop/core/units.h"
 #include "simprop/crossSections/PhotoPionProductionXsec.h"
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
-#include "simprop/energyLosses/BGG2002ContinuousLosses.h"
+#include "simprop/energyLosses/BGG2006ContinuousLosses.h"
 #include "simprop/energyLosses/PairProductionLosses.h"
 #include "simprop/energyLosses/PhotoPionContinuousLosses.h"
 #include "simprop/interactions/PhotoPionProduction.h"

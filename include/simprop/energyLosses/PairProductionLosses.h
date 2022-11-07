@@ -12,6 +12,7 @@ class PairProductionLosses final : public ContinuousLosses {
   photonfields::PhotonFields m_photonFields;
 
  public:
+  PairProductionLosses(const std::shared_ptr<photonfields::PhotonField>& photonField);
   PairProductionLosses(const photonfields::PhotonFields& photonFields);
   virtual ~PairProductionLosses() = default;
   double beta(PID pid, double Gamma, double z = 0) const override;

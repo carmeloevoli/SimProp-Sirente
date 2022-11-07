@@ -9,7 +9,7 @@ namespace solutions {
 
 Beniamino::Beniamino() {
   m_cosmology = std::make_shared<cosmo::Planck2018>();
-  m_pp = std::make_shared<losses::BGG2002ContinuousLosses>();
+  m_pp = std::make_shared<losses::BGG2006ContinuousLosses>();
   m_pion = std::make_shared<losses::PhotoPionContinuousLosses>();
 }
 

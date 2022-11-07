@@ -42,6 +42,13 @@ double phi(double k) {
   }
 }
 
+PairProductionLosses::PairProductionLosses(
+    const std::shared_ptr<photonfields::PhotonField>& photonField)
+    : ContinuousLosses() {
+  m_photonFields.push_back(photonField);
+  LOGD << "calling " << __func__ << " constructor";
+}
+
 PairProductionLosses::PairProductionLosses(const photonfields::PhotonFields& photonFields)
     : ContinuousLosses(), m_photonFields(photonFields) {
   LOGD << "calling " << __func__ << " constructor";

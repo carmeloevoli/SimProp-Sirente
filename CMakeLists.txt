@@ -91,7 +91,7 @@ add_library(simprop SHARED
     src/core/pid.cpp
     src/crossSections/PhotoPionProductionXsec.cpp
     src/energyLosses/AdiabaticContinuousLosses.cpp
-    src/energyLosses/BGG2002ContinuousLosses.cpp
+    src/energyLosses/BGG2006ContinuousLosses.cpp
     src/energyLosses/PairProductionLosses.cpp
     src/energyLosses/PhotoPionContinuousLosses.cpp
     src/interactions/PhotoPionProduction.cpp
@@ -132,11 +132,11 @@ target_link_libraries (print_photons simprop ${SIMPROP_EXTRA_LIBRARIES})
 add_executable(print_initial apps/printInitialState.cpp)
 target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-# add_executable(print_xsecs examples/printCrossSections.cpp)
-# target_link_libraries (print_xsecs simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(print_xsecs apps/printCrossSections.cpp)
+target_link_libraries (print_xsecs simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-# add_executable(print_losses examples/printLosses.cpp)
-# target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(print_losses apps/printLosses.cpp)
+target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(print_rates examples/printRates.cpp)
 # target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
