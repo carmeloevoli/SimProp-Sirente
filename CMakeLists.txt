@@ -95,7 +95,6 @@ add_library(simprop SHARED
     src/energyLosses/PairProductionLosses.cpp
     src/energyLosses/PhotoPionContinuousLosses.cpp
     src/interactions/PhotoPionProduction.cpp
-    src/particleStacks/Builder.cpp
     src/particleStacks/SingleParticleBuilder.cpp
     src/particleStacks/SingleSourceBuilder.cpp
     src/particleStacks/SourceEvolutionBuilder.cpp
@@ -130,14 +129,14 @@ target_link_libraries (print_cosmology simprop ${SIMPROP_EXTRA_LIBRARIES})
 add_executable(print_photons apps/printPhotonFields.cpp)
 target_link_libraries (print_photons simprop ${SIMPROP_EXTRA_LIBRARIES})
 
+add_executable(print_initial apps/printInitialState.cpp)
+target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
+
 # add_executable(print_xsecs examples/printCrossSections.cpp)
 # target_link_libraries (print_xsecs simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(print_losses examples/printLosses.cpp)
 # target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
-
-# add_executable(print_initial examples/printInitialState.cpp)
-# target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(print_rates examples/printRates.cpp)
 # target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})

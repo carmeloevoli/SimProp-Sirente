@@ -23,6 +23,23 @@ void plot_local_photonfields() {
   }
 }
 
+void plot_photon_integral() {
+  const auto cmb = photonfields::CMB();
+  const auto ebl = photonfields::Dominguez2011PhotonField();
+  const auto ePhoton = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
+  utils::OutputFile out("test_photon_integral.txt");
+  const auto units = 1. / pow2(SI::eV) / SI::m3;
+  out << "# energy [eV] - I_gamma [] - \n";
+  out << std::scientific;
+  for (auto E : ePhoton) {
+    out << E / SI::eV << "\t";
+    out << energyToWavelenght(E) / SI::micron << "\t";
+    out << E * cmb.I_gamma(E) / units << "\t";
+    out << E * ebl.I_gamma(E) / units << "\t";
+    out << "\n";
+  }
+}
+
 void plot_evolution_photonfields() {
   const auto cmb = photonfields::CMB();
   LOGD << "CMB photon range : " << cmb.getMinPhotonEnergy() / SI::eV << " "
@@ -57,6 +74,7 @@ int main() {
   try {
     utils::startup_information();
     plot_local_photonfields();
+    plot_photon_integral();
     plot_evolution_photonfields();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
