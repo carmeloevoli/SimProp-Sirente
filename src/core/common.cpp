@@ -6,10 +6,13 @@
 namespace simprop {
 
 double getRndLogUniform(Range range, double r) {
-  assert(range.second > range.first);
-  using std::pow;
-  const auto C = pow(range.second / range.first, r);
-  return C * range.first;
+  assert(range.second >= range.first);
+  if (range.second == range.first) {
+    return range.second;
+  } else {
+    const auto C = std::pow(range.second / range.first, r);
+    return C * range.first;
+  }
 }
 
 Range getRedshiftRange(const ParticleStack& stack) {
