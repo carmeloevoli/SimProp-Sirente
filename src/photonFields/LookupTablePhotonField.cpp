@@ -21,6 +21,7 @@ LookupTablePhotonField::LookupTablePhotonField(size_t zSize, size_t eSize, std::
   } else {
     throw std::runtime_error("error reading from file : " + filename);
   }
+  LOGD << "calling " << __func__ << " constructor";
 }
 
 void LookupTablePhotonField::loadDataFile() {
