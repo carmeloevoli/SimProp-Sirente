@@ -3,8 +3,8 @@
 
 #include <memory>
 
+#include "simprop/core/units.h"
 #include "simprop/interactions/Interaction.h"
-#include "simprop/units.h"
 #include "simprop/utils/random.h"
 
 namespace simprop {
@@ -23,11 +23,11 @@ class PhotoPionProduction final : public Interaction {
   std::vector<Particle> finalState(const Particle& particle, double zInteractionPoint,
                                    RandomNumberGenerator& rng) const override;
   // TODO make protected:
-  double sampleS(RandomNumber r, double sMax) const;
-  double sampleEps(RandomNumber r, double nucleonEnergy, double z) const;
-  double samplePionInelasticity(RandomNumber r, double s) const;
+  double sampleS(double r, double sMax) const;
+  double sampleEps(double r, double nucleonEnergy, double z) const;
+  double samplePionInelasticity(double r, double s) const;
   double epsPdfIntegral(double photonEnergy, double nucleonEnergy, double z) const;
-  PID samplePionCharge(RandomNumber r, bool isNeutron) const;
+  PID samplePionCharge(double r, bool isNeutron) const;
 };
 
 }  // namespace interactions

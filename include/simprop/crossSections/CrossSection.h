@@ -1,7 +1,7 @@
 #ifndef SIMPROP_XSECS_ABSTRACTCROSSSECTION_H
 #define SIMPROP_XSECS_ABSTRACTCROSSSECTION_H
 
-#include "simprop/pid.h"
+#include "simprop/core/pid.h"
 
 namespace simprop {
 namespace xsecs {

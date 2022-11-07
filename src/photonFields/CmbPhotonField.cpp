@@ -7,7 +7,7 @@ namespace photonfields {
 
 CMB::CMB(double T)
     : m_temperature(T),
-      m_epsRange({1e-5 * (T / SI::K) * SI::eV, 0.1 * (T / 2.725 / SI::K) * SI::eV}) {
+      m_epsRange({1e-5 * (T / 2.725 / SI::K) * SI::eV, 0.1 * (T / 2.725 / SI::K) * SI::eV}) {
   LOGD << "calling " << __func__ << " constructor";
 }
 

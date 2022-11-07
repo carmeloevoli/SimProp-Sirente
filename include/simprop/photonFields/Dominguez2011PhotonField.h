@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "simprop/photonFields/LookupTablePhotonField.h"
-#include "simprop/units.h"
+#include "simprop/core/units.h"
 
 namespace simprop {
 namespace photonfields {

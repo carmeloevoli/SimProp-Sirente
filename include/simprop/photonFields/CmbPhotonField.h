@@ -4,8 +4,8 @@
 #include <cmath>
 #include <string>
 
+#include "simprop/core/units.h"
 #include "simprop/photonFields/PhotonField.h"
-#include "simprop/units.h"
 
 namespace simprop {
 namespace photonfields {
@@ -19,8 +19,8 @@ class CMB final : public PhotonField {
 
   double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
-  double getMinPhotonEnergy(double z = 0) const override { return m_epsRange.first; }
-  double getMaxPhotonEnergy(double z = 0) const override { return m_epsRange.second; }
+  double getMinPhotonEnergy() const override { return m_epsRange.first; }
+  double getMaxPhotonEnergy() const override { return m_epsRange.second; }
 
  protected:
   double m_temperature;

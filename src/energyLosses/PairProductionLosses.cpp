@@ -3,7 +3,7 @@
 #include <array>
 #include <cmath>
 
-#include "simprop/units.h"
+#include "simprop/core/units.h"
 #include "simprop/utils/logging.h"
 #include "simprop/utils/numeric.h"
 

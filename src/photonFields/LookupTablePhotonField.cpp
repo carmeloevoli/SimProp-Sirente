@@ -1,6 +1,6 @@
 #include "simprop/photonFields/LookupTablePhotonField.h"
 
-#include "simprop/common.h"
+#include "simprop/core/common.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/numeric.h"
 

@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "simprop/core/units.h"
 #include "simprop/photonFields/PhotonField.h"
-#include "simprop/units.h"
 
 namespace simprop {
 namespace photonfields {
@@ -25,10 +25,10 @@ class LookupTablePhotonField : public PhotonField {
   double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
 
-  double getMinPhotonEnergy(double z = 0) const override {
+  double getMinPhotonEnergy() const override {
     return std::pow(10., m_logPhotonEnergies.front()) * SI::eV;
   }
-  double getMaxPhotonEnergy(double z = 0) const override {
+  double getMaxPhotonEnergy() const override {
     return std::pow(10., m_logPhotonEnergies.back()) * SI::eV;
   }
 

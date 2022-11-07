@@ -3,8 +3,8 @@
 
 #include <memory>
 
+#include "simprop/core/particle.h"
 #include "simprop/crossSections/CrossSection.h"
-#include "simprop/particle.h"
 #include "simprop/photonFields/PhotonField.h"
 #include "simprop/utils/random.h"
 

@@ -1,7 +1,7 @@
 #ifndef SIMPROP_LOSSES_ADIABATIC_CONTINUOUS_H
 #define SIMPROP_LOSSES_ADIABATIC_CONTINUOUS_H
 
-#include "simprop/cosmology.h"
+#include "simprop/core/cosmology.h"
 #include "simprop/energyLosses/ContinuousLosses.h"
 
 namespace simprop {

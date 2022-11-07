@@ -1,7 +1,7 @@
 #ifndef SIMPROP_ANALYTICALSOLUTIONS_BENIAMINO_H
 #define SIMPROP_ANALYTICALSOLUTIONS_BENIAMINO_H
 
-#include "simprop/cosmology.h"
+#include "simprop/core/cosmology.h"
 #include "simprop/energyLosses/BGG2002ContinuousLosses.h"
 #include "simprop/energyLosses/PhotoPionContinuousLosses.h"
 

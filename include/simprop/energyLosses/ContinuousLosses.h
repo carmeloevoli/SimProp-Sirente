@@ -1,7 +1,7 @@
 #ifndef SIMPROP_CONTINUOUS_LOSSES_H
 #define SIMPROP_CONTINUOUS_LOSSES_H
 
-#include "simprop/pid.h"
+#include "simprop/core/pid.h"
 
 namespace simprop {
 namespace losses {

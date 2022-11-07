@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "simprop/particle.h"
+#include "simprop/core/particle.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/random.h"
 

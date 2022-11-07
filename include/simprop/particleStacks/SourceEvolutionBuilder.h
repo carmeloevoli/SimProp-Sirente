@@ -1,8 +1,8 @@
 #ifndef SIMPROP_SOURCEEVOLUTIONBUILDER_H
 #define SIMPROP_SOURCEEVOLUTIONBUILDER_H
 
-#include "simprop/common.h"
-#include "simprop/cosmology.h"
+#include "simprop/core/common.h"
+#include "simprop/core/cosmology.h"
 #include "simprop/particleStacks/Builder.h"
 
 namespace simprop {

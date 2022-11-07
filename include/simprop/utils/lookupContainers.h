@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "simprop/units.h"
+#include "simprop/core/units.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/numeric.h"
 

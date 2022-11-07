@@ -85,6 +85,10 @@ include_directories(include ${SIMPROP_EXTRA_INCLUDES})
 
 add_library(simprop SHARED
     src/analyticalSolutions/beniamino.cpp
+    src/core/common.cpp
+    src/core/cosmology.cpp
+    src/core/params.cpp
+    src/core/pid.cpp
     src/crossSections/PhotoPionProductionXsec.cpp
     src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2002ContinuousLosses.cpp
@@ -101,11 +105,6 @@ add_library(simprop SHARED
 	src/utils/logging.cpp
     src/utils/numeric.cpp
     src/utils/timer.cpp
-    src/common.cpp
-    src/cosmology.cpp
-   	#src/params.cpp
- 	#src/particleStack.cpp
-    src/pid.cpp
     "${git_revision_cpp}"
     )
     target_link_libraries(simprop ${SIMPROP_EXTRA_LIBRARIES})
@@ -121,52 +120,57 @@ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/output)
 file(GLOB SIMPROP_DATA "data/*.txt")
 file(COPY ${SIMPROP_DATA} DESTINATION ${PROJECT_BINARY_DIR}/data)
 
-# make examples
-add_executable(print_cosmology examples/printCosmology.cpp)
+# make apps
+add_executable(sandbox apps/sandbox.cpp)
+target_link_libraries (sandbox simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+add_executable(print_cosmology apps/printCosmology.cpp)
 target_link_libraries (print_cosmology simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_photons examples/printPhotonFields.cpp)
+add_executable(print_photons apps/printPhotonFields.cpp)
 target_link_libraries (print_photons simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_xsecs examples/printCrossSections.cpp)
-target_link_libraries (print_xsecs simprop ${SIMPROP_EXTRA_LIBRARIES})
+# add_executable(print_xsecs examples/printCrossSections.cpp)
+# target_link_libraries (print_xsecs simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_losses examples/printLosses.cpp)
-target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
+# add_executable(print_losses examples/printLosses.cpp)
+# target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_initial examples/printInitialState.cpp)
-target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
+# add_executable(print_initial examples/printInitialState.cpp)
+# target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_rates examples/printRates.cpp)
-target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
+# add_executable(print_rates examples/printRates.cpp)
+# target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(analytical_solution examples/analyticalSolution.cpp)
-target_link_libraries (analytical_solution simprop ${SIMPROP_EXTRA_LIBRARIES})
+# add_executable(analytical_solution examples/analyticalSolution.cpp)
+# target_link_libraries (analytical_solution simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(evolve examples/evolveContinuousLosses.cpp)
-target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
+# add_executable(evolve examples/evolveContinuousLosses.cpp)
+# target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-# add_executable(sandbox src/sandbox.cpp)
-# target_link_libraries (sandbox SIMPROP_LIB ${SIMPROP_LIBRARIES})
 
 # testing
 if(ENABLE_TESTING)
     enable_testing()
-    add_executable(testCommon test/testCommon.cpp)
-    target_link_libraries(testCommon simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
-    add_test(testCommon testCommon)
+    add_executable(test_common test/testCommon.cpp)
+    target_link_libraries(test_common simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(test_common test_common)
 
-    add_executable(testCosmology test/testCosmology.cpp)
-    target_link_libraries(testCosmology simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
-    add_test(testCosmology testCosmology)
+    add_executable(test_rng test/testRng.cpp)
+    target_link_libraries(test_rng simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(test_rng test_rng)
 
-    add_executable(testRng test/testRng.cpp)
-    target_link_libraries(testRng simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
-    add_test(testRng testRng)
+    add_executable(test_pid test/testPid.cpp)
+    target_link_libraries(test_pid simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(test_pid test_pid)
 
-    add_executable(testPid test/testPid.cpp)
-    target_link_libraries(testPid simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
-    add_test(testPid testPid)
+    add_executable(test_cosmology test/testCosmology.cpp)
+    target_link_libraries(test_cosmology simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(test_cosmology test_cosmology)
+
+    add_executable(test_photonFields test/testPhotonFields.cpp)
+    target_link_libraries(test_photonFields simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
+    add_test(test_photonFields test_photonFields)
 endif(ENABLE_TESTING)
 
 # Show summary.

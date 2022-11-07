@@ -1,7 +1,7 @@
 #ifndef SIMPROP_SINGLESOURCEBUILDER_H
 #define SIMPROP_SINGLESOURCEBUILDER_H
 
-#include "simprop/common.h"
+#include "simprop/core/common.h"
 #include "simprop/particleStacks/Builder.h"
 
 namespace simprop {
