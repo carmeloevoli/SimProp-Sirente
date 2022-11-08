@@ -12,19 +12,19 @@ double inelasticity(double s);
 double inelasticityPoorApproximation(double s);
 
 class PhotoPionContinuousLosses final : public ContinuousLosses {
+ protected:
+  photonfields::PhotonFields m_photonFields;
+  std::shared_ptr<xsecs::PhotoPionProductionXsec> m_sigma;
+
  public:
-  PhotoPionContinuousLosses();
+  PhotoPionContinuousLosses(const std::shared_ptr<photonfields::PhotonField>& photonField);
+  PhotoPionContinuousLosses(const photonfields::PhotonFields& photonFields);
   virtual ~PhotoPionContinuousLosses() = default;
 
   double beta(PID pid, double Gamma, double z = 0) const override;
 
  protected:
-  std::shared_ptr<photonfields::CMB> m_cmb;
-  std::shared_ptr<photonfields::PhotonField> m_ebl;
-  std::shared_ptr<xsecs::PhotoPionProductionXsec> m_sigma;
-
- protected:
-  double computeBetaComoving(double Gamma, double z) const;
+  double computeBetaComoving(double Gamma) const;
 };
 
 }  // namespace losses

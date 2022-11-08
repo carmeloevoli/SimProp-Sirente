@@ -98,7 +98,10 @@ void plot_pair_evolution() {
 void plot_photopion_losses() {
   auto cosmology = std::make_shared<cosmo::Planck2018>();
   auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
-  auto pionLosses = losses::PhotoPionContinuousLosses();
+  std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
+      std::make_shared<photonfields::CMB>(),
+      std::make_shared<photonfields::Dominguez2011PhotonField>()};
+  auto pionLosses = losses::PhotoPionContinuousLosses(phFields);
   const auto gammaAxis = utils::LogAxis(1e8, 1e16, 8 * 32);
 
   utils::OutputFile out("test_photopion_losses.txt");

@@ -54,7 +54,7 @@ PairProductionLosses::PairProductionLosses(const photonfields::PhotonFields& pho
   LOGD << "calling " << __func__ << " constructor";
 }
 
-double PairProductionLosses::betaComoving(double Gamma) const {
+double PairProductionLosses::computeBetaComoving(double Gamma) const {
   auto TwoGamma_mec2 = 2. * Gamma / SI::electronMassC2;
   double I = 0;
   for (auto phField : m_photonFields) {
@@ -75,7 +75,7 @@ double PairProductionLosses::betaComoving(double Gamma) const {
 }
 
 double PairProductionLosses::beta(PID pid, double Gamma, double z) const {
-  auto b_l = pow3(1. + z) * betaComoving(Gamma * (1. + z));  // TODO no EBL evolution?
+  auto b_l = pow3(1. + z) * computeBetaComoving(Gamma * (1. + z));  // TODO no EBL evolution?
   auto Z = (double)getPidNucleusCharge(pid);
   auto A = (double)getPidNucleusMassNumber(pid);
   b_l *= pow2(Z) / A;

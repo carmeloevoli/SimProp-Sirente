@@ -55,11 +55,19 @@ double inelasticityPoorApproximation(double s) {
          (1. + beta_pi * cosTheta_pi);
 }
 
-PhotoPionContinuousLosses::PhotoPionContinuousLosses() : ContinuousLosses() {
-  LOGD << "calling " << __func__ << " constructor";
-  m_cmb = std::make_shared<photonfields::CMB>();
-  m_ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
+PhotoPionContinuousLosses::PhotoPionContinuousLosses(
+    const std::shared_ptr<photonfields::PhotonField>& photonField)
+    : ContinuousLosses() {
+  m_photonFields.push_back(photonField);
   m_sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
+
+  LOGD << "calling " << __func__ << " constructor";
+}
+
+PhotoPionContinuousLosses::PhotoPionContinuousLosses(const photonfields::PhotonFields& photonFields)
+    : ContinuousLosses(), m_photonFields(photonFields) {
+  m_sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
+  LOGD << "calling " << __func__ << " constructor";
 }
 
 // const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
@@ -79,42 +87,28 @@ PhotoPionContinuousLosses::PhotoPionContinuousLosses() : ContinuousLosses() {
 //   return b_l;
 // }
 
-double PhotoPionContinuousLosses::computeBetaComoving(double Gamma, double z) const {
+double PhotoPionContinuousLosses::computeBetaComoving(double Gamma) const {
   auto value = 0.;
   auto threshold = m_sigma->getPhotonEnergyThreshold();
-  {
-    auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_cmb->getMinPhotonEnergy()));
-    auto lnEpsPrimeMax = std::log(2. * Gamma * m_cmb->getMaxPhotonEnergy());
+  for (auto phField : m_photonFields) {
+    auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * phField->getMinPhotonEnergy()));
+    auto lnEpsPrimeMax = std::log(2. * Gamma * phField->getMaxPhotonEnergy());
 
     value += utils::simpsonIntegration<double>(
         [&](double logEpsPrime) {
           auto epsPrime = std::exp(logEpsPrime);
           auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
           return epsPrime * epsPrime * inelasticity(s) * m_sigma->getAtEpsPrime(epsPrime) *
-                 m_cmb->I_gamma(epsPrime / 2. / Gamma);
+                 phField->I_gamma(epsPrime / 2. / Gamma);
         },
         lnEpsPrimeMin, lnEpsPrimeMax, 500);
   }
-  {
-    auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_ebl->getMinPhotonEnergy()));
-    auto lnEpsPrimeMax = std::log(2. * Gamma * m_ebl->getMaxPhotonEnergy());
-
-    value += utils::simpsonIntegration<double>(
-        [&](double logEpsPrime) {
-          auto epsPrime = std::exp(logEpsPrime);
-          auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
-          return epsPrime * epsPrime * inelasticity(s) * m_sigma->getAtEpsPrime(epsPrime) *
-                 m_ebl->I_gamma(epsPrime / 2. / Gamma);
-        },
-        lnEpsPrimeMin, lnEpsPrimeMax, 500);
-  }
-
   return SI::cLight / 2. / pow2(Gamma) * std::max(value, 0.);
 }
 
 double PhotoPionContinuousLosses::beta(PID pid, double Gamma, double z) const {
   auto A = (double)getPidNucleusMassNumber(pid);
-  return pow3(1. + z) * A * computeBetaComoving(Gamma * (1. + z), z);
+  return pow3(1. + z) * A * computeBetaComoving(Gamma * (1. + z));
 }
 
 }  // namespace losses
