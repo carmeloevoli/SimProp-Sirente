@@ -95,6 +95,24 @@ void plot_pair_evolution() {
   }
 }
 
+void plot_photopion_losses() {
+  auto cosmology = std::make_shared<cosmo::Planck2018>();
+  auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
+  auto pionLosses = losses::PhotoPionContinuousLosses();
+  const auto gammaAxis = utils::LogAxis(1e8, 1e16, 8 * 32);
+
+  utils::OutputFile out("test_photopion_losses.txt");
+  out << std::scientific;
+  for (auto Gamma : gammaAxis) {
+    out << Gamma << "\t";
+    out << SI::cLight / adiabatic.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pionLosses.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pionLosses.beta(O16, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pionLosses.beta(Fe56, Gamma) / SI::Mpc << "\t";
+    out << "\n";
+  }
+}
+
 int main() {
   try {
     utils::startup_information();
@@ -103,26 +121,8 @@ int main() {
     plot_pair_on_fields();
     plot_pair_nuclei();
     plot_pair_evolution();
+    plot_photopion_losses();
 
-    // auto cosmology = std::make_shared<cosmo::Planck2018>();
-    // auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
-    // auto bggLosses = losses::BGG2002ContinuousLosses();
-    // auto pionLosses = losses::PhotoPionContinuousLosses();
-
-    // const auto gammaAxis = utils::LogAxis(1e8, 1e16, 8 * 32);
-
-    // utils::OutputFile out("test_losses.txt");
-    // out << std::scientific;
-    // for (auto Gamma : gammaAxis) {
-    //   out << Gamma << "\t";
-    //   out << SI::cLight / adiabatic.beta(proton, Gamma) / SI::Mpc << "\t";
-    //   out << SI::cLight / bggLosses.beta(proton, Gamma) / SI::Mpc << "\t";
-    //   out << SI::cLight / pair_cmb.beta(proton, Gamma) / SI::Mpc << "\t";
-    //   out << SI::cLight / pair_irb.beta(proton, Gamma) / SI::Mpc << "\t";
-    //   out << SI::cLight / pair.beta(proton, Gamma) / SI::Mpc << "\t";
-    //   out << SI::cLight / pionLosses.beta(proton, Gamma) / SI::Mpc << "\t";
-    //   out << "\n";
-    // }
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
