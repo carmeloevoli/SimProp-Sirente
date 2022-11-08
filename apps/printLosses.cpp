@@ -113,6 +113,19 @@ void plot_photopion_losses() {
   }
 }
 
+void plot_photopion_inelasticity() {
+  double eps_th = SI::pionMassC2 + SI::pionMassC2 * SI::pionMassC2 / 2. / SI::protonMassC2;
+  utils::OutputFile out("test_photopion_inelasticity.txt");
+  out << std::scientific;
+  for (double eps = eps_th; eps < 3.0 * SI::GeV; eps += 0.01 * SI::GeV) {
+    out << eps / SI::GeV << "\t";
+    auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * eps;
+    out << s / SI::GeV2 << "\t";
+    out << losses::inelasticity(s) << "\t";
+    out << losses::inelasticityPoorApproximation(s) << "\n";
+  }
+}
+
 int main() {
   try {
     utils::startup_information();
@@ -122,6 +135,7 @@ int main() {
     plot_pair_nuclei();
     plot_pair_evolution();
     plot_photopion_losses();
+    plot_photopion_inelasticity();
 
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
