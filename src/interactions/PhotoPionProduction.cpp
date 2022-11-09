@@ -73,11 +73,19 @@ double PhotoPionProduction::sampleEps(double r, double nucleonEnergy, double z) 
   return value;
 }
 
-double PhotoPionProduction::sampleAngleCoM(double r, double s) const {
+double angleCoMintegral(double mu, double s) {
   constexpr auto b = 12. / SI::GeV2;
-  const auto t =
-      1. / b * std::log(r * std::exp(b * mu2t(1., s) + (1. - r) * std::exp(b * mu2t(-1., s))));
-  return t2mu(t, s);
+  auto integrand = [b, s](double mu) { return std::exp(b * mu2t(mu, s)); };
+  auto value = utils::QAGIntegration<double>(integrand, -1., mu, 1000, 1e-5);
+  return value;
+}
+
+double PhotoPionProduction::sampleAngleCoM(double r, double s) const {
+  auto rIntegralMax = r * angleCoMintegral(1., s);
+  auto value = utils::rootFinder<double>(
+      [s, rIntegralMax](double mu) { return angleCoMintegral(mu, s) - rIntegralMax; }, -1., 1.,
+      1000, 1e-3);
+  return value;
 }
 
 double PhotoPionProduction::samplePionInelasticity(double r, double s) const {
@@ -87,7 +95,7 @@ double PhotoPionProduction::samplePionInelasticity(double r, double s) const {
   p_star *= std::sqrt((s - pow2(SI::pionMassC2 + SI::protonMassC2)) *
                       (s - pow2(SI::pionMassC2 - SI::protonMassC2)));
   // auto mu_star = 2. * r - 1.;
-  auto mu_star = -1;  // sampleAngleCoM(r, s);
+  auto mu_star = sampleAngleCoM(r, s);
   return 1. / sqrt_s * (E_star + p_star * mu_star);
 }
 
