@@ -13,7 +13,7 @@ void plot_rates() {
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
   const auto pppebl = std::make_shared<interactions::PhotoPionProduction>(sigma, ebl);
 
-  utils::OutputFile out("test_rates.txt");
+  utils::OutputFile out("test_photopion_rates.txt");
   out << std::scientific;
   for (auto Gamma : Gammas) {
     out << Gamma << "\t";
@@ -29,15 +29,15 @@ void plot_sampled_s() {
   utils::Timer timer("main timer");
   const auto cmb = std::make_shared<photonfields::CMB>();
   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-  RandomNumberGenerator rng = utils::RNG<double>(Seed(1234));
+  RandomNumberGenerator rng = utils::RNG<double>(1234);
 
   const auto pppcmb = interactions::PhotoPionProduction(sigma, cmb);
   utils::OutputFile out("test_sample_s.txt");
   for (size_t i = 0; i < 300000; ++i) {
     if (i % 1000 == 0) std::cout << i << "\n";
     out << i << "\t";
-    out << pppcmb.sampleS(RandomNumber(rng()), 4. * SI::GeV2) / SI::GeV2 << "\t";
-    out << pppcmb.sampleS(RandomNumber(rng()), 40. * SI::GeV2) / SI::GeV2 << "\t";
+    out << pppcmb.sampleS(rng(), 4. * SI::GeV2) / SI::GeV2 << "\t";
+    out << pppcmb.sampleS(rng(), 40. * SI::GeV2) / SI::GeV2 << "\t";
     out << "\n";
   }
 }
@@ -74,18 +74,18 @@ void plot_sampled_epsilon() {
     }
   }
   {
-    RandomNumberGenerator rng = utils::RNG<double>(Seed(1234));
+    RandomNumberGenerator rng = utils::RNG<double>(1234);
     utils::OutputFile out("test_epsilon_sample.txt");
     for (size_t i = 0; i < 100000; ++i) {
       if (i % 1000 == 0) std::cout << i << "\n";
       out << i << "\t";
       const double E = 1e19 * SI::eV;
-      out << pppcmb->sampleEps(RandomNumber(rng()), E, 0.) / SI::eV << "\t";
-      out << pppebl->sampleEps(RandomNumber(rng()), E, 0.) / SI::eV << "\t";
-      out << pppcmb->sampleEps(RandomNumber(rng()), E, 1.) / SI::eV << "\t";
-      out << pppebl->sampleEps(RandomNumber(rng()), E, 1.) / SI::eV << "\t";
-      out << pppcmb->sampleEps(RandomNumber(rng()), E, 2.) / SI::eV << "\t";
-      out << pppebl->sampleEps(RandomNumber(rng()), E, 2.) / SI::eV << "\t";
+      out << pppcmb->sampleEps(rng(), E, 0.) / SI::eV << "\t";
+      out << pppebl->sampleEps(rng(), E, 0.) / SI::eV << "\t";
+      out << pppcmb->sampleEps(rng(), E, 1.) / SI::eV << "\t";
+      out << pppebl->sampleEps(rng(), E, 1.) / SI::eV << "\t";
+      out << pppcmb->sampleEps(rng(), E, 2.) / SI::eV << "\t";
+      out << pppebl->sampleEps(rng(), E, 2.) / SI::eV << "\t";
       out << "\n";
     }
   }
@@ -94,7 +94,7 @@ void plot_sampled_epsilon() {
 void plot_pion_energies() {
   const auto cmb = std::make_shared<photonfields::CMB>();
   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-  RandomNumberGenerator rng = utils::RNG<double>(Seed(1234));
+  RandomNumberGenerator rng = utils::RNG<double>(1234);
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
   utils::OutputFile out("test_pionenergy_sample.txt");
   const size_t N = 10000;
@@ -103,46 +103,66 @@ void plot_pion_energies() {
     {
       const auto E = 1e18 * SI::eV;
       const auto Gamma = E / SI::protonMassC2;
-      auto finalState = pppcmb->finalState({proton, Redshift(z), LorentzFactor(Gamma)}, z, rng);
+      auto finalState = pppcmb->finalState({proton, z, Gamma}, z, rng);
       out << finalState[1].getGamma() * SI::pionMassC2 / E << "\t";
     }
     {
       const auto E = 1e20 * SI::eV;
       const auto Gamma = E / SI::protonMassC2;
-      auto finalState = pppcmb->finalState({proton, Redshift(z), LorentzFactor(Gamma)}, z, rng);
+      auto finalState = pppcmb->finalState({proton, z, Gamma}, z, rng);
       out << finalState[1].getGamma() * SI::pionMassC2 / E << "\n";
     }
   }
 }
 
+// void plot_inelasticity() {
+//   RandomNumberGenerator rng = utils::RNG<double>(234);
+//   const auto cmb = std::make_shared<photonfields::CMB>();
+//   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
+//   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
+//   utils::OutputFile out("test_photopion_inelasticity.txt");
+//   const auto protonEnergies = utils::LogAxis(1e18 * SI::eV, 1e21 * SI::eV, 12);
+//   const size_t N = 10000;
+//   const double z = 0;
+//   for (auto& E : protonEnergies) {
+//     double Y[N];
+//     for (size_t i = 0; i < N; ++i) {
+//       auto finalState = pppcmb->finalState({proton, z, E / SI::protonMassC2}, z, rng);
+//       Y[i] = finalState[1].getGamma() * SI::pionMassC2 / E;
+//     }
+//     out << E / SI::eV << " ";
+//     out << gsl_stats_median(Y, 1, N) << " " << gsl_stats_sd(Y, 1, N) << "\n";
+//   }
+// }
+
 void plot_inelasticity() {
+  // const auto nucleonEnergy = incomingParticle.getGamma() * SI::protonMassC2;
+  // const auto photonEnergy = sampleEps(rng(), nucleonEnergy, zInteractionPoint);
+  // const auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
+  // const auto s = sampleS(rng(), sMax);
+  // const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;
+  RandomNumberGenerator rng = utils::RNG<double>(234);
   const auto cmb = std::make_shared<photonfields::CMB>();
   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-  RandomNumberGenerator rng = utils::RNG<double>(Seed(234));
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
-  utils::OutputFile out("test_inelasticity.txt");
-  const auto protonEnergies = utils::LogAxis(1e18 * SI::eV, 1e21 * SI::eV, 12);
-  const size_t N = 10000;
-  const double z = 0;
-  for (auto& E : protonEnergies) {
-    double Y[N];
-    for (size_t i = 0; i < N; ++i) {
-      auto finalState =
-          pppcmb->finalState({proton, Redshift(z), LorentzFactor(E / SI::protonMassC2)}, z, rng);
-      Y[i] = finalState[1].getGamma() * SI::pionMassC2 / E;
-    }
-    out << E / SI::eV << " ";
-    out << gsl_stats_median(Y, 1, N) << " " << gsl_stats_sd(Y, 1, N) << "\n";
+
+  auto sMax = 5. * SI::GeV2;
+  auto sThreshold = pow2(SI::protonMassC2 + SI::pionMassC2);
+  utils::OutputFile out("test_photopion_stochastic_inelasticity.txt");
+  for (size_t i = 0; i < 100000; ++i) {
+    auto s = sThreshold + rng() * (sMax - sThreshold);
+    auto Y = pppcmb->samplePionInelasticity(rng(), s);
+    out << std::scientific << s / SI::GeV2 << " " << Y << "\n";
   }
 }
 
 int main() {
   try {
     utils::startup_information();
-    plot_rates();
-    plot_sampled_s();
-    plot_sampled_epsilon();
-    plot_pion_energies();
+    // plot_rates();
+    //  plot_sampled_s();
+    //  plot_sampled_epsilon();
+    //  plot_pion_energies();
     plot_inelasticity();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();

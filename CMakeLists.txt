@@ -141,8 +141,8 @@ target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
 add_executable(print_propaganda apps/printPropaganda.cpp)
 target_link_libraries (print_propaganda simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-# add_executable(print_rates examples/printRates.cpp)
-# target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(print_rates apps/printRates.cpp)
+target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(analytical_solution examples/analyticalSolution.cpp)
 # target_link_libraries (analytical_solution simprop ${SIMPROP_EXTRA_LIBRARIES})

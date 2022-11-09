@@ -120,7 +120,7 @@ void plot_photopion_inelasticity() {
   double eps_th = SI::pionMassC2 + SI::pionMassC2 * SI::pionMassC2 / 2. / SI::protonMassC2;
   utils::OutputFile out("test_photopion_inelasticity.txt");
   out << std::scientific;
-  for (double eps = eps_th; eps < 3.0 * SI::GeV; eps += 0.01 * SI::GeV) {
+  for (double eps = eps_th; eps < 10.0 * SI::GeV; eps += 0.01 * SI::GeV) {
     out << eps / SI::GeV << "\t";
     auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * eps;
     out << s / SI::GeV2 << "\t";
