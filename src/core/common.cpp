@@ -29,4 +29,22 @@ Range getGammaRange(const ParticleStack& stack) {
   return {r.first->getGamma(), r.second->getGamma()};
 }
 
+double mu2t(double mu, double s) {
+  constexpr auto mp2 = SI::protonMassC2 * SI::protonMassC2;
+  constexpr auto mpi2 = SI::pionMassC2 * SI::pionMassC2;
+  const auto sqrts = std::sqrt(s);
+  const auto A = mp2 - (s + mp2) * (s + mp2 - mpi2) / 2. / s;
+  const auto B = -(s - mp2) / sqrts * std::sqrt(pow2((s + mp2 - mpi2) / 2. / sqrts) - mp2);
+  return A + B * mu;
+}
+
+double t2mu(double t, double s) {
+  constexpr auto mp2 = SI::protonMassC2 * SI::protonMassC2;
+  constexpr auto mpi2 = SI::pionMassC2 * SI::pionMassC2;
+  const auto sqrts = std::sqrt(s);
+  const auto A = mp2 - (s + mp2) * (s + mp2 - mpi2) / 2. / s;
+  const auto B = -(s - mp2) / sqrts * std::sqrt(pow2((s + mp2 - mpi2) / 2. / sqrts) - mp2);
+  return (t - A) / B;
+}
+
 }  // namespace simprop

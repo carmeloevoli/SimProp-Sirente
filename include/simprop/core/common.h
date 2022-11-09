@@ -17,6 +17,9 @@ double getRndLogUniform(Range range, double r);
 Range getRedshiftRange(const ParticleStack& stack);
 Range getGammaRange(const ParticleStack& stack);
 
+double mu2t(double mu, double s);
+double t2mu(double t, double s);
+
 }  // namespace simprop
 
 #endif

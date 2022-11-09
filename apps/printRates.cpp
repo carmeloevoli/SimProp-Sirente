@@ -32,7 +32,7 @@ void plot_sampled_s() {
   RandomNumberGenerator rng = utils::RNG<double>(1234);
 
   const auto pppcmb = interactions::PhotoPionProduction(sigma, cmb);
-  utils::OutputFile out("test_sample_s.txt");
+  utils::OutputFile out("test_photopion_sample_s.txt");
   for (size_t i = 0; i < 300000; ++i) {
     if (i % 1000 == 0) std::cout << i << "\n";
     out << i << "\t";
@@ -55,7 +55,7 @@ void plot_sampled_epsilon() {
   const auto pppebl = std::make_shared<interactions::PhotoPionProduction>(sigma, ebl);
   {
     const auto photonEnergies = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 10000);
-    utils::OutputFile out("test_epsilon_pdf.txt");
+    utils::OutputFile out("test_photopion_epsilon_pdf.txt");
     out << "# eps [eV] - pdf\n";
     out << std::scientific;
     for (auto eps : photonEnergies) {
@@ -75,7 +75,7 @@ void plot_sampled_epsilon() {
   }
   {
     RandomNumberGenerator rng = utils::RNG<double>(1234);
-    utils::OutputFile out("test_epsilon_sample.txt");
+    utils::OutputFile out("test_photopion_epsilon_sample.txt");
     for (size_t i = 0; i < 100000; ++i) {
       if (i % 1000 == 0) std::cout << i << "\n";
       out << i << "\t";
@@ -96,7 +96,7 @@ void plot_pion_energies() {
   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
   RandomNumberGenerator rng = utils::RNG<double>(1234);
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
-  utils::OutputFile out("test_pionenergy_sample.txt");
+  utils::OutputFile out("test_photopion_pionenergy_sample.txt");
   const size_t N = 10000;
   const double z = 0;
   for (size_t i = 0; i < N; ++i) {
@@ -160,9 +160,9 @@ int main() {
   try {
     utils::startup_information();
     // plot_rates();
-    //  plot_sampled_s();
-    //  plot_sampled_epsilon();
-    //  plot_pion_energies();
+    // plot_sampled_s();
+    // plot_sampled_epsilon();
+    // plot_pion_energies();
     plot_inelasticity();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();

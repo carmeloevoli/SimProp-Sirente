@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 
+#include "simprop/core/common.h"
 #include "simprop/utils/numeric.h"
 
 namespace simprop {
@@ -72,13 +73,21 @@ double PhotoPionProduction::sampleEps(double r, double nucleonEnergy, double z) 
   return value;
 }
 
+double PhotoPionProduction::sampleAngleCoM(double r, double s) const {
+  constexpr auto b = 12. / SI::GeV2;
+  const auto t =
+      1. / b * std::log(r * std::exp(b * mu2t(1., s) + (1. - r) * std::exp(b * mu2t(-1., s))));
+  return t2mu(t, s);
+}
+
 double PhotoPionProduction::samplePionInelasticity(double r, double s) const {
   auto sqrt_s = std::sqrt(s);
   auto E_star = 0.5 * (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / sqrt_s;
   auto p_star = 0.5 / sqrt_s;
   p_star *= std::sqrt((s - pow2(SI::pionMassC2 + SI::protonMassC2)) *
                       (s - pow2(SI::pionMassC2 - SI::protonMassC2)));
-  auto mu_star = 2. * r - 1.;
+  // auto mu_star = 2. * r - 1.;
+  auto mu_star = -1;  // sampleAngleCoM(r, s);
   return 1. / sqrt_s * (E_star + p_star * mu_star);
 }
 
@@ -102,10 +111,8 @@ std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingPa
     const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;
     const auto outPionCharge = samplePionCharge(rng(), (pid == neutron));
     const auto outNucleonEnergy = nucleonEnergy - outPionEnergy;
-    auto outPion = Particle(outPionCharge, zInteractionPoint,
-                            outPionEnergy / SI::pionMassC2, w);
-    auto outNucleon = Particle(proton, zInteractionPoint,
-                               outNucleonEnergy / SI::protonMassC2, w);
+    auto outPion = Particle(outPionCharge, zInteractionPoint, outPionEnergy / SI::pionMassC2, w);
+    auto outNucleon = Particle(proton, zInteractionPoint, outNucleonEnergy / SI::protonMassC2, w);
     return {outNucleon, outPion};
   }
   auto p = Particle{incomingParticle};

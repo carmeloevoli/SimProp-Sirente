@@ -9,7 +9,7 @@ namespace simprop {
 namespace losses {
 
 double inelasticity(double s);
-double inelasticityPoorApproximation(double s);
+double inelasticityPoorApproximation(double s, double cosTheta_pi);
 
 class PhotoPionContinuousLosses final : public ContinuousLosses {
  protected:

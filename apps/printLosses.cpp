@@ -125,7 +125,8 @@ void plot_photopion_inelasticity() {
     auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * eps;
     out << s / SI::GeV2 << "\t";
     out << losses::inelasticity(s) << "\t";
-    out << losses::inelasticityPoorApproximation(s) << "\n";
+    out << losses::inelasticityPoorApproximation(s, -1.) << "\t";
+    out << losses::inelasticityPoorApproximation(s, 0.) << "\n";
   }
 }
 
@@ -134,9 +135,9 @@ int main() {
     utils::startup_information();
     utils::Timer timer("main timer for print losses");
 
-    plot_pair_on_fields();
-    plot_pair_nuclei();
-    plot_pair_evolution();
+    // plot_pair_on_fields();
+    // plot_pair_nuclei();
+    // plot_pair_evolution();
     plot_photopion_losses();
     plot_photopion_inelasticity();
 
