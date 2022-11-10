@@ -135,34 +135,13 @@ void plot_inelasticity() {
   }
 }
 
-// void plot_inelasticity() {
-//   // const auto nucleonEnergy = incomingParticle.getGamma() * SI::protonMassC2;
-//   // const auto photonEnergy = sampleEps(rng(), nucleonEnergy, zInteractionPoint);
-//   // const auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
-//   // const auto s = sampleS(rng(), sMax);
-//   // const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;
-//   RandomNumberGenerator rng = utils::RNG<double>(234);
-//   const auto cmb = std::make_shared<photonfields::CMB>();
-//   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
-//   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
-
-//   auto sMax = 5. * SI::GeV2;
-//   auto sThreshold = pow2(SI::protonMassC2 + SI::pionMassC2);
-//   utils::OutputFile out("test_photopion_stochastic_inelasticity.txt");
-//   for (size_t i = 0; i < 100000; ++i) {
-//     auto s = sThreshold + rng() * (sMax - sThreshold);
-//     auto Y = pppcmb->samplePionInelasticity(rng(), s);
-//     out << std::scientific << s / SI::GeV2 << " " << Y << "\n";
-//   }
-// }
-
 int main() {
   try {
     utils::startup_information();
-    // plot_rates();
-    // plot_sampled_s();
-    // plot_sampled_epsilon();
-    // plot_pion_energies();
+    plot_rates();
+    plot_sampled_s();
+    plot_sampled_epsilon();
+    plot_pion_energies();
     plot_inelasticity();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();

@@ -32,6 +32,11 @@ int getPidNucleusCharge(const PID& pid) {
     return (pid.get() / 10) % 1000;
 }
 
+PID removeNucleon(const PID& pid, const PID& nucleon) {  // TODO add this to unit tests
+  assert(getPidNucleusMassNumber(pid) > 1);
+  return PID(pid.get() - nucleon.get());
+}
+
 static const std::map<PID, std::string> pidNames = {
     {photon, "photon"},       {neutrino_e, "nu_e"},           {antineutrino_e, "antinu_e"},
     {neutrino_mu, "nu_mu"},   {antineutrino_mu, "antinu_mu"}, {electron, "electron"},

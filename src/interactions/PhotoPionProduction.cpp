@@ -99,32 +99,43 @@ double PhotoPionProduction::samplePionInelasticity(double r, double s) const {
   return 1. / sqrt_s * (E_star + p_star * mu_star);
 }
 
-PID PhotoPionProduction::samplePionCharge(double r, bool isNeutron) const {
+PID samplePionCharge(double r, bool isNeutron) {
   if (r < 2. / 3.)
     return pionNeutral;
   else
     return (isNeutron) ? pionMinus : pionPlus;
 }
 
+PID pickNucleon(double r, PID pid) {
+  double Z = (double)getPidNucleusCharge(pid);
+  double A = (double)getPidNucleusMassNumber(pid);
+  if (r < Z / A)
+    return proton;
+  else
+    return neutron;
+}
+
 std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingParticle,
                                                       double zInteractionPoint,
                                                       RandomNumberGenerator& rng) const {
   const auto pid = incomingParticle.getPid();
-  if (pid == proton || pid == neutron) {
-    const auto nucleonEnergy = incomingParticle.getGamma() * SI::protonMassC2;
-    const auto w = incomingParticle.getWeight();
-    const auto photonEnergy = sampleEps(rng(), nucleonEnergy, zInteractionPoint);
-    const auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
-    const auto s = sampleS(rng(), sMax);
-    const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;
-    const auto outPionCharge = samplePionCharge(rng(), (pid == neutron));
-    const auto outNucleonEnergy = nucleonEnergy - outPionEnergy;
-    auto outPion = Particle(outPionCharge, zInteractionPoint, outPionEnergy / SI::pionMassC2, w);
-    auto outNucleon = Particle(proton, zInteractionPoint, outNucleonEnergy / SI::protonMassC2, w);
-    return {outNucleon, outPion};
-  }
-  auto p = Particle{incomingParticle};
-  return {p};
+  const auto Gamma = incomingParticle.getGamma();
+  assert(pidIsNucleus(pid));
+  const auto nucleon = pickNucleon(rng(), pid);
+  const auto nucleonEnergy = Gamma * SI::protonMassC2;
+  const auto photonEnergy = sampleEps(rng(), nucleonEnergy, zInteractionPoint);
+  const auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
+  const auto s = sampleS(rng(), sMax);
+  const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;
+  const auto outPionCharge = samplePionCharge(rng(), (nucleon == neutron));
+  const auto outNucleonEnergy = nucleonEnergy - outPionEnergy;
+  const auto w = incomingParticle.getWeight();
+  auto outPion = Particle(outPionCharge, zInteractionPoint, outPionEnergy / SI::pionMassC2, w);
+  auto outNucleon = Particle(nucleon, zInteractionPoint, outNucleonEnergy / SI::protonMassC2, w);
+  auto outNuclues =
+      Particle(removeNucleon(pid, nucleon), zInteractionPoint, Gamma, w);  // TODO finish this
+
+  return {outNucleon, outPion};
 }
 
 }  // namespace interactions

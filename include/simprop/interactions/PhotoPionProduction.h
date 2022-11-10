@@ -27,7 +27,6 @@ class PhotoPionProduction final : public Interaction {
   double sampleEps(double r, double nucleonEnergy, double z) const;
   double samplePionInelasticity(double r, double s) const;
   double epsPdfIntegral(double photonEnergy, double nucleonEnergy, double z) const;
-  PID samplePionCharge(double r, bool isNeutron) const;
   double sampleAngleCoM(double r, double s) const;
 };
 
