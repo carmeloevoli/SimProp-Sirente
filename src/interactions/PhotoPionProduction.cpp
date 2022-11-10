@@ -132,8 +132,8 @@ std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingPa
   const auto w = incomingParticle.getWeight();
   auto outPion = Particle(outPionCharge, zInteractionPoint, outPionEnergy / SI::pionMassC2, w);
   auto outNucleon = Particle(nucleon, zInteractionPoint, outNucleonEnergy / SI::protonMassC2, w);
-  auto outNuclues =
-      Particle(removeNucleon(pid, nucleon), zInteractionPoint, Gamma, w);  // TODO finish this
+  // auto outNuclues =
+  //     Particle(removeNucleon(pid, nucleon), zInteractionPoint, Gamma, w);  // TODO finish this
 
   return {outNucleon, outPion};
 }
