@@ -9,6 +9,6 @@ In the beta releases (<1.0) we log only the main differences with respect to the
 
 - Continuous losses: Add EBL in the pair production loss length
 - Continuous losses: Compute the pair production loss length for an arbitrary photon field from [Chodorowski et al., ApJ, 1992](https://ui.adsabs.harvard.edu/abs/1992ApJ...400..181C/abstract)
-- Continuous losses: Implement pion-production continuous energy losses for plots following [Hümmer et al., ApJ, 2010](https://ui.adsabs.harvard.edu/abs/arXiv:1002.1310)
+- Continuous losses: Implement pion-production continuous energy losses following [Hümmer et al., ApJ, 2010](https://ui.adsabs.harvard.edu/abs/arXiv:1002.1310)
 - Stochastic interactions: Improve sampling of the background photon energy for an arbitrary photon field
 - 
