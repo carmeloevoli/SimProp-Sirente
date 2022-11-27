@@ -46,6 +46,7 @@ static constexpr double gigayear = giga * year;
 
 // LENGTH UNITS
 static constexpr double micron = micro * meter;
+static constexpr double centimeter = 1e-2 * meter;
 static constexpr double parsec = 3.086e16 * meter;
 static constexpr double kiloparsec = kilo * parsec;
 static constexpr double megaparsec = mega * parsec;
@@ -109,6 +110,7 @@ static constexpr double electronRadius = 2.8179403227e-15 * meter;
 static constexpr double barn = 1e-28 * m2;
 static constexpr double mbarn = 1e-3 * barn;
 static constexpr double alpha = 7.297352e-3;
+static constexpr double sigmaTh = 6.6524e-25 * pow2(centimeter);
 
 }  // namespace SI
 
