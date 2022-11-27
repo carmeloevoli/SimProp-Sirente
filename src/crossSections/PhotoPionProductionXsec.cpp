@@ -1,6 +1,7 @@
 #include "simprop/crossSections/PhotoPionProductionXsec.h"
 
 #include "simprop/core/units.h"
+#include "simprop/utils/logging.h"
 #include "simprop/utils/numeric.h"
 
 #define MAXLOGS 9.0

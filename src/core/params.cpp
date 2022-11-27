@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-#include "simprop/utils/io.h"
+#include "simprop/utils/logging.h"
 
 namespace simprop {
 

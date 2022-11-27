@@ -87,8 +87,10 @@ add_library(simprop SHARED
     src/analyticalSolutions/beniamino.cpp
     src/core/common.cpp
     src/core/cosmology.cpp
+    src/core/opticalDepth.cpp
     src/core/params.cpp
     src/core/pid.cpp
+    src/crossSections/BreitWheeler.cpp
     src/crossSections/PhotoPionProductionXsec.cpp
     src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2006ContinuousLosses.cpp
@@ -98,8 +100,8 @@ add_library(simprop SHARED
     src/particleStacks/SingleParticleBuilder.cpp
     src/particleStacks/SingleSourceBuilder.cpp
     src/particleStacks/SourceEvolutionBuilder.cpp
-    src/photonFields/LookupTablePhotonField.cpp
     src/photonFields/CmbPhotonField.cpp
+    src/photonFields/LookupTablePhotonField.cpp
 	src/utils/io.cpp
 	src/utils/logging.cpp
     src/utils/numeric.cpp

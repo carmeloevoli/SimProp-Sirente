@@ -1,5 +1,7 @@
 #include "simprop/particleStacks/SingleParticleBuilder.h"
 
+#include "simprop/utils/logging.h"
+
 namespace simprop {
 
 SingleParticleBuilder::SingleParticleBuilder(PID pid, SingleParticleParams params, size_t size)

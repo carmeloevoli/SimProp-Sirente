@@ -1,5 +1,6 @@
 #include "simprop/core/common.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 

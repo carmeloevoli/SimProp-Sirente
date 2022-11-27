@@ -1,6 +1,7 @@
 #include "simprop/particleStacks/SingleSourceBuilder.h"
 
 #include "simprop/core/common.h"
+#include "simprop/utils/logging.h"
 
 namespace simprop {
 

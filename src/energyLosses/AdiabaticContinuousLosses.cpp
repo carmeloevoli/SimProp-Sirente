@@ -1,6 +1,6 @@
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
 
-#include "simprop/utils/io.h"
+#include "simprop/utils/logging.h"
 
 namespace simprop {
 namespace losses {

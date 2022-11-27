@@ -19,6 +19,7 @@ class CMB final : public PhotonField {
 
   double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
+
   double getMinPhotonEnergy() const override { return m_epsRange.first; }
   double getMaxPhotonEnergy() const override { return m_epsRange.second; }
 

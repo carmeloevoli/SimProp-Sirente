@@ -2,6 +2,7 @@
 
 #include "simprop/core/common.h"
 #include "simprop/utils/io.h"
+#include "simprop/utils/logging.h"
 #include "simprop/utils/numeric.h"
 
 namespace simprop {
@@ -46,7 +47,8 @@ double LookupTablePhotonField::density(double ePhoton, double z) const {
   double value = 0;
   auto loge = std::log10(ePhoton / SI::eV);
   if (utils::isInside(z, m_redshifts) && utils::isInside(loge, m_logPhotonEnergies)) {
-    auto logn = utils::interpolate2d(z, loge, m_redshifts, m_logPhotonEnergies, m_logDensity);
+    auto logn = utils::interpolate2d(z, loge, m_redshifts, m_logPhotonEnergies,
+                                     m_logDensity);  // TODO speed up this
     value = std::pow(10., logn) * units;
   }
   return std::max(value, 0.);

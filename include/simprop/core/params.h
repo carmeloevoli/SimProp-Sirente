@@ -3,11 +3,9 @@
 
 #include <string>
 
+#include "simprop/core/common.h"
 #include "simprop/core/pid.h"
 #include "simprop/core/units.h"
-#include "simprop/utils/logging.h"
-
-using Range = std::pair<double, double>;
 
 namespace simprop {
 

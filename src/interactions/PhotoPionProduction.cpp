@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "simprop/core/common.h"
+#include "simprop/utils/logging.h"
 #include "simprop/utils/numeric.h"
 
 namespace simprop {

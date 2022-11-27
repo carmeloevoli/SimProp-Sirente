@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "simprop/utils/logging.h"
-
 namespace simprop {
 namespace utils {
 
@@ -26,8 +24,8 @@ class OutputFile {
   std::ofstream out;
 
  public:
-  explicit OutputFile(const std::string& name) : filename(name), out("output/" + name) {}
-  ~OutputFile() { LOGD << "created output file " << filename; }
+  OutputFile(const std::string& name);
+  ~OutputFile();
 
   template <typename T>
   OutputFile& operator<<(const T& value) {

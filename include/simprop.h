@@ -4,6 +4,7 @@
 #include "simprop/analyticalSolutions/beniamino.h"
 #include "simprop/core/common.h"
 #include "simprop/core/cosmology.h"
+#include "simprop/core/opticalDepth.h"
 #include "simprop/core/particle.h"
 #include "simprop/core/pid.h"
 #include "simprop/core/units.h"
