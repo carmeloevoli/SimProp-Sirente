@@ -7,7 +7,7 @@ void plot_local_photonfields() {
   const auto ebl = photonfields::Dominguez2011PhotonField();
   const auto ebl_lo = photonfields::Dominguez2011LowerPhotonField();
   const auto ebl_up = photonfields::Dominguez2011UpperPhotonField();
-  const auto ePhoton = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
+  const auto ePhoton = utils::LogAxis<double>(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
   utils::OutputFile out("test_local_photonfields.txt");
   const auto units = SI::nW / pow2(SI::meter) / SI::sr / SI::cOver4pi;
   out << "# energy [eV] - lambda [mu] - \n";
@@ -26,7 +26,7 @@ void plot_local_photonfields() {
 void plot_photon_integral() {
   const auto cmb = photonfields::CMB();
   const auto ebl = photonfields::Dominguez2011PhotonField();
-  const auto ePhoton = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
+  const auto ePhoton = utils::LogAxis<double>(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
   utils::OutputFile out("test_photon_integral.txt");
   const auto units = 1. / pow2(SI::eV) / SI::m3;
   out << "# energy [eV] - I_gamma [] - \n";
@@ -47,7 +47,7 @@ void plot_evolution_photonfields() {
   const auto ebl = photonfields::Dominguez2011PhotonField();
   LOGD << "EBL photon range : " << ebl.getMinPhotonEnergy() / SI::eV << " "
        << ebl.getMaxPhotonEnergy() / SI::eV;
-  const auto ePhoton = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
+  const auto ePhoton = utils::LogAxis<double>(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
   utils::OutputFile out("test_photonfields.txt");
   const auto units = SI::nW / pow2(SI::meter) / SI::sr / SI::cOver4pi;
   out << "# energy [eV] - lambda [mu] - \n";
@@ -70,12 +70,52 @@ void plot_evolution_photonfields() {
   }
 }
 
+void plot_tau() {
+  const auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
+  const auto cosmology = std::make_shared<cosmo::Cosmology>(0.7, 0., 0.3 * pow2(0.7), 0.7);
+
+  const auto tau = core::OpticalDepth(cosmology, ebl);
+  const auto eGamma = utils::LogAxis<double>(1e-2 * SI::TeV, 1e2 * SI::TeV, 4 * 16);
+  utils::OutputFile out("test_optical_depth.txt");
+  out << "# energy [eV] - tau\n";
+  out << std::scientific;
+  for (auto E : eGamma) {
+    std::cout << E / SI::TeV << "\n";
+    out << E / SI::TeV << "\t";
+    out << tau.get(E, 0.1) << "\t";
+    out << tau.get(E, 0.3) << "\t";
+    out << tau.get(E, 0.6) << "\t";
+    out << tau.get(E, 1.0) << "\t";
+    out << tau.get(E, 2.0) << "\t";
+    out << "\n";
+  }
+}
+
+void map_tau() {
+  const auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
+  const auto cosmology = std::make_shared<cosmo::Cosmology>(0.7, 0., 0.3 * pow2(0.7), 0.7);
+  const auto tau = core::OpticalDepth(cosmology, ebl);
+  const auto logEnergyGamma = utils::LinAxis<double>(-2., 3., 101);
+  const auto redshifts = utils::LinAxis<double>(0, 2, 101);
+  utils::OutputFile out("map_optical_depth_cmb.txt");
+  out << "# logEnergy - z - tau\n";
+  out << std::scientific;
+  for (auto logE : logEnergyGamma) {
+    auto E = std::pow(10., logE) * SI::TeV;
+    for (auto z : redshifts) {
+      std::cout << logE << "\t" << z << "\n";
+      out << logE << "\t" << z << "\t" << tau.get(E, z) << "\n";
+    }
+  }
+}
+
 int main() {
   try {
     utils::startup_information();
     plot_local_photonfields();
     plot_photon_integral();
     plot_evolution_photonfields();
+    map_tau();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
