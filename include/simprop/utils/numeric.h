@@ -19,9 +19,33 @@ namespace simprop {
 namespace utils {
 
 // Axis
-std::vector<double> LinAxis(const double &min, const double &max, const size_t &size);
+template <typename T>
+std::vector<T> LinAxis(const T &min, const T &max, const size_t &size) {
+  if (!(min < max)) throw std::invalid_argument("min must be smaller than max");
+  if (!(size > 1)) throw std::invalid_argument("size must be larger than 1");
 
-std::vector<double> LogAxis(const double &min, const double &max, const size_t &size);
+  const T dx = (max - min) / (T)(size - 1);
+  std::vector<T> v(size);
+  for (size_t i = 0; i < size; ++i) {
+    const auto value = min + dx * i;
+    v[i] = value;
+  }
+  return v;
+}
+
+template <typename T>
+std::vector<T> LogAxis(const T &min, const T &max, const size_t &size) {
+  if (!(min < max)) throw std::invalid_argument("min must be smaller than max");
+  if (!(size > 1)) throw std::invalid_argument("size must be larger than 1");
+
+  const T delta_log = std::exp(std::log(max / min) / (size - 1));
+  std::vector<T> v(size);
+  for (size_t i = 0; i < size; ++i) {
+    const auto value = std::exp(std::log(min) + (T)i * std::log(delta_log));
+    v[i] = value;
+  }
+  return v;
+}
 
 inline bool isInside(double x, const std::vector<double> &X) {
   return (x >= X.front() && x <= X.back());
@@ -208,6 +232,23 @@ T odeiv(std::function<T(T, T)> dydx, T yStart, T xStart, T xEnd, T rel_error = 1
   gsl_odeiv2_step_free(s);
   return y[0];
 }
+
+/* Template wrapper to expose lambda with capture to gsl_function
+ * according to https://stackoverflow.com/a/18413206/6819103 */
+template <typename F>
+class gsl_function_pp : public gsl_function {
+ private:
+  const F &_func;
+  static double invoke(double x, void *params) {
+    return static_cast<gsl_function_pp *>(params)->_func(x);
+  }
+
+ public:
+  gsl_function_pp(const F &func) : _func(func) {
+    function = &gsl_function_pp::invoke;
+    params = this;
+  }
+};
 
 }  // namespace utils
 }  // namespace simprop
