@@ -95,7 +95,7 @@ void map_tau() {
   const auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
   const auto cosmology = std::make_shared<cosmo::Cosmology>(0.7, 0., 0.3 * pow2(0.7), 0.7);
   const auto tau = core::OpticalDepth(cosmology, ebl);
-  const auto logEnergyGamma = utils::LinAxis<double>(-2., 3., 101);
+  const auto logEnergyGamma = utils::LinAxis<double>(-2., 2., 101);
   const auto redshifts = utils::LinAxis<double>(0, 2, 101);
   utils::OutputFile out("map_optical_depth_cmb.txt");
   out << "# logEnergy - z - tau\n";

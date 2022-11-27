@@ -13,7 +13,7 @@ double OpticalDepth::integrateOverPhField(double eGamma, double z, double mu) co
   return utils::QAGIntegration<double>(
       [this, eGamma, z, mu](double lnEps) {
         auto eps = std::exp(lnEps);
-        auto n_gamma = pow3(1. + z) * (m_ebl->density(eps, z) + m_cmb->density(eps));
+        auto n_gamma = pow3(1. + z) * m_ebl->density(eps, z);
         return eps * n_gamma * BreitWheeler::sigma(eGamma * (1. + z), eps, mu);
       },
       std::log(epsMin), std::log(epsMax), 1000, 5e-4);
