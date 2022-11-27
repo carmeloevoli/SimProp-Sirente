@@ -5,7 +5,7 @@
 using namespace simprop;
 
 void plot_rates() {
-  const auto Gammas = utils::LogAxis(1e8, 1e16, 8 * 32);
+  const auto Gammas = utils::LogAxis<double>(1e8, 1e16, 8 * 32);
   const auto units = 1. / SI::Mpc;
   const auto cmb = std::make_shared<photonfields::CMB>();
   const auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
@@ -54,7 +54,7 @@ void plot_sampled_epsilon() {
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
   const auto pppebl = std::make_shared<interactions::PhotoPionProduction>(sigma, ebl);
   {
-    const auto photonEnergies = utils::LogAxis(1e-5 * SI::eV, 1e2 * SI::eV, 10000);
+    const auto photonEnergies = utils::LogAxis<double>(1e-5 * SI::eV, 1e2 * SI::eV, 10000);
     utils::OutputFile out("test_photopion_epsilon_pdf.txt");
     out << "# eps [eV] - pdf\n";
     out << std::scientific;
@@ -121,7 +121,7 @@ void plot_inelasticity() {
   const auto sigma = std::make_shared<xsecs::PhotoPionProductionXsec>();
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(sigma, cmb);
   utils::OutputFile out("test_photopion_inelasticity.txt");
-  const auto protonEnergies = utils::LogAxis(1e18 * SI::eV, 1e21 * SI::eV, 3 * 8);
+  const auto protonEnergies = utils::LogAxis<double>(1e18 * SI::eV, 1e21 * SI::eV, 3 * 8);
   const size_t N = 10000;
   const double z = 0;
   for (auto& E : protonEnergies) {

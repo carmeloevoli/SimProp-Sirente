@@ -7,7 +7,7 @@ int main() {
     utils::startup_information();
     utils::Timer timer("timer for Cosmology");
     auto cosmology = cosmo::Planck2018();
-    auto redshifts = utils::LinAxis(0, 10, 10000);
+    auto redshifts = utils::LinAxis<double>(0, 10, 10000);
     utils::OutputFile out("test_cosmology.txt");
     out << "# redshift - Hubble Time [Gyr]\n";
     out << std::scientific;

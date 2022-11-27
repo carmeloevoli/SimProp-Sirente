@@ -20,7 +20,7 @@ void plot_propaganga() {
   auto pair_ebl = losses::PairProductionLosses(ebl);
   auto pion_ebl = losses::PhotoPionContinuousLosses(ebl);
 
-  const auto gammaAxis = utils::LogAxis(1e8, 1e14, 6 * 32);
+  const auto gammaAxis = utils::LogAxis<double>(1e8, 1e14, 6 * 32);
 
   utils::OutputFile out("test_propaganda.txt");
   out << std::scientific;
@@ -53,7 +53,7 @@ void plot_propaganga() {
 //       std::make_shared<photonfields::Dominguez2011PhotonField>()};
 //   auto pair = losses::PairProductionLosses(phFields);
 
-//   const auto gammaAxis = utils::LogAxis(1e8, 1e14, 6 * 32);
+//   const auto gammaAxis = utils::LogAxis<double>(1e8, 1e14, 6 * 32);
 //   utils::OutputFile out("test_nuclei_pair_losses.txt");
 
 //   out << std::scientific;
@@ -81,7 +81,7 @@ void plot_propaganga() {
 //   auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
 //   auto pair_ebl = losses::PairProductionLosses(ebl);
 
-//   const auto zAxis = utils::LinAxis(0, 10, 30);
+//   const auto zAxis = utils::LinAxis<double>(0, 10, 30);
 //   utils::OutputFile out("test_evolution_pair_losses.txt");
 
 //   out << std::scientific;
@@ -111,7 +111,7 @@ void plot_propaganga() {
 //       std::make_shared<photonfields::CMB>(),
 //       std::make_shared<photonfields::Dominguez2011PhotonField>()};
 //   auto pionLosses = losses::PhotoPionContinuousLosses(phFields);
-//   const auto gammaAxis = utils::LogAxis(1e8, 1e16, 8 * 32);
+//   const auto gammaAxis = utils::LogAxis<double>(1e8, 1e16, 8 * 32);
 
 //   utils::OutputFile out("test_photopion_losses.txt");
 //   out << std::scientific;

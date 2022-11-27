@@ -5,7 +5,7 @@ using namespace simprop;
 void plot_pionproduction() {
   auto sigmaPpp = xsecs::PhotoPionProductionXsec();
   {
-    auto sAxis = utils::LogAxis(0.1 * pow2(SI::GeV), 1e11 * pow2(SI::GeV), 10000);
+    auto sAxis = utils::LogAxis<double>(0.1 * pow2(SI::GeV), 1e11 * pow2(SI::GeV), 10000);
     utils::OutputFile out("test_xsecs.txt");
     out << "# s [GeV^2] - sigma [mbarn] - phi []\n";
     out << std::scientific;
@@ -16,7 +16,7 @@ void plot_pionproduction() {
     }
   }
   {
-    auto eAxis = utils::LogAxis(0.1 * SI::GeV, 1e11 * SI::GeV, 10000);
+    auto eAxis = utils::LogAxis<double>(0.1 * SI::GeV, 1e11 * SI::GeV, 10000);
     utils::OutputFile out("test_xsecs_epsprime.txt");
     out << "#\n";
     out << std::scientific;
@@ -30,7 +30,7 @@ void plot_pionproduction() {
 void plot_photodisintegration() {
   // {
   //   auto sigmaPd = interactions::PsbPhotoDisintegration();
-  //   auto eAxis = utils::LinAxis(0.1 * SI::MeV, 1e2 * SI::MeV, 1000);
+  //   auto eAxis = utils::LinAxis<double>(0.1 * SI::MeV, 1e2 * SI::MeV, 1000);
   //   utils::OutputFile out("test_pd_sigma.txt");
   //   out() << std::scientific;
   //   for (auto E : eAxis) {
