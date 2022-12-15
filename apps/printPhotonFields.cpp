@@ -3,10 +3,14 @@
 using namespace simprop;
 
 void plot_local_photonfields() {
-  const auto cmb = photonfields::CMB();
-  const auto ebl = photonfields::Dominguez2011PhotonField();
-  const auto ebl_lo = photonfields::Dominguez2011LowerPhotonField();
-  const auto ebl_up = photonfields::Dominguez2011UpperPhotonField();
+  std::vector<std::shared_ptr<photonfields::PhotonField> > phFields;
+  phFields.push_back(std::make_shared<photonfields::CMB>());
+  phFields.push_back(std::make_shared<photonfields::Dominguez2011PhotonField>());
+  phFields.push_back(std::make_shared<photonfields::Dominguez2011LowerPhotonField>());
+  phFields.push_back(std::make_shared<photonfields::Dominguez2011UpperPhotonField>());
+  phFields.push_back(std::make_shared<photonfields::Saldana2021PhotonField>());
+  phFields.push_back(std::make_shared<photonfields::Saldana2021LowerPhotonField>());
+  phFields.push_back(std::make_shared<photonfields::Saldana2021UpperPhotonField>());
   const auto ePhoton = utils::LogAxis<double>(1e-5 * SI::eV, 1e2 * SI::eV, 1000);
   utils::OutputFile out("test_local_photonfields.txt");
   const auto units = SI::nW / pow2(SI::meter) / SI::sr / SI::cOver4pi;
@@ -15,10 +19,7 @@ void plot_local_photonfields() {
   for (auto E : ePhoton) {
     out << E / SI::eV << "\t";
     out << energyToWavelenght(E) / SI::micron << "\t";
-    out << pow2(E) * cmb.density(E) / units << "\t";
-    out << pow2(E) * ebl.density(E, 0.) / units << "\t";
-    out << pow2(E) * ebl_lo.density(E, 0.) / units << "\t";
-    out << pow2(E) * ebl_up.density(E, 0.) / units << "\t";
+    for (auto phField : phFields) out << pow2(E) * phField->density(E) / units << "\t";
     out << "\n";
   }
 }
@@ -113,9 +114,9 @@ int main() {
   try {
     utils::startup_information();
     plot_local_photonfields();
-    plot_photon_integral();
-    plot_evolution_photonfields();
-    map_tau();
+    // plot_photon_integral();
+    // plot_evolution_photonfields();
+    // map_tau();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }

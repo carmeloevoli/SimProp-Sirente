@@ -19,6 +19,7 @@
 #include "simprop/particleStacks/SourceEvolutionBuilder.h"
 #include "simprop/photonFields/CmbPhotonField.h"
 #include "simprop/photonFields/Dominguez2011PhotonField.h"
+#include "simprop/photonFields/Saldana2021PhotonField.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/logging.h"
 //#include "simprop/utils/lookupContainers.h"
