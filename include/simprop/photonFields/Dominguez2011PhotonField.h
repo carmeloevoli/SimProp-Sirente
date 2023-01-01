@@ -4,27 +4,25 @@
 #include <string>
 #include <vector>
 
-#include "simprop/photonFields/LookupTablePhotonField.h"
 #include "simprop/core/units.h"
+#include "simprop/photonFields/LookupTablePhotonField.h"
 
 namespace simprop {
 namespace photonfields {
 
-// enum class EblModel { MEAN, UPPER, LOWER };
-
 class Dominguez2011PhotonField final : public LookupTablePhotonField {
  public:
-  Dominguez2011PhotonField() : LookupTablePhotonField(18, 50, "EBL_Dominguez2011.txt") {}
+  Dominguez2011PhotonField() : LookupTablePhotonField(18, 50, "ebl_Dominguez2011_fiducial.txt") {}
 };
 
 class Dominguez2011LowerPhotonField final : public LookupTablePhotonField {
  public:
-  Dominguez2011LowerPhotonField() : LookupTablePhotonField(18, 50, "EBL_lower_Dominguez2011.txt") {}
+  Dominguez2011LowerPhotonField() : LookupTablePhotonField(18, 50, "ebl_Dominguez2011_lower.txt") {}
 };
 
 class Dominguez2011UpperPhotonField final : public LookupTablePhotonField {
  public:
-  Dominguez2011UpperPhotonField() : LookupTablePhotonField(18, 50, "EBL_upper_Dominguez2011.txt") {}
+  Dominguez2011UpperPhotonField() : LookupTablePhotonField(18, 50, "ebl_Dominguez2011_upper.txt") {}
 };
 
 }  // namespace photonfields

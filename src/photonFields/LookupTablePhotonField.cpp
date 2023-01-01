@@ -26,16 +26,22 @@ LookupTablePhotonField::LookupTablePhotonField(size_t zSize, size_t eSize, std::
 }
 
 void LookupTablePhotonField::loadDataFile() {
+  using std::log10;
+  using std::max;
   auto v = utils::loadFileByRow(m_filename, ",");
   size_t counter = 0;
   for (size_t i = 0; i < m_zSize; ++i) {
     for (size_t j = 0; j < m_eSize; ++j) {
       auto line = v.at(counter);
       if (line.size() != 4) throw std::runtime_error("error in reading table values");
-      if (j == 0) m_redshifts.emplace_back(line[0]);
-      if (i == 0) m_logPhotonEnergies.emplace_back(line[1]);
-      m_logDensity.emplace_back(line[2]);
-      m_logIgamma.emplace_back(line[3]);
+      auto z = line[0];
+      auto eps = line[1] * SI::eV;
+      auto n = line[2] * (1. / SI::eV / SI::m3);
+      auto I_gamma = line[3] * (1. / pow2(SI::eV) / SI::m3);
+      if (j == 0) m_redshifts.emplace_back(z);
+      if (i == 0) m_logPhotonEnergies.emplace_back(log10(eps));
+      m_logDensity.emplace_back(log10(max(n, 1e-30)));
+      m_logIgamma.emplace_back(log10(max(I_gamma, 1e-30)));
       counter++;
     }
   }
@@ -43,24 +49,22 @@ void LookupTablePhotonField::loadDataFile() {
 }
 
 double LookupTablePhotonField::density(double ePhoton, double z) const {
-  constexpr auto units = 1. / SI::eV / SI::m3;
   double value = 0;
-  auto loge = std::log10(ePhoton / SI::eV);
+  auto loge = std::log10(ePhoton);
   if (utils::isInside(z, m_redshifts) && utils::isInside(loge, m_logPhotonEnergies)) {
     auto logn = utils::interpolate2d(z, loge, m_redshifts, m_logPhotonEnergies,
                                      m_logDensity);  // TODO speed up this
-    value = std::pow(10., logn) * units;
+    value = std::pow(10., logn);
   }
   return std::max(value, 0.);
 }
 
 double LookupTablePhotonField::I_gamma(double ePhoton, double z) const {
-  constexpr auto units = 1. / pow2(SI::eV) / SI::m3;
   double value = 0;
-  auto loge = std::log10(ePhoton / SI::eV);
+  auto loge = std::log10(ePhoton);
   if (utils::isInside(z, m_redshifts) && utils::isInside(loge, m_logPhotonEnergies)) {
     auto logn = utils::interpolate2d(z, loge, m_redshifts, m_logPhotonEnergies, m_logIgamma);
-    value = std::pow(10., logn) * units;
+    value = std::pow(10., logn);
   }
   return value;
 }

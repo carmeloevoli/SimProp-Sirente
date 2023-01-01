@@ -12,17 +12,17 @@ namespace photonfields {
 
 class Saldana2021PhotonField final : public LookupTablePhotonField {
  public:
-  Saldana2021PhotonField() : LookupTablePhotonField(37, 250, "EBL_Saldana2021.txt") {}
+  Saldana2021PhotonField() : LookupTablePhotonField(37, 247, "ebl_Saldana2021_fiducial.txt") {}
 };
 
 class Saldana2021LowerPhotonField final : public LookupTablePhotonField {
  public:
-  Saldana2021LowerPhotonField() : LookupTablePhotonField(37, 250, "EBL_lower_Saldana2021.txt") {}
+  Saldana2021LowerPhotonField() : LookupTablePhotonField(37, 247, "ebl_Saldana2021_lower.txt") {}
 };
 
 class Saldana2021UpperPhotonField final : public LookupTablePhotonField {
  public:
-  Saldana2021UpperPhotonField() : LookupTablePhotonField(37, 250, "EBL_upper_Saldana2021.txt") {}
+  Saldana2021UpperPhotonField() : LookupTablePhotonField(37, 247, "ebl_Saldana2021_upper.txt") {}
 };
 
 }  // namespace photonfields

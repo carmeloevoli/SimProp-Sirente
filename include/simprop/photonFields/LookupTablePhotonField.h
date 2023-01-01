@@ -25,12 +25,8 @@ class LookupTablePhotonField : public PhotonField {
   double density(double ePhoton, double z = 0.) const override;
   double I_gamma(double ePhoton, double z = 0.) const override;
 
-  double getMinPhotonEnergy() const override {
-    return std::pow(10., m_logPhotonEnergies.front()) * SI::eV;
-  }
-  double getMaxPhotonEnergy() const override {
-    return std::pow(10., m_logPhotonEnergies.back()) * SI::eV;
-  }
+  double getMinPhotonEnergy() const override { return std::pow(10., m_logPhotonEnergies.front()); }
+  double getMaxPhotonEnergy() const override { return std::pow(10., m_logPhotonEnergies.back()); }
 
  protected:
   void loadDataFile();
