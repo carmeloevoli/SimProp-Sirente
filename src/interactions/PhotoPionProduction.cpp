@@ -26,7 +26,7 @@ double PhotoPionProduction::computeRateComoving(double Gamma, double z) const {
   value *= utils::simpsonIntegration<double>(
       [&](double logEpsPrime) {
         auto epsPrime = std::exp(logEpsPrime);
-        return epsPrime * epsPrime * m_sigma->getAtEpsPrime(epsPrime) *
+        return epsPrime * epsPrime * m_sigma->getAtS(epsPrime) *  // TODO big mistake here!!
                m_phField->I_gamma(epsPrime / 2. / Gamma, z);
       },
       lnEpsPrimeMin, lnEpsPrimeMax, 300);

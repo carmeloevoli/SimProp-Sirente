@@ -1,7 +1,7 @@
 #ifndef SIMPROP_LOSSES_PHOTOPION_CONTINUOUS_H
 #define SIMPROP_LOSSES_PHOTOPION_CONTINUOUS_H
 
-#include "simprop/crossSections/PhotoPionProductionXsec.h"
+#include "simprop/crossSections/PhotoPionXsecs.h"
 #include "simprop/energyLosses/ContinuousLosses.h"
 #include "simprop/photonFields/CmbPhotonField.h"
 
@@ -14,7 +14,8 @@ double inelasticityPoorApproximation(double s, double cosTheta_pi);
 class PhotoPionContinuousLosses final : public ContinuousLosses {
  protected:
   photonfields::PhotonFields m_photonFields;
-  std::shared_ptr<xsecs::PhotoPionProductionXsec> m_sigma;
+  std::shared_ptr<xsecs::PhotoPionProtonXsec> m_xs_proton;
+  std::shared_ptr<xsecs::PhotoPionNeutronXsec> m_xs_neutron;
 
  public:
   PhotoPionContinuousLosses(const std::shared_ptr<photonfields::PhotonField>& photonField);
@@ -24,7 +25,7 @@ class PhotoPionContinuousLosses final : public ContinuousLosses {
   double beta(PID pid, double Gamma, double z = 0) const override;
 
  protected:
-  double computeBetaComoving(double Gamma) const;
+  double computeBetaComoving(double Gamma, const std::shared_ptr<xsecs::CrossSection>& xs) const;
 };
 
 }  // namespace losses
