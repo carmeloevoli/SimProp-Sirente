@@ -48,22 +48,18 @@ PhotoPionContinuousLosses::PhotoPionContinuousLosses(
     const std::shared_ptr<photonfields::PhotonField>& photonField)
     : ContinuousLosses() {
   m_photonFields.push_back(photonField);
-  m_xs_proton = std::make_shared<xsecs::PhotoPionProtonXsec>();
-  m_xs_neutron = std::make_shared<xsecs::PhotoPionNeutronXsec>();
   LOGD << "calling " << __func__ << " constructor";
 }
 
 PhotoPionContinuousLosses::PhotoPionContinuousLosses(const photonfields::PhotonFields& photonFields)
     : ContinuousLosses(), m_photonFields(photonFields) {
-  m_xs_proton = std::make_shared<xsecs::PhotoPionProtonXsec>();
-  m_xs_neutron = std::make_shared<xsecs::PhotoPionNeutronXsec>();
   LOGD << "calling " << __func__ << " constructor";
 }
 
-double PhotoPionContinuousLosses::computeBetaComoving(
-    double Gamma, const std::shared_ptr<xsecs::CrossSection>& xs) const {
+double PhotoPionContinuousLosses::computeBetaComoving(double Gamma,
+                                                      const xsecs::CrossSection& xs) const {
   auto value = 0.;
-  auto epsThr = xs->getPhotonEnergyThreshold();
+  auto epsThr = xs.getPhotonEnergyThreshold();
 
   for (auto phField : m_photonFields) {
     auto lnEpsPrimeMin = std::log(std::max(epsThr, 2. * Gamma * phField->getMinPhotonEnergy()));
@@ -73,7 +69,7 @@ double PhotoPionContinuousLosses::computeBetaComoving(
           [&](double lnEpsPrime) {
             auto epsPrime = std::exp(lnEpsPrime);
             auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
-            return epsPrime * epsPrime * inelasticity(s) * xs->getAtS(s) *
+            return epsPrime * epsPrime * inelasticity(s) * xs.getAtS(s) *
                    phField->I_gamma(epsPrime / 2. / Gamma);
           },
           lnEpsPrimeMin, lnEpsPrimeMax, 500);
