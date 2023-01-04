@@ -8,18 +8,18 @@ void plot_pair_on_fields() {
 
   std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
       std::make_shared<photonfields::CMB>(),
-      std::make_shared<photonfields::Dominguez2011PhotonField>()};
+      std::make_shared<photonfields::Saldana2021PhotonField>()};
   auto pair_full = losses::PairProductionLosses(phFields);
 
   auto cmb = std::make_shared<photonfields::CMB>();
   auto pair_cmb = losses::PairProductionLosses(cmb);
 
-  auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
+  auto ebl = std::make_shared<photonfields::Saldana2021PhotonField>();
   auto pair_ebl = losses::PairProductionLosses(ebl);
 
   auto bggLosses = losses::BGG2006ContinuousLosses();
 
-  const auto gammaAxis = utils::LogAxis<double>(1e8, 1e14, 6 * 32);
+  const auto gammaAxis = utils::LogAxis<double>(1e7, 1e13, 6 * 32);
 
   utils::OutputFile out("test_pair_losses.txt");
   out << std::scientific;
@@ -44,7 +44,7 @@ void plot_pair_nuclei() {
       std::make_shared<photonfields::Dominguez2011PhotonField>()};
   auto pair = losses::PairProductionLosses(phFields);
 
-  const auto gammaAxis = utils::LogAxis<double>(1e8, 1e14, 6 * 32);
+  const auto gammaAxis = utils::LogAxis<double>(1e7, 1e13, 6 * 32);
   utils::OutputFile out("test_nuclei_pair_losses.txt");
 
   out << std::scientific;
@@ -61,50 +61,45 @@ void plot_pair_nuclei() {
   }
 }
 
-void plot_pair_evolution() {
+void plot_photopion_on_fields() {
   auto cosmology = std::make_shared<cosmo::Planck2018>();
   auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
-  auto bggLosses = losses::BGG2006ContinuousLosses();
+
+  std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
+      std::make_shared<photonfields::CMB>(),
+      std::make_shared<photonfields::Saldana2021PhotonField>()};
+  auto phpion_full = losses::PhotoPionContinuousLosses(phFields);
 
   auto cmb = std::make_shared<photonfields::CMB>();
-  auto pair_cmb = losses::PairProductionLosses(cmb);
+  auto phpion_cmb = losses::PhotoPionContinuousLosses(cmb);
 
-  auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
-  auto pair_ebl = losses::PairProductionLosses(ebl);
+  auto ebl = std::make_shared<photonfields::Saldana2021PhotonField>();
+  auto phpion_ebl = losses::PhotoPionContinuousLosses(ebl);
 
-  const auto zAxis = utils::LinAxis<double>(0, 10, 30);
-  utils::OutputFile out("test_evolution_pair_losses.txt");
+  const auto gammaAxis = utils::LogAxis<double>(1e7, 1e13, 6 * 32);
 
+  utils::OutputFile out("test_photopion_losses.txt");
   out << std::scientific;
-  for (auto z : zAxis) {
-    out << z << "\t";
-    out << SI::cLight / adiabatic.beta(proton, 1e10, z) / SI::Mpc << "\t";
-    //
-    out << SI::cLight / bggLosses.beta(proton, 1e10, z) / SI::Mpc << "\t";
-    out << SI::cLight / bggLosses.beta(proton, 1e12, z) / SI::Mpc << "\t";
-    out << SI::cLight / bggLosses.beta(proton, 1e14, z) / SI::Mpc << "\t";
-    //
-    out << SI::cLight / pair_cmb.beta(proton, 1e10, z) / SI::Mpc << "\t";
-    out << SI::cLight / pair_cmb.beta(proton, 1e12, z) / SI::Mpc << "\t";
-    out << SI::cLight / pair_cmb.beta(proton, 1e14, z) / SI::Mpc << "\t";
-    //
-    out << SI::cLight / pair_ebl.beta(proton, 1e10, z) / SI::Mpc << "\t";
-    out << SI::cLight / pair_ebl.beta(proton, 1e12, z) / SI::Mpc << "\t";
-    out << SI::cLight / pair_ebl.beta(proton, 1e14, z) / SI::Mpc << "\t";
+  for (auto Gamma : gammaAxis) {
+    out << Gamma << "\t";
+    out << SI::cLight / adiabatic.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_cmb.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_ebl.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_full.beta(proton, Gamma) / SI::Mpc << "\t";
     out << "\n";
   }
 }
 
-void plot_photopion_losses() {
+void plot_photopion_nuclei() {
   auto cosmology = std::make_shared<cosmo::Planck2018>();
   auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
   std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
       std::make_shared<photonfields::CMB>(),
-      std::make_shared<photonfields::Dominguez2011PhotonField>()};
+      std::make_shared<photonfields::Saldana2021PhotonField>()};
   auto pionLosses = losses::PhotoPionContinuousLosses(phFields);
-  const auto gammaAxis = utils::LogAxis<double>(1e8, 1e16, 8 * 32);
 
-  utils::OutputFile out("test_photopion_losses.txt");
+  const auto gammaAxis = utils::LogAxis<double>(1e8, 1e13, 6 * 32);
+  utils::OutputFile out("test_nuclei_photopion_losses.txt");
   out << std::scientific;
   for (auto Gamma : gammaAxis) {
     out << Gamma << "\t";
@@ -137,9 +132,9 @@ int main() {
 
     // plot_pair_on_fields();
     // plot_pair_nuclei();
-    // plot_pair_evolution();
-    plot_photopion_losses();
-    plot_photopion_inelasticity();
+    // plot_photopion_on_fields();
+    plot_photopion_nuclei();
+    // plot_photopion_inelasticity();
 
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();

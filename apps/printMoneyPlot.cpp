@@ -2,13 +2,13 @@
 
 using namespace simprop;
 
-void plot_propaganga() {
+void moneyplot() {
   auto cosmology = std::make_shared<cosmo::Planck2018>();
   auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
 
   std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
       std::make_shared<photonfields::CMB>(),
-      std::make_shared<photonfields::Dominguez2011PhotonField>()};
+      std::make_shared<photonfields::Saldana2021PhotonField>()};
   auto pair_full = losses::PairProductionLosses(phFields);
   auto pion_full = losses::PhotoPionContinuousLosses(phFields);
 
@@ -16,13 +16,13 @@ void plot_propaganga() {
   auto pair_cmb = losses::PairProductionLosses(cmb);
   auto pion_cmb = losses::PhotoPionContinuousLosses(cmb);
 
-  auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
+  auto ebl = std::make_shared<photonfields::Saldana2021PhotonField>();
   auto pair_ebl = losses::PairProductionLosses(ebl);
   auto pion_ebl = losses::PhotoPionContinuousLosses(ebl);
 
   const auto gammaAxis = utils::LogAxis<double>(1e8, 1e14, 6 * 32);
 
-  utils::OutputFile out("test_propaganda.txt");
+  utils::OutputFile out("test_moneyplot.txt");
   out << std::scientific;
   for (auto Gamma : gammaAxis) {
     out << Gamma << "\t";
@@ -39,6 +39,49 @@ void plot_propaganga() {
     out << SI::cLight / pion_cmb.beta(Fe56, Gamma) / SI::Mpc << "\t";
     out << SI::cLight / pion_ebl.beta(Fe56, Gamma) / SI::Mpc << "\t";
     out << SI::cLight / pion_full.beta(Fe56, Gamma) / SI::Mpc << "\t";
+    out << "\n";
+  }
+}
+
+void moneyplot_energy() {
+  auto cosmology = std::make_shared<cosmo::Planck2018>();
+  auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
+
+  std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
+      std::make_shared<photonfields::CMB>(),
+      std::make_shared<photonfields::Saldana2021PhotonField>()};
+  auto pair_full = losses::PairProductionLosses(phFields);
+  auto pion_full = losses::PhotoPionContinuousLosses(phFields);
+
+  auto cmb = std::make_shared<photonfields::CMB>();
+  auto pair_cmb = losses::PairProductionLosses(cmb);
+  auto pion_cmb = losses::PhotoPionContinuousLosses(cmb);
+
+  auto ebl = std::make_shared<photonfields::Saldana2021PhotonField>();
+  auto pair_ebl = losses::PairProductionLosses(ebl);
+  auto pion_ebl = losses::PhotoPionContinuousLosses(ebl);
+
+  const auto eAxis = utils::LogAxis<double>(1e17 * SI::eV, 1e21 * SI::eV, 6 * 32);
+
+  utils::OutputFile out("test_moneyplot_energy.txt");
+  out << std::scientific;
+  for (auto E : eAxis) {
+    out << E / SI::eV << "\t";
+    auto GammaProton = E / SI::protonMassC2;
+    auto GammaFe = GammaProton / 56.;
+    out << SI::cLight / adiabatic.beta(proton, GammaProton) / SI::Mpc << "\t";
+    out << SI::cLight / pair_cmb.beta(proton, GammaProton) / SI::Mpc << "\t";
+    out << SI::cLight / pair_ebl.beta(proton, GammaProton) / SI::Mpc << "\t";
+    out << SI::cLight / pair_full.beta(proton, GammaProton) / SI::Mpc << "\t";
+    out << SI::cLight / pion_cmb.beta(proton, GammaProton) / SI::Mpc << "\t";
+    out << SI::cLight / pion_ebl.beta(proton, GammaProton) / SI::Mpc << "\t";
+    out << SI::cLight / pion_full.beta(proton, GammaProton) / SI::Mpc << "\t";
+    out << SI::cLight / pair_cmb.beta(Fe56, GammaFe) / SI::Mpc << "\t";
+    out << SI::cLight / pair_ebl.beta(Fe56, GammaFe) / SI::Mpc << "\t";
+    out << SI::cLight / pair_full.beta(Fe56, GammaFe) / SI::Mpc << "\t";
+    out << SI::cLight / pion_cmb.beta(Fe56, GammaFe) / SI::Mpc << "\t";
+    out << SI::cLight / pion_ebl.beta(Fe56, GammaFe) / SI::Mpc << "\t";
+    out << SI::cLight / pion_full.beta(Fe56, GammaFe) / SI::Mpc << "\t";
     out << "\n";
   }
 }
@@ -142,9 +185,8 @@ int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer for print losses");
-
-    plot_propaganga();
-
+    moneyplot();
+    moneyplot_energy();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
