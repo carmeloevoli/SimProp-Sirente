@@ -25,7 +25,7 @@ class PhotoPionContinuousLosses final : public ContinuousLosses {
   double beta(PID pid, double Gamma, double z = 0) const override;
 
  protected:
-  double computeBetaComoving(double Gamma, const xsecs::CrossSection& xs) const;
+  double computeBetaComoving(double Gamma, double z, const xsecs::CrossSection& xs) const;
 };
 
 }  // namespace losses
