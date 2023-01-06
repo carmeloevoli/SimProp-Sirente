@@ -14,6 +14,8 @@ PID getPidNucleus(const int& Z, const int& A) {
 
 bool pidIsNucleus(const PID& pid) { return (pid.get() >= 1000009990); }
 
+bool pidIsNucleon(const PID& pid) { return (pid == proton || pid == neutron); }
+
 int getPidNucleusMassNumber(const PID& pid) {
   if (!pidIsNucleus(pid)) throw std::invalid_argument(getPidName(pid) + " is not a nucleus");
   if (pid == neutron || pid == antiproton)
@@ -32,9 +34,10 @@ int getPidNucleusCharge(const PID& pid) {
     return (pid.get() / 10) % 1000;
 }
 
-PID removeNucleon(const PID& pid, const PID& nucleon) {  // TODO add this to unit tests
-  assert(getPidNucleusMassNumber(pid) > 1);
-  return PID(pid.get() - nucleon.get());
+PID removeNucleon(const PID& pid, const PID& nucleon) {
+  assert(pidIsNucleus(pid));
+  assert(pidIsNucleon(nucleon));
+  return PID(pid.get() - nucleon.get() + 1000000000);
 }
 
 static const std::map<PID, std::string> pidNames = {

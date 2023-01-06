@@ -5,6 +5,26 @@
 
 namespace simprop {
 
+TEST(Pid, isNucleon) {
+  EXPECT_TRUE(pidIsNucleon(proton));
+  EXPECT_TRUE(pidIsNucleon(neutron));
+  EXPECT_FALSE(pidIsNucleon(He4));
+  EXPECT_FALSE(pidIsNucleon(N14));
+  EXPECT_TRUE(pidIsNucleus(proton));
+  EXPECT_TRUE(pidIsNucleus(neutron));
+  EXPECT_TRUE(pidIsNucleus(He4));
+  EXPECT_TRUE(pidIsNucleus(N14));
+  EXPECT_TRUE(C12 == C12);
+  EXPECT_FALSE(neutron == proton);
+}
+
+TEST(Pid, removeNucleon) {
+  EXPECT_TRUE(removeNucleon(B11, neutron) == B10);
+  EXPECT_TRUE(removeNucleon(C12, proton) == B11);
+  EXPECT_TRUE(removeNucleon(Ne22, neutron) == Ne21);
+  EXPECT_TRUE(removeNucleon(Ti46, proton) == Sc45);
+}
+
 TEST(Pid, elementaryName) {
   EXPECT_STREQ("photon", getPidName(photon).c_str());
   EXPECT_STREQ("nu_e", getPidName(neutrino_e).c_str());

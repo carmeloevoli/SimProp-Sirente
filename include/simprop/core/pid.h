@@ -12,10 +12,12 @@ using PID = fluent::NamedType<long int, struct PidTag, fluent::Comparable>;
 
 PID getPidNucleus(const int& Z, const int& A);
 bool pidIsNucleus(const PID& pid);
+bool pidIsNucleon(const PID& pid);
 int getPidNucleusMassNumber(const PID& pid);
 int getPidNucleusCharge(const PID& pid);
 double getPidMass(const PID& pid);
 std::string getPidName(const PID& pid);
+PID removeNucleon(const PID& pid, const PID& nucleon);
 
 static const PID photon = PID(0);
 static const PID neutrino_e = PID(1);
