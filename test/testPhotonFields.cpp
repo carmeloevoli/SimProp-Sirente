@@ -16,8 +16,8 @@ TEST(PhotonFields, CMB) {
 
 TEST(PhotonFields, Dominguez2011) {
   auto ebl = photonfields::Dominguez2011PhotonField();
-  EXPECT_NEAR(ebl.getMinPhotonEnergy(), 0.0012388 * SI::eV, 1e-6 * SI::eV);
-  EXPECT_NEAR(ebl.getMaxPhotonEnergy(), 12.2744 * SI::eV, 1e-3 * SI::eV);
+  EXPECT_NEAR(ebl.getMinPhotonEnergy(), 1.239842e-03 * SI::eV, 1e-3 * SI::eV);
+  EXPECT_NEAR(ebl.getMaxPhotonEnergy(), 1.227566e+01 * SI::eV, 1e-3 * SI::eV);
   EXPECT_DOUBLE_EQ(ebl.density(1e-3 * SI::eV), 0.);
   EXPECT_DOUBLE_EQ(ebl.density(1e2 * SI::eV), 0.);
   EXPECT_DOUBLE_EQ(ebl.I_gamma(1e-3 * SI::eV), 0.);
