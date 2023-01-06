@@ -11,16 +11,21 @@
 namespace simprop {
 namespace interactions {
 
-double sampleS(double r, double sMax, const xsecs::CrossSection& xs);
+using ProtonXsec = std::shared_ptr<xsecs::PhotoPionProtonXsec>;
+using NeutronXsec = std::shared_ptr<xsecs::PhotoPionNeutronXsec>;
 
-double sampleEps(double r, double nucleonEnergy, double z, const xsecs::CrossSection& xs,
+double sampleS(double r, double sMax, const std::shared_ptr<xsecs::CrossSection>& xs);
+
+double sampleEps(double r, double nucleonEnergy, double z,
+                 const std::shared_ptr<xsecs::CrossSection>& xs,
                  const std::shared_ptr<photonfields::PhotonField>& phField);
 
 class PhotoPionProduction final : public Interaction {
  protected:
   const double m_sThreshold = pow2(SI::protonMassC2 + SI::pionMassC2);
-  xsecs::PhotoPionProtonXsec m_xs_proton;
-  xsecs::PhotoPionNeutronXsec m_xs_neutron;
+  std::pair<ProtonXsec, NeutronXsec> m_xsecs;
+  // std::shared_ptr<xsecs::PhotoPionProtonXsec> m_xs_proton;
+  // std::shared_ptr<xsecs::PhotoPionNeutronXsec> m_xs_neutron;
 
  public:
   PhotoPionProduction(const std::shared_ptr<photonfields::PhotonField>& phField);
@@ -31,7 +36,7 @@ class PhotoPionProduction final : public Interaction {
                                    RandomNumberGenerator& rng) const override;
   // TODO make protected:
   double computeRateComoving(double Gamma, double z,
-                             const xsecs::CrossSection& xs) const;  // TODO to make protected
+                             const std::shared_ptr<xsecs::CrossSection>& xs) const;
 };
 
 }  // namespace interactions

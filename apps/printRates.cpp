@@ -7,7 +7,7 @@ using namespace simprop;
 void plot_rates() {
   const auto Gammas = utils::LogAxis<double>(1e8, 1e16, 8 * 32);
   const auto units = 1. / SI::Mpc;
-  const auto sigma = xsecs::PhotoPionProtonXsec();
+  const auto sigma = std::shared_ptr<xsecs::PhotoPionProtonXsec>();
   const auto cmb = std::make_shared<photonfields::CMB>();
   const auto ebl = std::make_shared<photonfields::Saldana2021PhotonField>();
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(cmb);
@@ -40,7 +40,7 @@ void plot_rates() {
 void plot_sampled_s() {
   utils::Timer timer("main timer");
   const auto cmb = std::make_shared<photonfields::CMB>();
-  const auto xs = xsecs::PhotoPionProtonXsec();
+  const auto xs = std::make_shared<xsecs::PhotoPionProtonXsec>();
 
   RandomNumberGenerator rng = utils::RNG<double>(1234);
   utils::OutputFile out("test_photopion_sample_s.txt");
@@ -61,7 +61,7 @@ void plot_sampled_epsilon() {
   const auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
   LOGI << "EBL min photon energy = " << ebl->getMinPhotonEnergy() / SI::eV;
   LOGI << "EBL max photon energy = " << ebl->getMaxPhotonEnergy() / SI::eV;
-  const auto xs = xsecs::PhotoPionProtonXsec();
+  const auto xs = std::make_shared<xsecs::PhotoPionProtonXsec>();
   {
     const auto photonEnergies = utils::LogAxis<double>(1e-5 * SI::eV, 1e2 * SI::eV, 10000);
     utils::OutputFile out("test_photopion_epsilon_pdf.txt");
@@ -71,14 +71,14 @@ void plot_sampled_epsilon() {
       out << eps / SI::eV << "\t";
       const double E = 1e19 * SI::eV;
       auto s_max = pow2(SI::protonMassC2) + 4. * E * eps;
-      out << cmb->density(eps) / pow2(eps) * xs.getPhiAtS(s_max) << "\t";
-      out << ebl->density(eps) / pow2(eps) * xs.getPhiAtS(s_max) << "\t";
+      out << cmb->density(eps) / pow2(eps) * xs->getPhiAtS(s_max) << "\t";
+      out << ebl->density(eps) / pow2(eps) * xs->getPhiAtS(s_max) << "\t";
       double z = 1.0;
-      out << cmb->density(eps / (1. + z)) / pow2(eps) * xs.getPhiAtS(s_max) << "\t";
-      out << ebl->density(eps / (1. + z), z) / pow2(eps) * xs.getPhiAtS(s_max) << "\t";
+      out << cmb->density(eps / (1. + z)) / pow2(eps) * xs->getPhiAtS(s_max) << "\t";
+      out << ebl->density(eps / (1. + z), z) / pow2(eps) * xs->getPhiAtS(s_max) << "\t";
       z = 2.0;
-      out << cmb->density(eps / (1. + z)) / pow2(eps) * xs.getPhiAtS(s_max) << "\t";
-      out << ebl->density(eps / (1. + z), z) / pow2(eps) * xs.getPhiAtS(s_max) << "\t";
+      out << cmb->density(eps / (1. + z)) / pow2(eps) * xs->getPhiAtS(s_max) << "\t";
+      out << ebl->density(eps / (1. + z), z) / pow2(eps) * xs->getPhiAtS(s_max) << "\t";
       out << "\n";
     }
   }
