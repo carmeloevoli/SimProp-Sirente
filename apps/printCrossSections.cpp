@@ -3,8 +3,7 @@
 using namespace simprop;
 
 void plot_pionproduction() {
-  auto sigmaPhotoPionProton = xsecs::PhotoPionProtonXsec();
-  auto sigmaPhotoPionNeutron = xsecs::PhotoPionNeutronXsec();
+  auto sigmaPhotoPion = xsecs::PhotoPionXsec();
   auto epsPrimeAxis = utils::LogAxis<double>(0.1 * SI::GeV, 1e11 * SI::GeV, 10000);
   {
     utils::OutputFile out("test_photopion_xsecs.txt");
@@ -14,8 +13,8 @@ void plot_pionproduction() {
       auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
       out << epsPrime / SI::GeV << "\t";
       out << s / SI::GeV2 << "\t";
-      out << sigmaPhotoPionProton.getAtS(s) / SI::mbarn << "\t";
-      out << sigmaPhotoPionNeutron.getAtS(s) / SI::mbarn << "\t";
+      out << sigmaPhotoPion.getAtS(proton, s) / SI::mbarn << "\t";
+      out << sigmaPhotoPion.getAtS(neutron, s) / SI::mbarn << "\t";
       out << "\n";
     }
   }
@@ -27,8 +26,8 @@ void plot_pionproduction() {
       auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
       out << epsPrime / SI::GeV << "\t";
       out << s / SI::GeV2 << "\t";
-      out << sigmaPhotoPionProton.getPhiAtS(s) / pow2(s) / SI::mbarn << "\t";
-      out << sigmaPhotoPionNeutron.getPhiAtS(s) / pow2(s) / SI::mbarn << "\t";
+      out << sigmaPhotoPion.getPhiAtS(proton, s) / pow2(s) / SI::mbarn << "\t";
+      out << sigmaPhotoPion.getPhiAtS(neutron, s) / pow2(s) / SI::mbarn << "\t";
       out << "\n";
     }
   }
