@@ -9,34 +9,24 @@
 namespace simprop {
 namespace xsecs {
 
-class PhotoPionProtonXsec final : public CrossSection {
+class PhotoPionXsec final : public CrossSection {
  private:
   const std::string m_filename = "data/xsecs_photopion_proton_sophia.txt";
-  utils::LookupArray<2849> m_sigma;
-  utils::LookupArray<2849> m_phi;
+  utils::LookupArray<2849> m_proton_sigma;
+  utils::LookupArray<2849> m_proton_phi;
+  utils::LookupArray<2850> m_neutron_sigma;
+  utils::LookupArray<2850> m_neutron_phi;
 
  public:
-  PhotoPionProtonXsec();
-
- public:
-  virtual ~PhotoPionProtonXsec() = default;
-  double getAtS(double s) const override;
-  double getPhiAtS(double s) const override;
+  PhotoPionXsec();
+  virtual ~PhotoPionXsec() = default;
+  double getAtS(PID pid, double s) const override;
+  double getPhiAtS(PID pid, double s) const override;
   double getPhotonEnergyThreshold() const override;
-};
 
-class PhotoPionNeutronXsec final : public CrossSection {
  private:
-  const std::string m_filename = "data/xsecs_photopion_neutron_sophia.txt";
-  utils::LookupArray<2850> m_sigma;
-  utils::LookupArray<2850> m_phi;
-
- public:
-  PhotoPionNeutronXsec();
-  virtual ~PhotoPionNeutronXsec() = default;
-  double getAtS(double s) const override;
-  double getPhiAtS(double s) const override;
-  double getPhotonEnergyThreshold() const override;
+  double getProtonXsec(double s) const;
+  double getNeutronXsec(double s) const;
 };
 
 }  // namespace xsecs

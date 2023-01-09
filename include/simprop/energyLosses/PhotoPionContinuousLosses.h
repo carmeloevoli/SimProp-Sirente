@@ -14,8 +14,7 @@ double inelasticityPoorApproximation(double s, double cosTheta_pi);
 class PhotoPionContinuousLosses final : public ContinuousLosses {
  protected:
   photonfields::PhotonFields m_photonFields;
-  xsecs::PhotoPionProtonXsec m_xs_proton;
-  xsecs::PhotoPionNeutronXsec m_xs_neutron;
+  xsecs::PhotoPionXsec m_xs;
 
  public:
   PhotoPionContinuousLosses(const std::shared_ptr<photonfields::PhotonField>& photonField);
@@ -25,7 +24,7 @@ class PhotoPionContinuousLosses final : public ContinuousLosses {
   double beta(PID pid, double Gamma, double z = 0) const override;
 
  protected:
-  double computeBetaComoving(double Gamma, double z, const xsecs::CrossSection& xs) const;
+  double computeBetaComoving(PID pid, double Gamma, double z) const;
 };
 
 }  // namespace losses

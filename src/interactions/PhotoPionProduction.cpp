@@ -10,12 +10,12 @@
 namespace simprop {
 namespace interactions {
 
-double sampleS(double r, double sMax, const std::shared_ptr<xsecs::CrossSection>& xs) {
+double PhotoPionProduction::sampleS(double r, PID nucleon, double sMax) const {
   constexpr auto sThr = pow2(SI::protonMassC2 + SI::pionMassC2);
   if (sMax <= sThr) return 0;
-  auto rPhiMax = r * xs->getPhiAtS(sMax);
-  return utils::rootFinder<double>([&](double s) { return xs->getPhiAtS(s) - rPhiMax; }, sThr, sMax,
-                                   1000, 1e-4);
+  auto rPhiMax = r * m_xs.getPhiAtS(nucleon, sMax);
+  return utils::rootFinder<double>([&](double s) { return m_xs.getPhiAtS(nucleon, s) - rPhiMax; },
+                                   sThr, sMax, 1000, 1e-4);
 }
 
 double pickMinPhotonEnergy(double minPhotonEnergy, double nucleonEnergy) {
@@ -24,27 +24,24 @@ double pickMinPhotonEnergy(double minPhotonEnergy, double nucleonEnergy) {
   return std::max(minPhotonEnergy, thresholdPhotonEnergy);
 }
 
-double epsPdfIntegral(double photonEnergy, double nucleonEnergy, double z,
-                      const std::shared_ptr<xsecs::CrossSection>& xs,
-                      const std::shared_ptr<photonfields::PhotonField>& phField) {
+double PhotoPionProduction::epsPdfIntegral(double photonEnergy, PID nucleon, double nucleonEnergy,
+                                           double z) const {
   auto integrand = [&](double eps) {
     const auto s_max = pow2(SI::protonMassC2) + 4. * nucleonEnergy * eps;
-    return phField->density(eps / (1. + z), z) / pow2(eps) * xs->getPhiAtS(s_max);
+    return m_phField->density(eps / (1. + z), z) / pow2(eps) * m_xs.getPhiAtS(nucleon, s_max);
   };
-  auto minPhEnergy = pickMinPhotonEnergy(phField->getMinPhotonEnergy(), nucleonEnergy);
+  auto minPhEnergy = pickMinPhotonEnergy(m_phField->getMinPhotonEnergy(), nucleonEnergy);
   auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000, 4e-4);
   // TODO how to improve the precision here?
   return value;
 }
 
-double sampleEps(double r, double nucleonEnergy, double z,
-                 const std::shared_ptr<xsecs::CrossSection>& xs,
-                 const std::shared_ptr<photonfields::PhotonField>& phField) {
-  auto minPhEnergy = pickMinPhotonEnergy(phField->getMinPhotonEnergy(), nucleonEnergy);
-  auto maxPhotonEnergy = phField->getMaxPhotonEnergy();
-  auto rIntegralMax = r * epsPdfIntegral(maxPhotonEnergy, nucleonEnergy, z, xs, phField);
+double PhotoPionProduction::sampleEps(double r, PID nucleon, double nucleonEnergy, double z) const {
+  auto minPhEnergy = pickMinPhotonEnergy(m_phField->getMinPhotonEnergy(), nucleonEnergy);
+  auto maxPhotonEnergy = m_phField->getMaxPhotonEnergy();
+  auto rIntegralMax = r * epsPdfIntegral(maxPhotonEnergy, nucleon, nucleonEnergy, z);
   auto value = utils::rootFinder<double>(
-      [&](double eps) { return epsPdfIntegral(eps, nucleonEnergy, z, xs, phField) - rIntegralMax; },
+      [&](double eps) { return epsPdfIntegral(eps, nucleon, nucleonEnergy, z) - rIntegralMax; },
       minPhEnergy, maxPhotonEnergy, 1000, 1e-3);
   return value;
 }
@@ -94,15 +91,12 @@ PID pickNucleon(double r, PID pid) {
 PhotoPionProduction::PhotoPionProduction(const std::shared_ptr<photonfields::PhotonField>& phField)
     : Interaction(phField) {
   LOGD << "calling " << __func__ << " constructor";
-  m_xsecs.first = std::make_shared<xsecs::PhotoPionProtonXsec>();
-  m_xsecs.second = std::make_shared<xsecs::PhotoPionNeutronXsec>();
 }
 
-double PhotoPionProduction::computeRateComoving(
-    double Gamma, double z, const std::shared_ptr<xsecs::CrossSection>& xs) const {
+double PhotoPionProduction::computeRateComoving(PID pid, double Gamma, double z) const {
   auto value = double(0);
 
-  auto threshold = xs->getPhotonEnergyThreshold();
+  auto threshold = m_xs.getPhotonEnergyThreshold();
   auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_phField->getMinPhotonEnergy()));
   auto lnEpsPrimeMax = std::log(2. * Gamma * m_phField->getMaxPhotonEnergy());
   if (lnEpsPrimeMax > lnEpsPrimeMin) {
@@ -110,7 +104,8 @@ double PhotoPionProduction::computeRateComoving(
         [&](double lnEpsPrime) {
           auto epsPrime = std::exp(lnEpsPrime);
           auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
-          return epsPrime * epsPrime * xs->getAtS(s) * m_phField->I_gamma(epsPrime / 2. / Gamma, z);
+          return epsPrime * epsPrime * m_xs.getAtS(pid, s) *
+                 m_phField->I_gamma(epsPrime / 2. / Gamma, z);
         },
         lnEpsPrimeMin, lnEpsPrimeMax, 300);
     value *= SI::cLight / 2. / pow2(Gamma);
@@ -119,11 +114,7 @@ double PhotoPionProduction::computeRateComoving(
 }
 
 double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
-  const auto Z = getPidNucleusCharge(pid);
-  const auto A = getPidNucleusMassNumber(pid);
-  auto value = (double)Z * computeRateComoving(Gamma * (1. + z), z, m_xsecs.first);
-  if (A > Z) value += (double)(A - Z) * computeRateComoving(Gamma * (1. + z), z, m_xsecs.second);
-  return pow3(1. + z) * value;
+  return pow3(1. + z) * computeRateComoving(pid, Gamma * (1. + z), z);
 }
 
 std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingParticle,
@@ -137,13 +128,9 @@ std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingPa
   const auto nucleon = pidIsNucleon(pid) ? pid : pickNucleon(rng(), pid);
   const auto nucleonEnergy = Gamma * SI::protonMassC2;
 
-  std::shared_ptr<xsecs::CrossSection> xs;
-  if (nucleon == proton) xs = m_xsecs.first;
-  if (nucleon == neutron) xs = m_xsecs.second;
-
-  const auto photonEnergy = sampleEps(rng(), nucleonEnergy, zInteractionPoint, xs, m_phField);
+  const auto photonEnergy = sampleEps(rng(), nucleon, nucleonEnergy, zInteractionPoint);
   const auto sMax = pow2(SI::protonMassC2) + 4. * nucleonEnergy * photonEnergy;
-  const auto s = sampleS(rng(), sMax, xs);
+  const auto s = sampleS(rng(), nucleon, sMax);
 
   const auto outPionEnergy = samplePionInelasticity(rng(), s) * nucleonEnergy;
   const auto outPionCharge = samplePionCharge(rng(), (nucleon == neutron));
@@ -151,7 +138,7 @@ std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingPa
   const auto outNucleonEnergy = nucleonEnergy - outPionEnergy;
 
   auto outPion = Particle(outPionCharge, zInteractionPoint, outPionEnergy / SI::pionMassC2, w);
-  auto outNucleon = Particle(nucleon, zInteractionPoint, outNucleonEnergy / SI::protonMassC2, w);
+  auto outNucleon = Particle(proton, zInteractionPoint, outNucleonEnergy / SI::protonMassC2, w);
 
   if (pidIsNucleon(pid)) {
     return {outNucleon, outPion};

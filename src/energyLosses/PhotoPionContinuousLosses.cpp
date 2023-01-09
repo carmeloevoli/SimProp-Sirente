@@ -56,10 +56,9 @@ PhotoPionContinuousLosses::PhotoPionContinuousLosses(const photonfields::PhotonF
   LOGD << "calling " << __func__ << " constructor";
 }
 
-double PhotoPionContinuousLosses::computeBetaComoving(double Gamma, double z,
-                                                      const xsecs::CrossSection& xs) const {
+double PhotoPionContinuousLosses::computeBetaComoving(PID pid, double Gamma, double z) const {
   auto value = 0.;
-  auto epsThr = xs.getPhotonEnergyThreshold();
+  auto epsThr = m_xs.getPhotonEnergyThreshold();
 
   for (auto phField : m_photonFields) {
     auto lnEpsPrimeMin = std::log(std::max(epsThr, 2. * Gamma * phField->getMinPhotonEnergy()));
@@ -69,7 +68,7 @@ double PhotoPionContinuousLosses::computeBetaComoving(double Gamma, double z,
           [&](double lnEpsPrime) {
             auto epsPrime = std::exp(lnEpsPrime);
             auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
-            return epsPrime * epsPrime * inelasticity(s) * xs.getAtS(s) *
+            return epsPrime * epsPrime * inelasticity(s) * m_xs.getAtS(pid, s) *
                    phField->I_gamma(epsPrime / 2. / Gamma, z);
           },
           lnEpsPrimeMin, lnEpsPrimeMax, 500);
@@ -79,11 +78,7 @@ double PhotoPionContinuousLosses::computeBetaComoving(double Gamma, double z,
 }
 
 double PhotoPionContinuousLosses::beta(PID pid, double Gamma, double z) const {
-  auto Z = getPidNucleusCharge(pid);
-  auto A = getPidNucleusMassNumber(pid);
-  auto value = (double)Z * computeBetaComoving(Gamma * (1. + z), z, m_xs_proton);
-  if (A > Z) value += (double)(A - Z) * computeBetaComoving(Gamma * (1. + z), z, m_xs_neutron);
-  return pow3(1. + z) * value;
+  return pow3(1. + z) * computeBetaComoving(pid, Gamma * (1. + z), z);
 }
 
 }  // namespace losses
