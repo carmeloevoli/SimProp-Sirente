@@ -18,27 +18,27 @@ class Beniamino {
   const double m_maxEnergy = 1e23 * SI::eV;
   double m_slope = 2.7;
   double m_sourceEvolution = 0.;
-  double m_sourceMaxRedshift = 0.;
   double m_sourceCutoff = -1.;
-  bool m_doPhotoPion = true;
+  bool m_doPhotoPion = false;
 
  public:
   Beniamino();
   virtual ~Beniamino() = default;
 
   double generationEnergy(double E, double zMax, double relError = 1e-3) const;
-  double dbdE(double E) const;
   double dilationFactor(double E, double zMax, double relError = 1e-3) const;
-  double computeFlux(double E) const;
-  double computeFluxUnm(double E) const;
+  double computeFlux(double E, double zMax, double relError = 1e-3) const;
+  double computeFluxUnm(double E, double zMax, double relError = 1e-3) const;
 
  public:
   inline void setSlope(const double &slope) { m_slope = slope; };
   inline void setSourceEvolution(const double &m) { m_sourceEvolution = m; };
-  inline void setMaxRedshift(const double &z) { m_sourceMaxRedshift = z; };
   inline void setSourceCutoff(const double &E) { m_sourceCutoff = E; };
   inline void disablePhotoPion() { m_doPhotoPion = false; }
   inline void enablePhotoPion() { m_doPhotoPion = true; }
+
+ protected:
+  double dbdE(double E) const;
 };
 
 }  // namespace solutions
