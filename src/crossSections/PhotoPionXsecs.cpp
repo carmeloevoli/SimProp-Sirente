@@ -12,13 +12,13 @@ namespace xsecs {
 PhotoPionXsec::PhotoPionXsec() {
   LOGD << "calling " << __func__ << " constructor";
   {
-    auto filename = "data/xsecs_photopion_proton_sophia";
+    auto filename = "data/xsecs_photopion_proton_sophia.txt";
     if (!utils::fileExists(filename)) throw std::runtime_error("data file not found");
     m_proton_sigma.loadTable(filename, 1);
     m_proton_phi.loadTable(filename, 2);
   }
   {
-    auto filename = "data/xsecs_photopion_neutron_sophia";
+    auto filename = "data/xsecs_photopion_neutron_sophia.txt";
     if (!utils::fileExists(filename)) throw std::runtime_error("data file not found");
     m_neutron_sigma.loadTable(filename, 1);
     m_neutron_phi.loadTable(filename, 2);
