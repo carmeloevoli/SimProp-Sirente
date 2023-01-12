@@ -191,8 +191,8 @@ target_link_libraries (print_money simprop ${SIMPROP_EXTRA_LIBRARIES})
 add_executable(print_rates apps/printRates.cpp)
 target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-# add_executable(analytical_solution examples/analyticalSolution.cpp)
-# target_link_libraries (analytical_solution simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(print_analytical_solution apps/printAnalyticalSolution.cpp)
+target_link_libraries (print_analytical_solution simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(evolve examples/evolveContinuousLosses.cpp)
 # target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
