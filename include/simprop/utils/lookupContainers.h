@@ -6,6 +6,7 @@
 #include "simprop/core/units.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/numeric.h"
+#include "simprop/utils/timer.h"
 
 namespace simprop {
 namespace utils {
@@ -41,6 +42,7 @@ class LookupArray {
   void cacheTable(const std::function<double(double)>& func,
                   const std::pair<double, double>& range) {
     const double dx = (range.second - range.first) / (double)(xSize - 1);
+    utils::Timer timer("time for caching");
     for (size_t i = 0; i < xSize; ++i) {
       auto x = (double)i * dx + range.first;
       auto f_x = func(x);
