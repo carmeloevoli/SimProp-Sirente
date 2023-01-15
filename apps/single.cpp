@@ -27,6 +27,8 @@ class Evolutor {
     m_stack = builder.build();
   }
 
+  void clear() { m_stack.clear(); }
+
   void buildCosmology() { m_cosmology = std::make_shared<cosmo::Planck2018>(); }
 
   void buildPhotonFields() { m_cmb = std::make_shared<photonfields::CMB>(); }
@@ -39,7 +41,7 @@ class Evolutor {
       m_continuousLosses.push_back(std::make_shared<losses::PhotoPionContinuousLosses>(m_cmb));
   }
 
-  double computeDeltaGamma(const Particle& particle, double deltaRedshift) {
+  double computeDeltaGamma(const Particle& particle, double deltaRedshift) const {
     const auto pid = particle.getPid();
     const auto Gamma = particle.getGamma();
     const auto zNow = particle.getRedshift();
@@ -57,7 +59,7 @@ class Evolutor {
     return 1.0 - std::exp(-value);
   }
 
-  double computeLossesRedshiftInterval(const Particle& particle) {
+  double computeLossesRedshiftInterval(const Particle& particle) const {
     const auto zNow = particle.getRedshift();
     double dz = zNow;
 
@@ -65,7 +67,7 @@ class Evolutor {
     if (deltaGamma > deltaGammaCritical) {
       dz = utils::rootFinder<double>(
           [&](double x) { return computeDeltaGamma(particle, x) - deltaGammaCritical; }, 0., zNow,
-          100, 1e-5);
+          100, 1e-3);
     }
     return dz;
   }
@@ -95,21 +97,23 @@ class Evolutor {
 void testSingleParticleEvolution(double zMax, std::string filename) {
   RandomNumberGenerator rng = utils::RNG<double>(69);
   utils::OutputFile out(filename);
+  Evolutor evolutor(rng);
+  evolutor.buildCosmology();
+  evolutor.buildPhotonFields();
+  evolutor.buildContinuousLosses(true);
   const auto eFactor = std::pow(10., 1. / 4.);
   for (double E = 1e17 * SI::eV; E < 1e23 * SI::eV; E *= eFactor) {
-    Evolutor evolutor(rng);
     evolutor.buildParticleStack(zMax, E / SI::protonMassC2, 1);
-    evolutor.buildCosmology();
-    evolutor.buildPhotonFields();
-    evolutor.buildContinuousLosses(true);
     evolutor.run();
     out << std::scientific << E / SI::eV << " " << evolutor.getObservedEnergy() / SI::eV << "\n";
+    evolutor.clear();
   }
 }
 
 int main() {
   try {
     utils::startup_information();
+    utils::Timer timer("main timer");
     testSingleParticleEvolution(3.0, "test_traj_z3.0.txt");
     testSingleParticleEvolution(2.0, "test_traj_z2.0.txt");
     testSingleParticleEvolution(1.0, "test_traj_z1.0.txt");
