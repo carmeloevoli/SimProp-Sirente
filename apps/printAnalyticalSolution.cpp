@@ -26,6 +26,7 @@ void testCharacteristics() {
       out << b.generationEnergy(E_i, 0.5, 1e-6) / SI::eV << "\t";
       out << b.generationEnergy(E_i, 1., 1e-6) / SI::eV << "\t";
       out << b.generationEnergy(E_i, 2., 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 3., 1e-6) / SI::eV << "\t";
       out << "\n";
     }
   }
@@ -81,9 +82,9 @@ int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer for analytical solution");
-    // testCharacteristics();
+    testCharacteristics();
     // testJacobian();
-    testSpectrum();
+    // testSpectrum();
   } catch (const std::exception &e) {
     LOGE << "exception caught with message: " << e.what();
   }
