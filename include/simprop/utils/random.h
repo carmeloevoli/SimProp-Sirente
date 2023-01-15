@@ -14,7 +14,7 @@ class RNG {
   typedef std::mt19937_64 generator_type;
   typedef std::uniform_real_distribution<FloatType> distribution_type;
 
-  explicit RNG(const double seed) { eng = generator_type(seed); }
+  explicit RNG(const int64_t seed) { eng = generator_type(seed); }
 
   // generate next random value in distribution
   result_type operator()() { return dist(eng); }
