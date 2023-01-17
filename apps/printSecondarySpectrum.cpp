@@ -6,16 +6,21 @@ const double r = SI::pionMassC2 / SI::protonMassC2;
 const double eta_0 = 2. * r + r * r;
 
 void plot_spectrum() {
-  auto spectrum = KelnerAharonian2008::AntiNuMuSecondarySpectrum();
+  auto numu = KelnerAharonian2008::NuMuSpectrum();
+  auto antiNumu = KelnerAharonian2008::AntiNuMuSpectrum();
+  auto nue = KelnerAharonian2008::NuElectronSpectrum();
+  auto antiNue = KelnerAharonian2008::AntiNuElectronSpectrum();
   auto xAxis = utils::LogAxis<double>(1e-4, 1, 50);
-  utils::OutputFile out("test_antinumu_spectrum.txt");
+  utils::OutputFile out("test_neutrino_spectrum.txt");
   out << "# x - spectrum\n";
   out << std::scientific;
   const auto units = SI::cm3 / SI::sec;
   for (auto x : xAxis) {
     out << x << "\t";
-    out << spectrum.Phi(1.5 * eta_0, x) / units << "\t";
-    out << spectrum.Phi(30. * eta_0, x) / units << "\t";
+    out << numu.Phi(1.5 * eta_0, x) / units << "\t";
+    out << antiNumu.Phi(1.5 * eta_0, x) / units << "\t";
+    out << nue.Phi(1.5 * eta_0, x) / units << "\t";
+    out << antiNue.Phi(1.5 * eta_0, x) / units << "\t";
     out << "\n";
   }
 }
