@@ -9,6 +9,7 @@
 #include "simprop/core/pid.h"
 #include "simprop/core/units.h"
 #include "simprop/crossSections/BreitWheeler.h"
+#include "simprop/crossSections/KelnerAharonian2008.h"
 #include "simprop/crossSections/PhotoPionXsecs.h"
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
 #include "simprop/energyLosses/BGG2006ContinuousLosses.h"

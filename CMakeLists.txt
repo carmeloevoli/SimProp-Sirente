@@ -194,8 +194,11 @@ target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
 add_executable(print_analytical_solution apps/printAnalyticalSolution.cpp)
 target_link_libraries (print_analytical_solution simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(single_particle apps/single.cpp)
+add_executable(single_particle apps/singleProtonEvolutor.cpp)
 target_link_libraries (single_particle simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+add_executable(secondary_spectrum apps/printSecondarySpectrum.cpp)
+target_link_libraries (secondary_spectrum simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(evolve examples/evolveContinuousLosses.cpp)
 # target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
