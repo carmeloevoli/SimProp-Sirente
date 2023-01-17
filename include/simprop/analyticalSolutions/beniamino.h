@@ -27,6 +27,7 @@ class Beniamino {
   double dilationFactor(double E, double zMax, double relError = 1e-3) const;
   double computeFlux(double E, double zMax, double relError = 1e-3) const;
   double computeFluxUnm(double E, double zMax, double relError = 1e-3) const;
+  double computeNeutrinoFlux(double Enu, double zMax, double relError = 1e-3) const;
 
  public:
   inline void setSlope(const double &slope) { m_slope = slope; };

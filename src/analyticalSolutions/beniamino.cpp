@@ -97,5 +97,10 @@ double Beniamino::computeFlux(double E, double zMax, double relError) const {
   return factor * I;
 }
 
+double Beniamino::computeNeutrinoFlux(double E, double zMax, double relError) const {
+  auto value = 0;
+  return value;
+}
+
 }  // namespace solutions
 }  // namespace simprop
