@@ -79,6 +79,7 @@ static constexpr double GeV = gigaelectronvolt;
 static constexpr double GeV2 = GeV * GeV;
 static constexpr double TeV = teraelectronvolt;
 static constexpr double PeV = petaelectronvolt;
+static constexpr double cm3 = centimeter * centimeter * centimeter;
 static constexpr double m2 = meter * meter;
 static constexpr double m3 = meter * meter * meter;
 static constexpr double km = kilo * meter;
