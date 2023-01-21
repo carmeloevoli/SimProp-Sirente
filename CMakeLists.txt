@@ -136,6 +136,7 @@ add_library(simprop SHARED
     src/core/params.cpp
     src/core/pid.cpp
     src/crossSections/BreitWheeler.cpp
+    src/crossSections/KelnerAharonian2008.cpp
     src/crossSections/PhotoPionXsecs.cpp
     src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2006ContinuousLosses.cpp
