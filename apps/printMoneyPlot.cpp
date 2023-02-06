@@ -61,7 +61,7 @@ void moneyplot_energy() {
   auto pair_ebl = losses::PairProductionLosses(ebl);
   auto pion_ebl = losses::PhotoPionContinuousLosses(ebl);
 
-  const auto eAxis = utils::LogAxis<double>(1e17 * SI::eV, 1e21 * SI::eV, 6 * 32);
+  const auto eAxis = utils::LogAxis<double>(1e17 * SI::eV, 1e22 * SI::eV, 6 * 32);
 
   utils::OutputFile out("test_moneyplot_energy.txt");
   out << std::scientific;
