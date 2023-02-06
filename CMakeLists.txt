@@ -130,6 +130,7 @@ include_directories(include ${SIMPROP_EXTRA_INCLUDES})
 
 add_library(simprop SHARED
     src/analyticalSolutions/beniamino.cpp
+    src/analyticalSolutions/neutrinos.cpp
     src/core/common.cpp
     src/core/cosmology.cpp
     src/core/opticalDepth.cpp
@@ -198,8 +199,8 @@ target_link_libraries (print_analytical_solution simprop ${SIMPROP_EXTRA_LIBRARI
 add_executable(single_particle apps/singleProtonEvolutor.cpp)
 target_link_libraries (single_particle simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(secondary_spectrum apps/printSecondarySpectrum.cpp)
-target_link_libraries (secondary_spectrum simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(secondary_neutrinos apps/printSecondaryNeutrinos.cpp)
+target_link_libraries (secondary_neutrinos simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(evolve examples/evolveContinuousLosses.cpp)
 # target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})

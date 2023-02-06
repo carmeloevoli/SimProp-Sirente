@@ -11,9 +11,9 @@ namespace solutions {
 
 Beniamino::Beniamino(bool doPhotoPion) {
   m_cosmology = std::make_shared<cosmo::Planck2018>();
-  auto cmb = std::make_shared<photonfields::CMB>();
-  auto pair = std::make_shared<losses::PairProductionLosses>(cmb);
-  auto pion = std::make_shared<losses::PhotoPionContinuousLosses>(cmb);
+  m_cmb = std::make_shared<photonfields::CMB>();
+  auto pair = std::make_shared<losses::PairProductionLosses>(m_cmb);
+  auto pion = std::make_shared<losses::BGG2006ContinuousLosses>();
   m_losses.cacheTable(
       [&](double lnE) {
         auto Gamma = std::exp(lnE) / SI::protonMassC2;
@@ -75,7 +75,7 @@ double Beniamino::findMaxRedshiftIntegral(double E, double zMax) const {
   return std::min(zNow, zMax);
 }
 
-double Beniamino::computeFlux(double E, double zMax, double relError) const {
+double Beniamino::computeFlux(double E, double zObs, double zMax, double relError) const {
   const auto K = m_slope - 2;
   const auto L_0 = m_sourceEmissivity;
   const auto factor = SI::cLight / 4. / M_PI * K * L_0;
@@ -92,14 +92,9 @@ double Beniamino::computeFlux(double E, double zMax, double relError) const {
   };
 
   auto zMaxIntegral = findMaxRedshiftIntegral(E, zMax);
-  auto I = utils::QAGIntegration<double>(integrand, 0., zMaxIntegral, INTSTEPS, relError);
+  auto I = utils::QAGIntegration<double>(integrand, zObs, zMaxIntegral, INTSTEPS, relError);
 
   return factor * I;
-}
-
-double Beniamino::computeNeutrinoFlux(double E, double zMax, double relError) const {
-  auto value = 0;
-  return value;
 }
 
 }  // namespace solutions
