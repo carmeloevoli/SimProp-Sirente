@@ -81,7 +81,7 @@ void plot_photonfields(const photonfields::PhotonField& phField, std::string fil
 }
 
 void plot_tau() {
-  const auto ebl = std::make_shared<photonfields::Gilmore2012PhotonField>();
+  const auto ebl = std::make_shared<photonfields::Saldana2021PhotonField>();
   const auto cosmology = std::make_shared<cosmo::Cosmology>(0.7, 0., 0.3 * pow2(0.7), 0.7);
 
   const auto tau = core::OpticalDepth(cosmology, ebl);
@@ -95,42 +95,44 @@ void plot_tau() {
     out << tau.get(E, 0.1) << "\t";
     out << tau.get(E, 0.5) << "\t";
     out << tau.get(E, 1.0) << "\t";
-    out << tau.get(E, 2.0) << "\t";
     out << tau.get(E, 3.0) << "\t";
+    out << tau.get(E, 5.0) << "\t";
     out << "\n";
   }
 }
 
-// void map_tau() {
-//   const auto ebl = std::make_shared<photonfields::Dominguez2011PhotonField>();
-//   const auto cosmology = std::make_shared<cosmo::Cosmology>(0.7, 0., 0.3 * pow2(0.7), 0.7);
-//   const auto tau = core::OpticalDepth(cosmology, ebl);
-//   const auto logEnergyGamma = utils::LinAxis<double>(-2., 2., 101);
-//   const auto redshifts = utils::LinAxis<double>(0, 2, 101);
-//   utils::OutputFile out("map_optical_depth_cmb.txt");
-//   out << "# logEnergy - z - tau\n";
-//   out << std::scientific;
-//   for (auto logE : logEnergyGamma) {
-//     auto E = std::pow(10., logE) * SI::TeV;
-//     for (auto z : redshifts) {
-//       std::cout << logE << "\t" << z << "\n";
-//       out << logE << "\t" << z << "\t" << tau.get(E, z) << "\n";
-//     }
-//   }
-// }
+void map_tau() {
+  const auto ebl = std::make_shared<photonfields::Saldana2021PhotonField>();
+  const auto cosmology = std::make_shared<cosmo::Cosmology>(0.7, 0., 0.3 * pow2(0.7), 0.7);
+  const auto tau = core::OpticalDepth(cosmology, ebl);
+  const auto logEnergyGamma = utils::LinAxis<double>(-2., 2., 101);
+  const auto redshifts = utils::LinAxis<double>(0, 2, 101);
+  utils::OutputFile out("map_optical_depth_ebl.txt");
+  out << "# logEnergy - z - tau\n";
+  out << std::scientific;
+  for (auto logE : logEnergyGamma) {
+    auto E = std::pow(10., logE) * SI::TeV;
+    for (auto z : redshifts) {
+      std::cout << logE << "\t" << z << "\n";
+      out << logE << "\t" << z << "\t" << tau.get(E, z) << "\n";
+    }
+  }
+}
 
 int main() {
   try {
     utils::startup_information();
-    plot_local_photonfields("test_local_photonfields.txt");
-    plot_evolution_photonfields("test_evolution_photonfields.txt");
-    plot_photonfields(photonfields::Saldana2021PhotonField(), "test_photonfields_Saldana2021.txt");
-    plot_photonfields(photonfields::Gilmore2012PhotonField(), "test_photonfields_Gilmore2012.txt");
-    plot_photonfields(photonfields::Dominguez2011PhotonField(),
-                      "test_photonfields_Dominguez2011.txt");
-    plot_photon_integral();
-    plot_tau();
-    // map_tau();
+    // plot_local_photonfields("test_local_photonfields.txt");
+    //  plot_evolution_photonfields("test_evolution_photonfields.txt");
+    //  plot_photonfields(photonfields::Saldana2021PhotonField(),
+    //  "test_photonfields_Saldana2021.txt");
+    //  plot_photonfields(photonfields::Gilmore2012PhotonField(),
+    //  "test_photonfields_Gilmore2012.txt");
+    //  plot_photonfields(photonfields::Dominguez2011PhotonField(),
+    //                    "test_photonfields_Dominguez2011.txt");
+    //  plot_photon_integral();
+    // plot_tau();
+    map_tau();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
