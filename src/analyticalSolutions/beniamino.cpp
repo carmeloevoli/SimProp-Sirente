@@ -13,7 +13,7 @@ Beniamino::Beniamino(bool doPhotoPion) {
   m_cosmology = std::make_shared<cosmo::Planck2018>();
   m_cmb = std::make_shared<photonfields::CMB>();
   auto pair = std::make_shared<losses::PairProductionLosses>(m_cmb);
-  auto pion = std::make_shared<losses::BGG2006ContinuousLosses>();
+  auto pion = std::make_shared<losses::PhotoPionContinuousLosses>(m_cmb);
   m_losses.cacheTable(
       [&](double lnE) {
         auto Gamma = std::exp(lnE) / SI::protonMassC2;
