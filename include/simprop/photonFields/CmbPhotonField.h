@@ -1,8 +1,8 @@
-#ifndef SIMPROP_PHOTONFIELDS_CMB_H
-#define SIMPROP_PHOTONFIELDS_CMB_H
+// Copyright 2023 SimProp-dev [MIT License]
+#ifndef SIMPROP_PHOTONFIELDS_CMBPHOTONFIELD_H_
+#define SIMPROP_PHOTONFIELDS_CMBPHOTONFIELD_H_
 
-#include <cmath>
-#include <string>
+#include <utility>
 
 #include "simprop/core/units.h"
 #include "simprop/photonFields/PhotonField.h"
@@ -17,8 +17,8 @@ class CMB final : public PhotonField {
   CMB(double T);
   CMB() : CMB(2.725 * SI::K) {}
 
-  double density(double ePhoton, double z = 0.) const override;
-  double I_gamma(double ePhoton, double z = 0.) const override;
+  double density(double epsRestFrame, double z = 0.) const override;
+  double I_gamma(double epsRestFrame, double z = 0.) const override;
 
   double getMinPhotonEnergy() const override { return m_epsRange.first; }
   double getMaxPhotonEnergy() const override { return m_epsRange.second; }
@@ -31,4 +31,4 @@ class CMB final : public PhotonField {
 }  // namespace photonfields
 }  // namespace simprop
 
-#endif
+#endif  // SIMPROP_PHOTONFIELDS_CMBPHOTONFIELD_H_

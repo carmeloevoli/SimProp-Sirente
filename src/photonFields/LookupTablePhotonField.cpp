@@ -1,3 +1,4 @@
+// Copyright 2023 SimProp-dev [MIT License]
 #include "simprop/photonFields/LookupTablePhotonField.h"
 
 #include "simprop/core/common.h"
@@ -48,20 +49,20 @@ void LookupTablePhotonField::loadDataFile() {
   assert(m_redshifts.size() == m_zSize && m_logPhotonEnergies.size() == m_eSize);
 }
 
-double LookupTablePhotonField::density(double ePhoton, double z) const {
+double LookupTablePhotonField::density(double epsRestFrame, double z) const {
   double value = 0;
-  auto loge = std::log10(ePhoton);
+  auto loge = std::log10(epsRestFrame);
   if (utils::isInside(z, m_redshifts) && utils::isInside(loge, m_logPhotonEnergies)) {
     auto logn = utils::interpolate2d(z, loge, m_redshifts, m_logPhotonEnergies,
-                                     m_logDensity);  // TODO speed up this
+                                     m_logDensity);  // TODO(CE) speed up this
     value = std::pow(10., logn);
   }
   return std::max(value, 0.);
 }
 
-double LookupTablePhotonField::I_gamma(double ePhoton, double z) const {
+double LookupTablePhotonField::I_gamma(double epsRestFrame, double z) const {
   double value = 0;
-  auto loge = std::log10(ePhoton);
+  auto loge = std::log10(epsRestFrame);
   if (utils::isInside(z, m_redshifts) && utils::isInside(loge, m_logPhotonEnergies)) {
     auto logn = utils::interpolate2d(z, loge, m_redshifts, m_logPhotonEnergies, m_logIgamma);
     value = std::pow(10., logn);

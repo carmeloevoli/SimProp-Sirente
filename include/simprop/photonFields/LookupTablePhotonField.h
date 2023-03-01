@@ -1,10 +1,11 @@
-#ifndef SIMPROP_PHOTONFIELDS_LOOKUPTABLE_H
-#define SIMPROP_PHOTONFIELDS_LOOKUPTABLE_H
+// Copyright 2023 SimProp-dev [MIT License]
+#ifndef SIMPROP_PHOTONFIELDS_LOOKUPTABLEPHOTONFIELD_H_
+#define SIMPROP_PHOTONFIELDS_LOOKUPTABLEPHOTONFIELD_H_
 
+#include <cmath>
 #include <string>
 #include <vector>
 
-#include "simprop/core/units.h"
 #include "simprop/photonFields/PhotonField.h"
 
 namespace simprop {
@@ -22,8 +23,8 @@ class LookupTablePhotonField : public PhotonField {
  public:
   LookupTablePhotonField(size_t zSize, size_t eSize, std::string filename);
 
-  double density(double ePhoton, double z = 0.) const override;
-  double I_gamma(double ePhoton, double z = 0.) const override;
+  double density(double epsRestFrame, double z = 0.) const override;
+  double I_gamma(double epsRestFrame, double z = 0.) const override;
 
   double getMinPhotonEnergy() const override { return std::pow(10., m_logPhotonEnergies.front()); }
   double getMaxPhotonEnergy() const override { return std::pow(10., m_logPhotonEnergies.back()); }
@@ -35,4 +36,4 @@ class LookupTablePhotonField : public PhotonField {
 }  // namespace photonfields
 }  // namespace simprop
 
-#endif
+#endif  // SIMPROP_PHOTONFIELDS_LOOKUPTABLEPHOTONFIELD_H_

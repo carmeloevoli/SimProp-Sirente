@@ -1,5 +1,6 @@
-#ifndef SIMPROP_PHOTONFIELDS_GILMORE2012_H
-#define SIMPROP_PHOTONFIELDS_GILMORE2012_H
+// Copyright 2023 SimProp-dev [MIT License]
+#ifndef SIMPROP_PHOTONFIELDS_GILMORE2012PHOTONFIELD_H_
+#define SIMPROP_PHOTONFIELDS_GILMORE2012PHOTONFIELD_H_
 
 #include <string>
 #include <vector>
@@ -18,4 +19,4 @@ class Gilmore2012PhotonField final : public LookupTablePhotonField {
 }  // namespace photonfields
 }  // namespace simprop
 
-#endif
+#endif  // SIMPROP_PHOTONFIELDS_GILMORE2012PHOTONFIELD_H_

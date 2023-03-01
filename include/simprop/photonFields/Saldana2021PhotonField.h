@@ -1,5 +1,6 @@
-#ifndef SIMPROP_PHOTONFIELDS_SALDANA2021_H
-#define SIMPROP_PHOTONFIELDS_SALDANA2021_H
+// Copyright 2023 SimProp-dev [MIT License]
+#ifndef SIMPROP_PHOTONFIELDS_SALDANA2021PHOTONFIELD_H_
+#define SIMPROP_PHOTONFIELDS_SALDANA2021PHOTONFIELD_H_
 
 #include <string>
 #include <vector>
@@ -28,4 +29,4 @@ class Saldana2021UpperPhotonField final : public LookupTablePhotonField {
 }  // namespace photonfields
 }  // namespace simprop
 
-#endif
+#endif  // SIMPROP_PHOTONFIELDS_SALDANA2021PHOTONFIELD_H_

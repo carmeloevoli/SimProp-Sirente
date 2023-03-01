@@ -1,5 +1,6 @@
-#ifndef SIMPROP_PHOTONFIELDS_DOMINGUEZ2011_H
-#define SIMPROP_PHOTONFIELDS_DOMINGUEZ2011_H
+// Copyright 2023 SimProp-dev [MIT License]
+#ifndef SIMPROP_PHOTONFIELDS_DOMINGUEZ2011PHOTONFIELD_H_
+#define SIMPROP_PHOTONFIELDS_DOMINGUEZ2011PHOTONFIELD_H_
 
 #include <string>
 #include <vector>
@@ -28,4 +29,4 @@ class Dominguez2011UpperPhotonField final : public LookupTablePhotonField {
 }  // namespace photonfields
 }  // namespace simprop
 
-#endif
+#endif  // SIMPROP_PHOTONFIELDS_DOMINGUEZ2011PHOTONFIELD_H_
