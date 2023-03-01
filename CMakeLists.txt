@@ -149,6 +149,7 @@ add_library(simprop SHARED
     src/particleStacks/SourceEvolutionBuilder.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/LookupTablePhotonField.cpp
+    src/photonFields/PhotonField.cpp
 	src/utils/io.cpp
 	src/utils/logging.cpp
     src/utils/numeric.cpp
