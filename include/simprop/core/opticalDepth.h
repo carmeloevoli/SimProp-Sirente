@@ -1,5 +1,6 @@
-#ifndef SIMPROP_CORE_OPTICALDEPTH_H
-#define SIMPROP_CORE_OPTICALDEPTH_H
+// Copyright 2023 SimProp-dev [MIT License]
+#ifndef SIMPROP_CORE_OPTICALDEPTH_H_
+#define SIMPROP_CORE_OPTICALDEPTH_H_
 
 #include <memory>
 
@@ -13,12 +14,13 @@ namespace core {
 class OpticalDepth {
  protected:
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
-  std::shared_ptr<photonfields::PhotonField> m_ebl;
+  photonfields::PhotonFields m_photonFields;
 
  public:
   OpticalDepth(const std::shared_ptr<cosmo::Cosmology>& cosmology,
-               const std::shared_ptr<photonfields::PhotonField>& phField)
-      : m_cosmology(cosmology), m_ebl(phField) {}
+               const std::shared_ptr<photonfields::PhotonField>& photonField);
+  OpticalDepth(const std::shared_ptr<cosmo::Cosmology>& cosmology,
+               const photonfields::PhotonFields& photonFields);
 
   double get(double eGamma, double zSource) const;
 
@@ -32,4 +34,4 @@ class OpticalDepth {
 }  // namespace core
 }  // namespace simprop
 
-#endif  // SIMPROP_PHOTONFIELDS_PHOTONFIELD_H
+#endif  // SIMPROP_CORE_OPTICALDEPTH_H_
