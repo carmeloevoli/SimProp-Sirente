@@ -1,6 +1,7 @@
+// Copyright 2023 SimProp-dev [MIT License]
 #include "simprop.h"
 
-using namespace simprop;
+namespace simprop {
 
 void plot_pair_on_fields() {
   auto cosmology = std::make_shared<cosmo::Planck2018>();
@@ -69,6 +70,7 @@ void plot_photopion_on_fields() {
       std::make_shared<photonfields::CMB>(),
       std::make_shared<photonfields::Saldana2021PhotonField>()};
   auto phpion_full = losses::PhotoPionContinuousLosses(phFields);
+  auto phpion_new = losses::PhotoPionContinuousLosses(phFields, losses::MEANANGLE::SOPHIA);
 
   auto cmb = std::make_shared<photonfields::CMB>();
   auto phpion_cmb = losses::PhotoPionContinuousLosses(cmb);
@@ -86,6 +88,7 @@ void plot_photopion_on_fields() {
     out << SI::cLight / phpion_cmb.beta(proton, Gamma) / SI::Mpc << "\t";
     out << SI::cLight / phpion_ebl.beta(proton, Gamma) / SI::Mpc << "\t";
     out << SI::cLight / phpion_full.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_new.beta(proton, Gamma) / SI::Mpc << "\t";
     out << "\n";
   }
 }
@@ -119,23 +122,25 @@ void plot_photopion_inelasticity() {
     out << eps / SI::GeV << "\t";
     auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * eps;
     out << s / SI::GeV2 << "\t";
-    out << losses::inelasticity(s) << "\t";
-    out << losses::inelasticityPoorApproximation(s, -1.) << "\t";
-    out << losses::inelasticityPoorApproximation(s, 0.) << "\n";
+    out << losses::inelasticity(s, losses::MEANANGLE::SOPHIA) << "\t";
+    out << losses::inelasticity(s, losses::MEANANGLE::ISOTROPIC) << "\t";
+    out << losses::inelasticity(s, losses::MEANANGLE::BACKWARD) << "\t";
+    out << "\n";
   }
 }
 
+}  // namespace simprop
+
 int main() {
   try {
-    utils::startup_information();
-    utils::Timer timer("main timer for print losses");
+    simprop::utils::startup_information();
+    simprop::utils::Timer timer("main timer for print losses");
 
-    // plot_pair_on_fields();
-    // plot_pair_nuclei();
-    // plot_photopion_on_fields();
-    plot_photopion_nuclei();
-    // plot_photopion_inelasticity();
-
+    simprop::plot_pair_on_fields();
+    simprop::plot_pair_nuclei();
+    simprop::plot_photopion_on_fields();
+    simprop::plot_photopion_nuclei();
+    simprop::plot_photopion_inelasticity();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
