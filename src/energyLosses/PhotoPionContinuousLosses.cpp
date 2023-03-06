@@ -1,3 +1,4 @@
+// Copyright 2023 SimProp-dev [MIT License]
 #include "simprop/energyLosses/PhotoPionContinuousLosses.h"
 
 #include "simprop/core/common.h"
@@ -20,7 +21,7 @@ double averageAngle(double s) {
   return I_mu / I;
 }
 
-double inelasticity(double s) {
+double inelasticitySophia(double s) {
   if (s < 1.1519 * SI::GeV2) return 0.;
   auto sqrts = std::sqrt(s);
   auto E_pi = (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / 2. / sqrts;
@@ -54,19 +55,30 @@ double inelasticityPoorApproximation(double s, double cosTheta_pi) {
          (1. + beta_pi * cosTheta_pi);
 }
 
+double inelasticity(double s, MODE m) {
+  if (m == MODE::ISOTROPIC) {
+    return inelasticityPoorApproximation(s, 0.);
+  } else if (m == MODE::BACKWARD) {
+    return inelasticityPoorApproximation(s, -1.);
+  } else {
+    return inelasticityFitted(s);
+  }
+}
+
 PhotoPionContinuousLosses::PhotoPionContinuousLosses(
-    const std::shared_ptr<photonfields::PhotonField>& photonField)
-    : ContinuousLosses() {
+    const std::shared_ptr<photonfields::PhotonField>& photonField, MODE meanAngle)
+    : ContinuousLosses(), m_meanAngle(meanAngle) {
   m_photonFields.push_back(photonField);
   LOGD << "calling " << __func__ << " constructor";
 }
 
-PhotoPionContinuousLosses::PhotoPionContinuousLosses(const photonfields::PhotonFields& photonFields)
-    : ContinuousLosses(), m_photonFields(photonFields) {
+PhotoPionContinuousLosses::PhotoPionContinuousLosses(const photonfields::PhotonFields& photonFields,
+                                                     MODE meanAngle)
+    : ContinuousLosses(), m_photonFields(photonFields), m_meanAngle(meanAngle) {
   LOGD << "calling " << __func__ << " constructor";
 }
 
-double PhotoPionContinuousLosses::computeBetaComoving(PID pid, double Gamma, double z) const {
+double PhotoPionContinuousLosses::beta(PID pid, double Gamma, double z) const {
   auto value = 0.;
   auto epsThr = m_xs.getPhotonEnergyThreshold();
 
@@ -78,17 +90,13 @@ double PhotoPionContinuousLosses::computeBetaComoving(PID pid, double Gamma, dou
           [&](double lnEpsPrime) {
             auto epsPrime = std::exp(lnEpsPrime);
             auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
-            return epsPrime * epsPrime * inelasticityFitted(s) * m_xs.getAtS(pid, s) *
+            return epsPrime * epsPrime * inelasticity(s, m_meanAngle) * m_xs.getAtS(pid, s) *
                    phField->I_gamma(epsPrime / 2. / Gamma, z);
           },
           lnEpsPrimeMin, lnEpsPrimeMax, 500);
     }
   }
   return SI::cLight / 2. / pow2(Gamma) * std::max(value, 0.);
-}
-
-double PhotoPionContinuousLosses::beta(PID pid, double Gamma, double z) const {
-  return pow3(1. + z) * computeBetaComoving(pid, Gamma * (1. + z), z);
 }
 
 }  // namespace losses
