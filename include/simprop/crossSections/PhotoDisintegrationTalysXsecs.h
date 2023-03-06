@@ -10,11 +10,15 @@ namespace simprop {
 namespace xsecs {
 
 class PhotoDisintegrationTalysXsec final : public CrossSection {
+ protected:
+  std::string m_singleNucleonFilename = "data/";
+  std::string m_alphaFilename = "data/";
+
  public:
   PhotoDisintegrationTalysXsec();
   virtual ~PhotoDisintegrationTalysXsec() = default;
-  double getAtS(PID pid, double s) const override;
-  double getPhiAtS(PID pid, double s) const override;
+
+  double getAtEpsPrime(PID pid, double eps) const override;
   double getPhotonEnergyThreshold() const override;
 };
 

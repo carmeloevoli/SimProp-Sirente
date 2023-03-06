@@ -90,8 +90,8 @@ double PhotoPionContinuousLosses::beta(PID pid, double Gamma, double z) const {
           [&](double lnEpsPrime) {
             auto epsPrime = std::exp(lnEpsPrime);
             auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
-            return epsPrime * epsPrime * inelasticity(s, m_meanAngle) * m_xs.getAtS(pid, s) *
-                   phField->I_gamma(epsPrime / 2. / Gamma, z);
+            return epsPrime * epsPrime * inelasticity(s, m_meanAngle) *
+                   m_xs.getAtEpsPrime(pid, epsPrime) * phField->I_gamma(epsPrime / 2. / Gamma, z);
           },
           lnEpsPrimeMin, lnEpsPrimeMax, 500);
     }

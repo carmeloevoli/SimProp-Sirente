@@ -70,7 +70,7 @@ void plot_photopion_on_fields() {
       std::make_shared<photonfields::CMB>(),
       std::make_shared<photonfields::Saldana2021PhotonField>()};
   auto phpion_full = losses::PhotoPionContinuousLosses(phFields);
-  auto phpion_new = losses::PhotoPionContinuousLosses(phFields, losses::MEANANGLE::SOPHIA);
+  auto phpion_new = losses::PhotoPionContinuousLosses(phFields, losses::MODE::SOPHIA);
 
   auto cmb = std::make_shared<photonfields::CMB>();
   auto phpion_cmb = losses::PhotoPionContinuousLosses(cmb);
@@ -122,9 +122,9 @@ void plot_photopion_inelasticity() {
     out << eps / SI::GeV << "\t";
     auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * eps;
     out << s / SI::GeV2 << "\t";
-    out << losses::inelasticity(s, losses::MEANANGLE::SOPHIA) << "\t";
-    out << losses::inelasticity(s, losses::MEANANGLE::ISOTROPIC) << "\t";
-    out << losses::inelasticity(s, losses::MEANANGLE::BACKWARD) << "\t";
+    out << losses::inelasticity(s, losses::MODE::SOPHIA) << "\t";
+    out << losses::inelasticity(s, losses::MODE::ISOTROPIC) << "\t";
+    out << losses::inelasticity(s, losses::MODE::BACKWARD) << "\t";
     out << "\n";
   }
 }

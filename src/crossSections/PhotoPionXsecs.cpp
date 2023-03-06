@@ -57,6 +57,11 @@ double PhotoPionXsec::getAtS(PID pid, double s) const {
   return value;
 }
 
+double PhotoPionXsec::getAtEpsPrime(PID pid, double eps) const {
+  auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * eps;
+  return getAtS(pid, s);
+}
+
 double PhotoPionXsec::getPhiAtS(PID pid, double s) const {
   double value = 0;
   constexpr auto sThreshold = pow2(SI::protonMassC2 + SI::pionMassC2);

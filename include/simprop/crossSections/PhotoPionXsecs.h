@@ -20,9 +20,11 @@ class PhotoPionXsec final : public CrossSection {
  public:
   PhotoPionXsec();
   virtual ~PhotoPionXsec() = default;
-  double getAtS(PID pid, double s) const override;
-  double getPhiAtS(PID pid, double s) const override;
+  double getAtEpsPrime(PID pid, double eps) const override;
   double getPhotonEnergyThreshold() const override;
+
+  double getAtS(PID pid, double s) const;
+  double getPhiAtS(PID pid, double s) const;
 
  private:
   double getProtonXsec(double s) const;

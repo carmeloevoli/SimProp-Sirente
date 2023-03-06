@@ -13,7 +13,7 @@ PhotoDisintegrationTalysXsec::PhotoDisintegrationTalysXsec() {
 
 double PhotoDisintegrationTalysXsec::getPhotonEnergyThreshold() const { return 0.; }
 
-double PhotoDisintegrationTalysXsec::getAtS(PID pid, double s) const {
+double PhotoDisintegrationTalysXsec::getAtEpsPrime(PID pid, double eps) const {
   double value = 0;
   return std::max(value, 0.) * SI::mbarn;
 }
@@ -26,11 +26,6 @@ double PhotoDisintegrationTalysXsec::getAtS(PID pid, double s) const {
 //     return 0;
 //   }
 // }
-
-double PhotoDisintegrationTalysXsec::getPhiAtS(PID pid, double s) const {
-  double value = 0;
-  return std::max(value, 0.) * pow2(SI::GeV2) * SI::mbarn;
-}
 
 }  // namespace xsecs
 }  // namespace simprop
