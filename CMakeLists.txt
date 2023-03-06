@@ -139,6 +139,7 @@ add_library(simprop SHARED
     src/crossSections/BreitWheeler.cpp
     src/crossSections/KelnerAharonian2008.cpp
     src/crossSections/PhotoPionXsecs.cpp
+    src/crossSections/PhotoDisintegrationTalysXsecs.cpp
     src/energyLosses/AdiabaticContinuousLosses.cpp
     src/energyLosses/BGG2006ContinuousLosses.cpp
     src/energyLosses/PairProductionLosses.cpp
