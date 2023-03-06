@@ -1,5 +1,8 @@
-#ifndef SIMPROP_LOSSES_ADIABATIC_CONTINUOUS_H
-#define SIMPROP_LOSSES_ADIABATIC_CONTINUOUS_H
+// Copyright 2023 SimProp-dev [MIT License]
+#ifndef SIMPROP_ENERGYLOSSES_ADIABATICCONTINUOUSLOSSES_H_
+#define SIMPROP_ENERGYLOSSES_ADIABATICCONTINUOUSLOSSES_H_
+
+#include <memory>
 
 #include "simprop/core/cosmology.h"
 #include "simprop/energyLosses/ContinuousLosses.h"
@@ -21,4 +24,4 @@ class AdiabaticContinuousLosses final : public ContinuousLosses {
 }  // namespace losses
 }  // namespace simprop
 
-#endif
+#endif  // SIMPROP_ENERGYLOSSES_ADIABATICCONTINUOUSLOSSES_H_
