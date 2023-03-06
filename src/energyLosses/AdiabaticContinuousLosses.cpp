@@ -1,3 +1,4 @@
+// Copyright 2023 SimProp-dev [MIT License]
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
 
 #include "simprop/utils/logging.h"
