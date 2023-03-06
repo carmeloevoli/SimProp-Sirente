@@ -18,7 +18,7 @@ class PairProductionLosses final : public ContinuousLosses {
   double beta(PID pid, double Gamma, double z = 0) const override;
 
  public:
-  double computeBetaComoving(double Gamma) const;
+  double computeProtonBeta(double Gamma, double z) const;
 };
 
 }  // namespace losses

@@ -54,28 +54,28 @@ PairProductionLosses::PairProductionLosses(const photonfields::PhotonFields& pho
   LOGD << "calling " << __func__ << " constructor";
 }
 
-double PairProductionLosses::computeBetaComoving(double Gamma) const {
+double PairProductionLosses::computeProtonBeta(double Gamma, double z) const {
   auto TwoGamma_mec2 = 2. * Gamma / SI::electronMassC2;
-  double I = 0;
+  double value = 0;
   for (auto phField : m_photonFields) {
     const auto epsmin = phField->getMinPhotonEnergy();
     const auto epsmax = phField->getMaxPhotonEnergy();
     const auto lkmin = std::log(TwoGamma_mec2 * epsmin);
     const auto lkmax = std::log(TwoGamma_mec2 * epsmax);
-    I += utils::simpsonIntegration<double>(
-        [TwoGamma_mec2, phField](double lnk) {
+    value += utils::simpsonIntegration<double>(
+        [TwoGamma_mec2, phField, z](double lnk) {
           auto k = std::exp(lnk);
-          return phi(k) / k * phField->density(k / TwoGamma_mec2);
+          return phi(k) / k * phField->density(k / TwoGamma_mec2, z);
         },
         lkmin, lkmax, 1000);
   }
   constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::cLight * SI::electronMassC2 *
                           (SI::electronMass / SI::protonMass);
-  return factor * I / Gamma;
+  return factor * value / Gamma;
 }
 
 double PairProductionLosses::beta(PID pid, double Gamma, double z) const {
-  auto b_l = pow3(1. + z) * computeBetaComoving(Gamma * (1. + z));  // TODO no EBL evolution?
+  auto b_l = computeProtonBeta(Gamma, z);
   auto Z = (double)getPidNucleusCharge(pid);
   auto A = (double)getPidNucleusMassNumber(pid);
   b_l *= pow2(Z) / A;
