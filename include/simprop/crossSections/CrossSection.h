@@ -1,5 +1,6 @@
-#ifndef SIMPROP_XSECS_ABSTRACTCROSSSECTION_H
-#define SIMPROP_XSECS_ABSTRACTCROSSSECTION_H
+// Copyright 2023 SimProp-dev [MIT License]
+#ifndef SIMPROP_CROSSSECTIONS_CROSSSECTION_H_
+#define SIMPROP_CROSSSECTIONS_CROSSSECTION_H_
 
 #include "simprop/core/pid.h"
 
@@ -18,4 +19,4 @@ class CrossSection {
 }  // namespace xsecs
 }  // namespace simprop
 
-#endif
+#endif  // SIMPROP_CROSSSECTIONS_CROSSSECTION_H_
