@@ -144,6 +144,7 @@ add_library(simprop SHARED
     src/energyLosses/BGG2006ContinuousLosses.cpp
     src/energyLosses/PairProductionLosses.cpp
     src/energyLosses/PhotoPionContinuousLosses.cpp
+    src/interactions/PhotoDisintegration.cpp
     src/interactions/PhotoPionProduction.cpp
     src/particleStacks/SingleParticleBuilder.cpp
     src/particleStacks/SingleSourceBuilder.cpp
