@@ -1,5 +1,5 @@
-#ifndef SIMPROP_INTERACTIONS_PPPEBL_H
-#define SIMPROP_INTERACTIONS_PPPEBL_H
+#ifndef SIMPROP_INTERACTIONS_PHOTOPIONPRODUCTION_H
+#define SIMPROP_INTERACTIONS_PHOTOPIONPRODUCTION_H
 
 #include <memory>
 
@@ -34,4 +34,4 @@ class PhotoPionProduction final : public Interaction {
 }  // namespace interactions
 }  // namespace simprop
 
-#endif
+#endif  // SIMPROP_INTERACTIONS_PHOTOPIONPRODUCTION_H

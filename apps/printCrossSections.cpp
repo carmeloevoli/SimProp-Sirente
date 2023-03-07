@@ -34,22 +34,24 @@ void plot_pionproduction() {
 }
 
 void plot_photodisintegration() {
-  // {
-  //   auto sigmaPd = interactions::PsbPhotoDisintegration();
-  //   auto eAxis = utils::LinAxis<double>(0.1 * SI::MeV, 1e2 * SI::MeV, 1000);
-  //   utils::OutputFile out("test_pd_sigma.txt");
-  //   out() << std::scientific;
-  //   for (auto E : eAxis) {
-  //     out() << E / SI::MeV << "\t";
-  //     out() << sigmaPd.getSigma(Ca40, E) / SI::mbarn << "\n";
-  //   }
-  // }
+  auto sigma = xsecs::PhotoDisintegrationTalysXsec();
+  auto epsAxis = utils::LinAxis<double>(0.1 * SI::MeV, 1e2 * SI::MeV, 1000);
+  utils::OutputFile out("test_pd_v2r4_sigma.txt");
+  out << std::scientific;
+  for (auto eps : epsAxis) {
+    out << eps / SI::MeV << "\t";
+    out << sigma.getAtEpsPrime(Fe56, eps) / SI::mbarn << "\t";
+    out << sigma.getAtEpsPrime(O16, eps) / SI::mbarn << "\t";
+    out << sigma.getAtEpsPrime(C12, eps) / SI::mbarn << "\t";
+    out << "\n";
+  }
 }
 
 int main() {
   try {
     utils::startup_information();
-    plot_pionproduction();
+    // plot_pionproduction();
+    plot_photodisintegration();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
