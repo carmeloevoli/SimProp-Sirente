@@ -1,10 +1,16 @@
 #ifndef SIMPROP_INTERACTIONS_PHOTODISINTEGRATION_H
 #define SIMPROP_INTERACTIONS_PHOTODISINTEGRATION_H
 
+#include "simprop/crossSections/PhotoDisintegrationTalysXsecs.h"
+#include "simprop/interactions/Interaction.h"
+
 namespace simprop {
 namespace interactions {
 
 class PhotoDisintegration final : public Interaction {
+ protected:
+  xsecs::PhotoDisintegrationTalysXsec m_xs;
+
  public:
   PhotoDisintegration(const std::shared_ptr<photonfields::PhotonField>& phField);
   virtual ~PhotoDisintegration() = default;
@@ -14,6 +20,7 @@ class PhotoDisintegration final : public Interaction {
                                    RandomNumberGenerator& rng) const override;
 };
 
+}  // namespace interactions
 }  // namespace simprop
 
 #endif  // SIMPROP_INTERACTIONS_PHOTODISINTEGRATION_H

@@ -11,6 +11,7 @@ void plot_rates() {
   const auto ebl = std::make_shared<photonfields::Saldana2021PhotonField>();
   const auto pppcmb = std::make_shared<interactions::PhotoPionProduction>(cmb);
   const auto pppebl = std::make_shared<interactions::PhotoPionProduction>(ebl);
+  const auto pdcmb = std::make_shared<interactions::PhotoDisintegration>(cmb);
   {
     utils::OutputFile out("test_photopion_rates.txt");
     out << std::scientific;
@@ -29,8 +30,20 @@ void plot_rates() {
     for (auto Gamma : Gammas) {
       out << Gamma << "\t";
       out << pppcmb->rate(proton, Gamma) / SI::cLight / units << "\t";
+      out << pppcmb->rate(C12, Gamma) / SI::cLight / units << "\t";
       out << pppcmb->rate(O16, Gamma) / SI::cLight / units << "\t";
       out << pppcmb->rate(Fe56, Gamma) / SI::cLight / units << "\t";
+      out << "\n";
+    }
+  }
+  {
+    utils::OutputFile out("test_photodisintegration_nuclei_rates.txt");
+    out << std::scientific;
+    for (auto Gamma : Gammas) {
+      out << Gamma << "\t";
+      out << pdcmb->rate(C12, Gamma) / SI::cLight / units << "\t";
+      out << pdcmb->rate(O16, Gamma) / SI::cLight / units << "\t";
+      out << pdcmb->rate(Fe56, Gamma) / SI::cLight / units << "\t";
       out << "\n";
     }
   }
