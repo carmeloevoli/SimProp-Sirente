@@ -8,7 +8,7 @@
 
 namespace simprop {
 
-using PID = fluent::NamedType<long int, struct PidTag, fluent::Comparable>;
+using PID = fluent::NamedType<long int, struct PidTag, fluent::Comparable, fluent::Hashable>;
 
 PID getPidNucleus(const int& Z, const int& A);
 bool pidIsNucleus(const PID& pid);
