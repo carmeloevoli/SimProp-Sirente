@@ -40,6 +40,9 @@ class PhotoDisintegrationTalysXsec final : public CrossSection {
   PhotoDisintegrationTalysXsec();
   virtual ~PhotoDisintegrationTalysXsec() = default;
 
+  double getSingleNucleon(PID pid, double eps) const;
+  double getAlpha(PID pid, double eps) const;
+
   double getAtEpsPrime(PID pid, double eps) const override;
   double getPhotonEnergyThreshold() const override;
 };

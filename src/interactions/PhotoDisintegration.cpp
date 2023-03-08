@@ -11,6 +11,10 @@ PhotoDisintegration::PhotoDisintegration(const std::shared_ptr<photonfields::Pho
   LOGD << "calling " << __func__ << " constructor";
 }
 
+double PhotoDisintegration::interactionLength(PID pid, double Gamma) const {
+  return SI::cLight * getPidNucleusMassNumber(pid) / rate(pid, Gamma);
+}
+
 double PhotoDisintegration::rate(PID pid, double Gamma, double z) const {
   auto value = double(0);
   auto threshold = m_xs.getPhotonEnergyThreshold();

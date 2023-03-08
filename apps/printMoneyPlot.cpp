@@ -43,7 +43,7 @@ void moneyplot() {
   }
 }
 
-void moneyplot_energy() {
+void moneyplot_energy(PID pid, std::string filename) {
   auto cosmology = std::make_shared<cosmo::Planck2018>();
   auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
 
@@ -61,27 +61,23 @@ void moneyplot_energy() {
   auto pair_ebl = losses::PairProductionLosses(ebl);
   auto pion_ebl = losses::PhotoPionContinuousLosses(ebl);
 
+  auto pd_cmb = interactions::PhotoDisintegration(cmb);
+
   const auto eAxis = utils::LogAxis<double>(1e17 * SI::eV, 1e22 * SI::eV, 6 * 32);
 
-  utils::OutputFile out("test_moneyplot_energy.txt");
+  utils::OutputFile out(filename.c_str());
   out << std::scientific;
   for (auto E : eAxis) {
     out << E / SI::eV << "\t";
-    auto GammaProton = E / SI::protonMassC2;
-    auto GammaFe = GammaProton / 56.;
-    out << SI::cLight / adiabatic.beta(proton, GammaProton) / SI::Mpc << "\t";
-    out << SI::cLight / pair_cmb.beta(proton, GammaProton) / SI::Mpc << "\t";
-    out << SI::cLight / pair_ebl.beta(proton, GammaProton) / SI::Mpc << "\t";
-    out << SI::cLight / pair_full.beta(proton, GammaProton) / SI::Mpc << "\t";
-    out << SI::cLight / pion_cmb.beta(proton, GammaProton) / SI::Mpc << "\t";
-    out << SI::cLight / pion_ebl.beta(proton, GammaProton) / SI::Mpc << "\t";
-    out << SI::cLight / pion_full.beta(proton, GammaProton) / SI::Mpc << "\t";
-    out << SI::cLight / pair_cmb.beta(Fe56, GammaFe) / SI::Mpc << "\t";
-    out << SI::cLight / pair_ebl.beta(Fe56, GammaFe) / SI::Mpc << "\t";
-    out << SI::cLight / pair_full.beta(Fe56, GammaFe) / SI::Mpc << "\t";
-    out << SI::cLight / pion_cmb.beta(Fe56, GammaFe) / SI::Mpc << "\t";
-    out << SI::cLight / pion_ebl.beta(Fe56, GammaFe) / SI::Mpc << "\t";
-    out << SI::cLight / pion_full.beta(Fe56, GammaFe) / SI::Mpc << "\t";
+    auto Gamma = E / getPidMass(pid);
+    out << SI::cLight / adiabatic.beta(pid, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pair_cmb.beta(pid, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pair_ebl.beta(pid, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pair_full.beta(pid, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pion_cmb.beta(pid, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pion_ebl.beta(pid, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pion_full.beta(pid, Gamma) / SI::Mpc << "\t";
+    out << pd_cmb.interactionLength(pid, Gamma) / SI::Mpc << "\t";
     out << "\n";
   }
 }
@@ -185,8 +181,9 @@ int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer for print losses");
-    moneyplot();
-    moneyplot_energy();
+    // moneyplot();
+    moneyplot_energy(proton, "test_moneyplot_energy_proton.txt");
+    moneyplot_energy(Fe56, "test_moneyplot_energy_Fe56.txt");
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }

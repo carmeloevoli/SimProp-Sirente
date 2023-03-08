@@ -40,9 +40,12 @@ void plot_photodisintegration() {
   out << std::scientific;
   for (auto eps : epsAxis) {
     out << eps / SI::MeV << "\t";
-    out << sigma.getAtEpsPrime(Fe56, eps) / SI::mbarn << "\t";
-    out << sigma.getAtEpsPrime(O16, eps) / SI::mbarn << "\t";
-    out << sigma.getAtEpsPrime(C12, eps) / SI::mbarn << "\t";
+    out << sigma.getSingleNucleon(Fe56, eps) / SI::mbarn << "\t";
+    out << sigma.getSingleNucleon(O16, eps) / SI::mbarn << "\t";
+    out << sigma.getSingleNucleon(C12, eps) / SI::mbarn << "\t";
+    out << sigma.getAlpha(Fe56, eps) / SI::mbarn << "\t";
+    out << sigma.getAlpha(O16, eps) / SI::mbarn << "\t";
+    out << sigma.getAlpha(C12, eps) / SI::mbarn << "\t";
     out << "\n";
   }
 }

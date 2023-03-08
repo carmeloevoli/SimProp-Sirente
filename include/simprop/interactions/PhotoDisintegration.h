@@ -16,6 +16,8 @@ class PhotoDisintegration final : public Interaction {
   virtual ~PhotoDisintegration() = default;
   double rate(PID pid, double Gamma, double z = 0) const override;
 
+  double interactionLength(PID pid, double Gamma) const;
+
   std::vector<Particle> finalState(const Particle& particle, double zInteractionPoint,
                                    RandomNumberGenerator& rng) const override;
 };

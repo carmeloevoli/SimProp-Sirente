@@ -52,8 +52,16 @@ PhotoDisintegrationTalysXsec::PhotoDisintegrationTalysXsec() {
 
 double PhotoDisintegrationTalysXsec::getPhotonEnergyThreshold() const { return SI::MeV; }
 
+double PhotoDisintegrationTalysXsec::getSingleNucleon(PID pid, double eps) const {
+  return m_xsec_single.get(pid, eps);
+}
+
+double PhotoDisintegrationTalysXsec::getAlpha(PID pid, double eps) const {
+  return m_xsec_alpha.get(pid, eps);
+}
+
 double PhotoDisintegrationTalysXsec::getAtEpsPrime(PID pid, double eps) const {
-  double value = m_xsec_single.get(pid, eps) + m_xsec_alpha.get(pid, eps);
+  double value = getSingleNucleon(pid, eps) + getAlpha(pid, eps);
   return std::max(value, 0.);
 }
 
