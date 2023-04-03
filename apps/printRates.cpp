@@ -22,6 +22,8 @@ void plot_rates() {
       out << pppebl->rate(proton, Gamma, 1.) / SI::cLight / units << "\t";
       out << pppcmb->rate(proton, Gamma, 3.) / SI::cLight / units << "\t";
       out << pppebl->rate(proton, Gamma, 3.) / SI::cLight / units << "\t";
+      out << pppcmb->rate(proton, Gamma, 5.) / SI::cLight / units << "\t";
+      out << pppebl->rate(proton, Gamma, 5.) / SI::cLight / units << "\t";
       out << "\n";
     }
   }
