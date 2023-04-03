@@ -17,7 +17,7 @@ double PhotoDisintegration::interactionLength(PID pid, double Gamma) const {
 
 double PhotoDisintegration::rate(PID pid, double Gamma, double z) const {
   auto value = double(0);
-  auto threshold = m_xs.getPhotonEnergyThreshold();
+  auto threshold = m_xs.getEpsPrimeThreshold();
   auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_phField->getMinPhotonEnergy()));
   auto lnEpsPrimeMax = std::log(2. * Gamma * m_phField->getMaxPhotonEnergy());
   if (lnEpsPrimeMax > lnEpsPrimeMin) {

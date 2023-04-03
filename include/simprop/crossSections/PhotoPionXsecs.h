@@ -21,7 +21,7 @@ class PhotoPionXsec final : public CrossSection {
   PhotoPionXsec();
   virtual ~PhotoPionXsec() = default;
   double getAtEpsPrime(PID pid, double eps) const override;
-  double getPhotonEnergyThreshold() const override;
+  double getEpsPrimeThreshold() const override;
 
   double getAtS(PID pid, double s) const;
   double getPhiAtS(PID pid, double s) const;

@@ -25,7 +25,7 @@ PhotoPionXsec::PhotoPionXsec() {
   }
 }
 
-double PhotoPionXsec::getPhotonEnergyThreshold() const {
+double PhotoPionXsec::getEpsPrimeThreshold() const {
   constexpr double photonEnergyThreshold =
       SI::pionMassC2 + pow2(SI::pionMassC2) / (2 * SI::protonMassC2);
   return photonEnergyThreshold;

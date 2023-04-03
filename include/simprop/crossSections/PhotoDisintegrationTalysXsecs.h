@@ -44,7 +44,7 @@ class PhotoDisintegrationTalysXsec final : public CrossSection {
   double getAlpha(PID pid, double eps) const;
 
   double getAtEpsPrime(PID pid, double eps) const override;
-  double getPhotonEnergyThreshold() const override;
+  double getEpsPrimeThreshold() const override;
 };
 
 }  // namespace xsecs

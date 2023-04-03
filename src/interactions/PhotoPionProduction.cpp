@@ -93,28 +93,23 @@ PhotoPionProduction::PhotoPionProduction(const std::shared_ptr<photonfields::Pho
   LOGD << "calling " << __func__ << " constructor";
 }
 
-double PhotoPionProduction::computeRateComoving(PID pid, double Gamma, double z) const {
+double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
   auto value = double(0);
 
-  auto threshold = m_xs.getPhotonEnergyThreshold();
+  auto threshold = m_xs.getEpsPrimeThreshold();
   auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_phField->getMinPhotonEnergy()));
   auto lnEpsPrimeMax = std::log(2. * Gamma * m_phField->getMaxPhotonEnergy());
   if (lnEpsPrimeMax > lnEpsPrimeMin) {
     value = utils::simpsonIntegration<double>(
         [&](double lnEpsPrime) {
           auto epsPrime = std::exp(lnEpsPrime);
-          auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
-          return epsPrime * epsPrime * m_xs.getAtS(pid, s) *
+          return epsPrime * epsPrime * m_xs.getAtEpsPrime(pid, epsPrime) *
                  m_phField->I_gamma(epsPrime / 2. / Gamma, z);
         },
-        lnEpsPrimeMin, lnEpsPrimeMax, 300);
+        lnEpsPrimeMin, lnEpsPrimeMax, 500);
     value *= SI::cLight / 2. / pow2(Gamma);
   }
   return std::max(value, 0.);
-}
-
-double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
-  return pow3(1. + z) * computeRateComoving(pid, Gamma * (1. + z), z);
 }
 
 std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingParticle,

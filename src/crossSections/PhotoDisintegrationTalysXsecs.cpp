@@ -50,7 +50,9 @@ PhotoDisintegrationTalysXsec::PhotoDisintegrationTalysXsec() {
   m_xsec_alpha.loadXsecMaps(m_alphaFilename);
 }
 
-double PhotoDisintegrationTalysXsec::getPhotonEnergyThreshold() const { return SI::MeV; }
+double PhotoDisintegrationTalysXsec::getEpsPrimeThreshold() const {
+  return SI::MeV;  // TODO check this
+}
 
 double PhotoDisintegrationTalysXsec::getSingleNucleon(PID pid, double eps) const {
   return m_xsec_single.get(pid, eps);

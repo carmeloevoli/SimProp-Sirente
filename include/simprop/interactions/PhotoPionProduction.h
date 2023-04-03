@@ -25,7 +25,6 @@ class PhotoPionProduction final : public Interaction {
                                    RandomNumberGenerator& rng) const override;
 
  public:  // TODO to be changed in private
-  double computeRateComoving(PID pid, double Gamma, double z) const;
   double sampleS(double r, PID pid, double sMax) const;
   double epsPdfIntegral(double photonEnergy, PID nucleon, double nucleonEnergy, double z) const;
   double sampleEps(double r, PID nucleon, double nucleonEnergy, double z) const;

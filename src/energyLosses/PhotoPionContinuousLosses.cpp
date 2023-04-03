@@ -34,7 +34,7 @@ PhotoPionContinuousLosses::PhotoPionContinuousLosses(const photonfields::PhotonF
 
 double PhotoPionContinuousLosses::beta(PID pid, double Gamma, double z) const {
   auto value = 0.;
-  auto epsThr = m_xs.getPhotonEnergyThreshold();
+  auto epsThr = m_xs.getEpsPrimeThreshold();
 
   for (auto phField : m_photonFields) {
     auto lnEpsPrimeMin = std::log(std::max(epsThr, 2. * Gamma * phField->getMinPhotonEnergy()));
@@ -43,7 +43,6 @@ double PhotoPionContinuousLosses::beta(PID pid, double Gamma, double z) const {
       value += utils::simpsonIntegration<double>(
           [&](double lnEpsPrime) {
             auto epsPrime = std::exp(lnEpsPrime);
-            //            auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
             return epsPrime * epsPrime * m_xs.getAtEpsPrime(pid, epsPrime) *
                    inelasticity(epsPrime) * phField->I_gamma(epsPrime / 2. / Gamma, z);
           },

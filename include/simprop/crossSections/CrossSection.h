@@ -12,7 +12,7 @@ class CrossSection {
   CrossSection() {}
   virtual ~CrossSection() = default;
   virtual double getAtEpsPrime(PID pid, double eps) const = 0;
-  virtual double getPhotonEnergyThreshold() const = 0;
+  virtual double getEpsPrimeThreshold() const = 0;
 };
 
 }  // namespace xsecs
