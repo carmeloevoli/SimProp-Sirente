@@ -11,70 +11,24 @@
 namespace simprop {
 namespace losses {
 
-double averageAngle(double s) {
-  if (s > 1e4 * SI::GeV2) return -1;
-  const double b = 12. / SI::GeV2;
-  double I_mu = utils::QAGIntegration<double>(
-      [b, s](double mu) { return mu * std::exp(b * mu2t(mu, s)); }, -1., 1., 1000, 1e-5);
-  double I = utils::QAGIntegration<double>([b, s](double mu) { return std::exp(b * mu2t(mu, s)); },
-                                           -1., 1., 1000, 1e-5);
-  return I_mu / I;
-}
-
-double inelasticitySophia(double s) {
-  if (s < 1.1519 * SI::GeV2) return 0.;
-  auto sqrts = std::sqrt(s);
-  auto E_pi = (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / 2. / sqrts;
-  auto p_pi = std::sqrt((s - pow2(SI::protonMassC2 + SI::pionMassC2)) *
-                        (s - pow2(SI::protonMassC2 - SI::pionMassC2))) /
-              2. / sqrts;
-  auto beta_pi = p_pi / E_pi;
-  auto cosTheta_pi = averageAngle(s);
-  return (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / 2. / s *
-         (1. + beta_pi * cosTheta_pi);
-}
-
-double inelasticityFitted(double s) {
-  if (s < 1.1519 * SI::GeV2) return 0.;
-  // using https://en.wikipedia.org/wiki/Fano_resonance
-  const double ds = s / SI::GeV2 - 1.15;
-  const double q = 1.03;
-  const double R = 0.80;
-  auto value = pow2(0.5 * q * R + ds) / (pow2(0.5 * R) + pow2(ds));
-  return 0.1014 * value / (s / SI::GeV2);
-}
-
-double inelasticityPoorApproximation(double s, double cosTheta_pi) {
-  auto sqrts = std::sqrt(s);
-  auto E_pi = (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / 2. / sqrts;
-  auto p_pi = std::sqrt((s - pow2(SI::protonMassC2 + SI::pionMassC2)) *
-                        (s - pow2(SI::protonMassC2 - SI::pionMassC2))) /
-              2. / sqrts;
-  auto beta_pi = p_pi / E_pi;
-  return (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / 2. / s *
-         (1. + beta_pi * cosTheta_pi);
-}
-
-double inelasticity(double s, MODE m) {
-  if (m == MODE::ISOTROPIC) {
-    return inelasticityPoorApproximation(s, 0.);
-  } else if (m == MODE::BACKWARD) {
-    return inelasticityPoorApproximation(s, -1.);
-  } else {
-    return inelasticityFitted(s);
-  }
+double inelasticity(double epsPrime) {
+  static const double Y0 = 0.47;
+  static const double b = 6e9 * SI::eV;
+  static const double d = 0.33;
+  static const double s = 0.15;
+  const auto x = epsPrime / b;
+  return Y0 * std::pow(x, d) / std::pow(1. + std::pow(x, d / s), s);
 }
 
 PhotoPionContinuousLosses::PhotoPionContinuousLosses(
-    const std::shared_ptr<photonfields::PhotonField>& photonField, MODE meanAngle)
-    : ContinuousLosses(), m_meanAngle(meanAngle) {
+    const std::shared_ptr<photonfields::PhotonField>& photonField)
+    : ContinuousLosses() {
   m_photonFields.push_back(photonField);
   LOGD << "calling " << __func__ << " constructor";
 }
 
-PhotoPionContinuousLosses::PhotoPionContinuousLosses(const photonfields::PhotonFields& photonFields,
-                                                     MODE meanAngle)
-    : ContinuousLosses(), m_photonFields(photonFields), m_meanAngle(meanAngle) {
+PhotoPionContinuousLosses::PhotoPionContinuousLosses(const photonfields::PhotonFields& photonFields)
+    : ContinuousLosses(), m_photonFields(photonFields) {
   LOGD << "calling " << __func__ << " constructor";
 }
 
@@ -89,9 +43,9 @@ double PhotoPionContinuousLosses::beta(PID pid, double Gamma, double z) const {
       value += utils::simpsonIntegration<double>(
           [&](double lnEpsPrime) {
             auto epsPrime = std::exp(lnEpsPrime);
-            auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
-            return epsPrime * epsPrime * inelasticity(s, m_meanAngle) *
-                   m_xs.getAtEpsPrime(pid, epsPrime) * phField->I_gamma(epsPrime / 2. / Gamma, z);
+            //            auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * epsPrime;
+            return epsPrime * epsPrime * m_xs.getAtEpsPrime(pid, epsPrime) *
+                   inelasticity(epsPrime) * phField->I_gamma(epsPrime / 2. / Gamma, z);
           },
           lnEpsPrimeMin, lnEpsPrimeMax, 500);
     }

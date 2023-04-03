@@ -11,9 +11,7 @@
 namespace simprop {
 namespace losses {
 
-enum class MODE { ISOTROPIC, BACKWARD, SOPHIA };
-
-double inelasticity(double s, MODE m);
+double inelasticity(double epsPrime);
 
 class PhotoPionContinuousLosses final : public ContinuousLosses {
  protected:
@@ -21,16 +19,11 @@ class PhotoPionContinuousLosses final : public ContinuousLosses {
   xsecs::PhotoPionXsec m_xs;
 
  public:
-  PhotoPionContinuousLosses(const std::shared_ptr<photonfields::PhotonField>& photonField,
-                            MODE meanAngle = MODE::ISOTROPIC);
-  PhotoPionContinuousLosses(const photonfields::PhotonFields& photonFields,
-                            MODE meanAngle = MODE::ISOTROPIC);
+  PhotoPionContinuousLosses(const std::shared_ptr<photonfields::PhotonField>& photonField);
+  PhotoPionContinuousLosses(const photonfields::PhotonFields& photonFields);
   virtual ~PhotoPionContinuousLosses() = default;
 
   double beta(PID pid, double Gamma, double z = 0) const override;
-
- protected:
-  MODE m_meanAngle;
 };
 
 }  // namespace losses

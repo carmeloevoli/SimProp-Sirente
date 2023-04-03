@@ -70,7 +70,6 @@ void plot_photopion_on_fields() {
       std::make_shared<photonfields::CMB>(),
       std::make_shared<photonfields::Saldana2021PhotonField>()};
   auto phpion_full = losses::PhotoPionContinuousLosses(phFields);
-  auto phpion_new = losses::PhotoPionContinuousLosses(phFields, losses::MODE::SOPHIA);
 
   auto cmb = std::make_shared<photonfields::CMB>();
   auto phpion_cmb = losses::PhotoPionContinuousLosses(cmb);
@@ -88,7 +87,6 @@ void plot_photopion_on_fields() {
     out << SI::cLight / phpion_cmb.beta(proton, Gamma) / SI::Mpc << "\t";
     out << SI::cLight / phpion_ebl.beta(proton, Gamma) / SI::Mpc << "\t";
     out << SI::cLight / phpion_full.beta(proton, Gamma) / SI::Mpc << "\t";
-    out << SI::cLight / phpion_new.beta(proton, Gamma) / SI::Mpc << "\t";
     out << "\n";
   }
 }
@@ -99,7 +97,10 @@ void plot_photopion_nuclei() {
   std::vector<std::shared_ptr<photonfields::PhotonField> > phFields{
       std::make_shared<photonfields::CMB>(),
       std::make_shared<photonfields::Saldana2021PhotonField>()};
-  auto pionLosses = losses::PhotoPionContinuousLosses(phFields);
+  auto phpion_full = losses::PhotoPionContinuousLosses(phFields);
+
+  auto cmb = std::make_shared<photonfields::CMB>();
+  auto phpion_cmb = losses::PhotoPionContinuousLosses(cmb);
 
   const auto gammaAxis = utils::LogAxis<double>(1e8, 1e13, 6 * 32);
   utils::OutputFile out("test_nuclei_photopion_losses.txt");
@@ -107,9 +108,12 @@ void plot_photopion_nuclei() {
   for (auto Gamma : gammaAxis) {
     out << Gamma << "\t";
     out << SI::cLight / adiabatic.beta(proton, Gamma) / SI::Mpc << "\t";
-    out << SI::cLight / pionLosses.beta(proton, Gamma) / SI::Mpc << "\t";
-    out << SI::cLight / pionLosses.beta(O16, Gamma) / SI::Mpc << "\t";
-    out << SI::cLight / pionLosses.beta(Fe56, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_cmb.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_cmb.beta(O16, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_cmb.beta(Fe56, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_full.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_full.beta(O16, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_full.beta(Fe56, Gamma) / SI::Mpc << "\t";
     out << "\n";
   }
 }
@@ -122,9 +126,7 @@ void plot_photopion_inelasticity() {
     out << eps / SI::GeV << "\t";
     auto s = pow2(SI::protonMassC2) + 2. * SI::protonMassC2 * eps;
     out << s / SI::GeV2 << "\t";
-    out << losses::inelasticity(s, losses::MODE::SOPHIA) << "\t";
-    out << losses::inelasticity(s, losses::MODE::ISOTROPIC) << "\t";
-    out << losses::inelasticity(s, losses::MODE::BACKWARD) << "\t";
+    out << losses::inelasticity(eps) << "\t";
     out << "\n";
   }
 }
