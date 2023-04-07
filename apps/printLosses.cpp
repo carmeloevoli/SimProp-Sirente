@@ -62,6 +62,32 @@ void plot_pair_nuclei() {
   }
 }
 
+void plot_pair_redshift() {
+  auto cosmology = std::make_shared<cosmo::Planck2018>();
+  auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
+  auto bggLosses = losses::BGG2006ContinuousLosses();
+  auto cmb = std::make_shared<photonfields::CMB>();
+  auto pair = losses::PairProductionLosses(cmb);
+
+  const auto gammaAxis = utils::LogAxis<double>(1e7, 1e13, 6 * 32);
+  utils::OutputFile out("test_redshift_pair_losses.txt");
+
+  out << std::scientific;
+  for (auto Gamma : gammaAxis) {
+    out << Gamma << "\t";
+    out << SI::cLight / adiabatic.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / bggLosses.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / bggLosses.beta(proton, Gamma, 1.0) / SI::Mpc << "\t";
+    out << SI::cLight / bggLosses.beta(proton, Gamma, 3.0) / SI::Mpc << "\t";
+    out << SI::cLight / bggLosses.beta(proton, Gamma, 6.0) / SI::Mpc << "\t";
+    out << SI::cLight / pair.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pair.beta(proton, Gamma, 1.0) / SI::Mpc << "\t";
+    out << SI::cLight / pair.beta(proton, Gamma, 3.0) / SI::Mpc << "\t";
+    out << SI::cLight / pair.beta(proton, Gamma, 6.0) / SI::Mpc << "\t";
+    out << "\n";
+  }
+}
+
 void plot_photopion_on_fields() {
   auto cosmology = std::make_shared<cosmo::Planck2018>();
   auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
@@ -142,6 +168,7 @@ int main() {
     simprop::plot_pair_nuclei();
     simprop::plot_photopion_on_fields();
     simprop::plot_photopion_nuclei();
+    simprop::plot_pair_redshift();
     simprop::plot_photopion_inelasticity();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
