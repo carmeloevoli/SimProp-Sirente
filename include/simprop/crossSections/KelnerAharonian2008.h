@@ -40,7 +40,7 @@ class SecondarySpectrum {
   std::vector<double> m_B_table;
 };
 
-class AntiNuMuSpectrum : public SecondarySpectrum {
+class AntiNuMuSpectrum final : public SecondarySpectrum {
  public:
   AntiNuMuSpectrum();
 
@@ -50,7 +50,7 @@ class AntiNuMuSpectrum : public SecondarySpectrum {
   double xPrimePlus(double eta) const override;
 };
 
-class NuMuSpectrum : public SecondarySpectrum {
+class NuMuSpectrum final : public SecondarySpectrum {
  public:
   NuMuSpectrum();
 
@@ -60,7 +60,7 @@ class NuMuSpectrum : public SecondarySpectrum {
   double xPrimePlus(double eta) const override;
 };
 
-class AntiNuElectronSpectrum : public SecondarySpectrum {
+class AntiNuElectronSpectrum final : public SecondarySpectrum {
  public:
   AntiNuElectronSpectrum();
 
@@ -70,7 +70,7 @@ class AntiNuElectronSpectrum : public SecondarySpectrum {
   double xPrimePlus(double eta) const override;
 };
 
-class NuElectronSpectrum : public SecondarySpectrum {
+class NuElectronSpectrum final : public SecondarySpectrum {
  public:
   NuElectronSpectrum();
 
@@ -78,6 +78,18 @@ class NuElectronSpectrum : public SecondarySpectrum {
   double psi(double z) const override;
   double xPrimeMinus(double eta) const override;
   double xPrimePlus(double eta) const override;
+};
+
+class NeutrinoSpectrum {
+ protected:
+  NuMuSpectrum numu;
+  AntiNuMuSpectrum antiNumu;
+  NuElectronSpectrum nue;
+  AntiNuElectronSpectrum antiNue;
+
+ public:
+  NeutrinoSpectrum() {}
+  double get(double eta, double x) const;
 };
 
 }  // namespace KelnerAharonian2008

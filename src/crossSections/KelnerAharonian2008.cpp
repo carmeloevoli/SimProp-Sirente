@@ -141,5 +141,9 @@ double AntiNuElectronSpectrum::xPrimePlus(double eta) const {
   return value;
 }
 
+double NeutrinoSpectrum::get(double eta, double x) const {
+  return numu.Phi(eta, x) + antiNumu.Phi(eta, x) + nue.Phi(eta, x) + antiNue.Phi(eta, x);
+}
+
 }  // namespace KelnerAharonian2008
 }  // namespace simprop
