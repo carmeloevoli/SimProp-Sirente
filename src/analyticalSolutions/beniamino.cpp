@@ -10,28 +10,36 @@ namespace solutions {
 #define VERYLARGEENERGY (1e26 * SI::eV)
 
 Beniamino::Beniamino(bool doPhotoPion) {
-  m_cosmology = std::make_shared<cosmo::Planck2018>();
+  m_cosmology = std::make_shared<cosmo::Cosmology>();
   m_cmb = std::make_shared<photonfields::CMB>();
   auto pair = std::make_shared<losses::PairProductionLosses>(m_cmb);
   auto pion = std::make_shared<losses::PhotoPionContinuousLosses>(m_cmb);
   m_losses.cacheTable(
-      [&](double lnE) {
+      [doPhotoPion, pair, pion](double lnE) {
         auto Gamma = std::exp(lnE) / SI::protonMassC2;
         return pair->beta(proton, Gamma) + ((doPhotoPion) ? pion->beta(proton, Gamma) : 0.);
       },
       {std::log(1e16 * SI::eV), std::log(VERYLARGEENERGY)});
 }
 
-double Beniamino::generationEnergy(double E, double zMax, double relError) const {
+Beniamino::Beniamino(bool doPhotoPion, BeniaminoParams params) : Beniamino(doPhotoPion) {
+  m_slope = params.slope;
+  m_sourceEvolution = params.sourceEvolution;
+  m_sourceCutoff = params.sourceCutoff;
+}
+
+double Beniamino::generationEnergy(double E, double zNow, double zMax, double relError) const {
+  assert(zMax >= zNow);
+  assert(E > 0);
   auto dEdz = [this](double z, double E_g) {
     auto E = std::min(E_g * (1. + z), VERYLARGEENERGY);
     auto beta = m_losses.get(std::log(E));
     auto dtdz = m_cosmology->dtdz(z);
     return E_g * (1. / (1. + z) + dtdz * pow3(1. + z) * beta);
   };
-  auto value = utils::odeiv<double>(dEdz, E, 0., zMax, relError);
+  auto value = utils::odeiv<double>(dEdz, E, zNow, zMax, relError);
 
-  return std::min(value, std::numeric_limits<double>::max());
+  return std::min(value, VERYLARGEENERGY);
 }
 
 double Beniamino::dbdE(double E) const {
@@ -41,15 +49,16 @@ double Beniamino::dbdE(double E) const {
   return m_losses.get(std::log(E)) + E * dbetadE;
 }
 
-double Beniamino::dilationFactor(double E, double zMax, double relError) const {
-  auto dydz = [this, E](double z, double y) {
+double Beniamino::dilationFactor(double E, double zNow, double zMax, double relError) const {
+  assert(zMax >= zNow);
+  auto dydz = [this, E, zNow](double z, double y) {
     auto dtdz = m_cosmology->dtdz(z);
-    auto E_g = generationEnergy(E, z, 1e-6);
+    auto E_g = generationEnergy(E, zNow, z, 1e-6);
     auto E_prime = std::min(E_g * (1. + z), VERYLARGEENERGY);
     auto dbdE = std::max(this->dbdE(E_prime), 0.);
     return y * (1. / (1. + z) + dtdz * pow3(1. + z) * dbdE);
   };
-  auto value = utils::odeiv<double>(dydz, 1., 0., zMax, relError);
+  auto value = utils::odeiv<double>(dydz, 1., zNow, zMax, relError);
 
   return std::min(value, 1e6);
 }

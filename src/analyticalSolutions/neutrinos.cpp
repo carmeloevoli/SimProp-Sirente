@@ -7,10 +7,6 @@ namespace solutions {
 
 #define INTSTEPS 1000
 
-double Beniamino::getNeutrinoSpectrum(double eta, double x) const {
-  return numu.Phi(eta, x) + antiNumu.Phi(eta, x) + nue.Phi(eta, x) + antiNue.Phi(eta, x);
-}
-
 double Beniamino::I_dEpsilon(double EnuObserved, double Ep, double z) const {
   const auto x = EnuObserved * (1. + z) / Ep;
   const auto eta = 4. * Ep / pow2(SI::protonMassC2);
@@ -18,7 +14,7 @@ double Beniamino::I_dEpsilon(double EnuObserved, double Ep, double z) const {
   auto integrand = [this, Ep, eta, x, z](double lnEpsilon) {
     auto epsilon = std::exp(lnEpsilon);
     auto value = epsilon * m_cmb->density(epsilon / (1. + z));
-    value *= getNeutrinoSpectrum(epsilon * eta, x);
+    value *= sigma_nus.get(epsilon * eta, x);
     return value;
   };
   return utils::QAGIntegration<double>(integrand, std::log(0.01 * meanBkgPhotonEnergy),

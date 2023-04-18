@@ -3,13 +3,18 @@
 
 #include "simprop/core/cosmology.h"
 #include "simprop/crossSections/KelnerAharonian2008.h"
-#include "simprop/energyLosses/BGG2006ContinuousLosses.h"
 #include "simprop/energyLosses/PairProductionLosses.h"
 #include "simprop/energyLosses/PhotoPionContinuousLosses.h"
 #include "simprop/photonFields/CmbPhotonField.h"
 
 namespace simprop {
 namespace solutions {
+
+struct BeniaminoParams {
+  double slope;
+  double sourceEvolution;
+  double sourceCutoff;
+};
 
 class Beniamino {
  protected:
@@ -23,32 +28,23 @@ class Beniamino {
   double m_sourceEvolution = 0.;
   double m_sourceCutoff = -1.;
 
-  KelnerAharonian2008::NuMuSpectrum numu{};
-  KelnerAharonian2008::AntiNuMuSpectrum antiNumu{};
-  KelnerAharonian2008::NuElectronSpectrum nue{};
-  KelnerAharonian2008::AntiNuElectronSpectrum antiNue{};
+  KelnerAharonian2008::NeutrinoSpectrum sigma_nus;
 
  public:
   Beniamino(bool doPhotoPion);
+  Beniamino(bool doPhotoPion, BeniaminoParams params);
+
   virtual ~Beniamino() = default;
 
-  double generationEnergy(double E, double zMax, double relError = 1e-3) const;
-  double dilationFactor(double E, double zMax, double relError = 1e-3) const;
+  double generationEnergy(double E, double zNow, double zMax, double relError = 1e-3) const;
+  double dilationFactor(double E, double zNow, double zMax, double relError = 1e-3) const;
   double computeFlux(double E, double zObs, double zMax, double relError = 1e-3) const;
   double computeFluxUnm(double E, double zMax, double relError = 1e-3) const;
   double computeNeutrinoFlux(double Enu, double zMax, double relError = 1e-3) const;
 
- public:
-  inline void setSlope(const double &slope) { m_slope = slope; };
-  inline void setSourceEvolution(const double &m) { m_sourceEvolution = m; };
-  inline void setSourceCutoff(const double &E) { m_sourceCutoff = E; };
-
  protected:
   double dbdE(double E) const;
   double findMaxRedshiftIntegral(double E, double zMax) const;
-  double getNeutrinoSpectrum(double eta, double x) const;
-
- public:  // TODO make it private
   double I_dEpsilon(double EnuObserved, double Ep, double z) const;
   double I_dEp(double EnuObserved, double minEp, double maxEp, double z) const;
   // double I_z(double Enu, double zMax, double relError) const;
