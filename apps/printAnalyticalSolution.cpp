@@ -10,11 +10,11 @@ void testCharacteristics() {
     out << "# z - 10^17 eV - 10^18 eV - 10^19 eV - 10^20 eV - 10^21 eV\n";
     for (const auto &z_i : z) {
       out << std::scientific << z_i << "\t";
-      out << b.generationEnergy(1e17 * SI::eV, z_i, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(1e18 * SI::eV, z_i, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(1e19 * SI::eV, z_i, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(1e20 * SI::eV, z_i, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(1e21 * SI::eV, z_i, 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(1e17 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(1e18 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(1e19 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(1e20 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(1e21 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
       out << "\n";
     }
   }
@@ -24,11 +24,11 @@ void testCharacteristics() {
     out << "# E - 0.05 - 0.5 - 1 - 2 - 3\n";
     for (const auto &E_i : E) {
       out << std::scientific << E_i / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0.05, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0.5, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 1., 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 2., 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 3., 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 0.05, 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 0.5, 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 1., 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 2., 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 3., 1e-6) / SI::eV << "\t";
       out << "\n";
     }
   }
@@ -42,18 +42,18 @@ void testJacobian() {
   for (auto it = z.rbegin(); it != z.rend(); it++) {
     auto z_i = *it;
     out << std::scientific << z_i << "\t";
-    out << b.dilationFactor(1e18 * SI::eV, z_i) << "\t";
-    out << b.dilationFactor(1e19 * SI::eV, z_i) << "\t";
-    out << b.dilationFactor(1e20 * SI::eV, z_i) << "\t";
-    out << b.dilationFactor(1e21 * SI::eV, z_i) << "\t";
+    out << b.dilationFactor(1e18 * SI::eV, 0., z_i, 1e-6) << "\t";
+    out << b.dilationFactor(1e19 * SI::eV, 0., z_i, 1e-6) << "\t";
+    out << b.dilationFactor(1e20 * SI::eV, 0., z_i, 1e-6) << "\t";
+    out << b.dilationFactor(1e21 * SI::eV, 0., z_i, 1e-6) << "\t";
     out << "\n";
   }
 }
 
 void testSpectrum() {
   solutions::Beniamino b(true);
-  b.setSlope(2.7);
-  b.setSourceEvolution(0.);
+  // b.setSlope(2.7);
+  // b.setSourceEvolution(0.);
   auto E = utils::LogAxis(1e17 * SI::eV, 1e21 * SI::eV, 80);
   {
     utils::OutputFile out("proton_spectrum_pion_m0.txt");
@@ -87,7 +87,7 @@ int main() {
     utils::Timer timer("main timer for analytical solution");
     testCharacteristics();
     testJacobian();
-    // testSpectrum();
+    //  testSpectrum();
   } catch (const std::exception &e) {
     LOGE << "exception caught with message: " << e.what();
   }
