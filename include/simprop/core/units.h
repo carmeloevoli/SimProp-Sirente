@@ -63,7 +63,7 @@ static constexpr double gigaelectronvolt = giga * electronvolt;
 static constexpr double teraelectronvolt = tera * electronvolt;
 static constexpr double petaelectronvolt = peta * electronvolt;
 static constexpr double exaelectronvolt = exa * electronvolt;
-static constexpr double embarrassinglyLargeEnergy = 1e30 * electronvolt;
+static constexpr double erg = 1e-7 * joule;
 
 // ABBREVIATION
 static constexpr double sec = second;
@@ -72,6 +72,7 @@ static constexpr double Myr = megayear;
 static constexpr double Gyr = gigayear;
 static constexpr double kpc = kiloparsec;
 static constexpr double Mpc = megaparsec;
+static constexpr double Mpc3 = Mpc * Mpc * Mpc;
 static constexpr double eV = electronvolt;
 static constexpr double keV = kiloelectronvolt;
 static constexpr double MeV = megaelectronvolt;
