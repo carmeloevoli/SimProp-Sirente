@@ -93,9 +93,9 @@ double Beniamino::computeFlux(double E, double zObs, double zMax, double relErro
   const auto L_0 = m_sourceEmissivity;
   const auto factor = SI::cLight / 4. / M_PI * K * L_0;
   auto integrand = [this, E, zObs](double z) {
-    const auto E_g = generationEnergy(E, zObs, z, 1e-5);
+    const auto E_g = generationEnergy(E, zObs, z, 1e-4);
     if (E_g > m_maxEnergy) return 0.;
-    auto dEgdE = dilationFactor(E, zObs, z, 1e-5);
+    auto dEgdE = dilationFactor(E, zObs, z, 1e-4);
     auto inj = std::pow(E_g / m_minEnergy, -m_slope);
     if (m_sourceCutoff > 0.) inj *= std::exp(-E_g / m_sourceCutoff);
     auto sourceEvolution = std::pow(1. + z, m_sourceEvolution);

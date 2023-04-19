@@ -30,8 +30,6 @@ class Beniamino {
   double m_sourceEvolution = 0.;
   double m_sourceCutoff = -1.;
 
-  KelnerAharonian2008::NeutrinoSpectrum sigma_nus;
-
  public:
   Beniamino(bool doPhotoPion);
   Beniamino(bool doPhotoPion, BeniaminoParams params);
@@ -42,16 +40,10 @@ class Beniamino {
   double dilationFactor(double E, double zNow, double zMax, double relError = 1e-3) const;
   double computeFlux(double E, double zObs, double zMax, double relError = 1e-3) const;
   // double computeFluxUnm(double E, double zMax, double relError = 1e-3) const;
-  // double computeNeutrinoFlux(double Enu, double zMax, double relError = 1e-3) const;
-
-  double dbdE(double E) const;
-  double beta(double E) const;
 
  protected:
-  // double findMaxRedshiftIntegral(double E, double zMax) const;
-  //   double I_dEpsilon(double EnuObserved, double Ep, double z) const;
-  //   double I_dEp(double EnuObserved, double minEp, double maxEp, double z) const;
-  //    double I_z(double Enu, double zMax, double relError) const;
+  double dbdE(double E) const;
+  double beta(double E) const;
 };
 
 }  // namespace solutions

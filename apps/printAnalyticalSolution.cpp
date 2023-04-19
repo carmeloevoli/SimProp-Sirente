@@ -12,9 +12,9 @@ void makeEnergyLossesTables() {
   out << "#log10(E) [eV] - log10(beta_0) [1/yr] - log10(db_0/dE) [1/yr] - log10(beta_a) [1/yr]\n";
   for (const auto &E_i : E) {
     out << std::scientific << std::log10(E_i / SI::eV) << "\t";
-    out << std::log10(b.beta(E_i) * SI::year) << "\t";
-    out << std::log10(b.dbdE(E_i) * SI::year) << "\t";
-    out << std::log10(adiabatic.beta(proton, E_i / SI::protonMassC2) * SI::year) << "\t";
+    // out << std::log10(b.beta(E_i) * SI::year) << "\t";
+    // out << std::log10(b.dbdE(E_i) * SI::year) << "\t";
+    // out << std::log10(adiabatic.beta(proton, E_i / SI::protonMassC2) * SI::year) << "\t";
     out << "\n";
   }
 }
@@ -104,17 +104,17 @@ void testSpectrum() {
       out << "\n";
     }
   }
-  // {
-  //   utils::OutputFile out("proton_unm_spectrum_pion_m0.txt");
-  //   for (const auto &E_i : E) {
-  //     std::cout << E_i / SI::eV << "\n";
-  //     out << std::scientific << E_i / SI::eV << "\t";
-  //     out << b.computeFluxUnm(E_i, 0.05) << "\t";
-  //     out << b.computeFluxUnm(E_i, 0.5) << "\t";
-  //     out << b.computeFluxUnm(E_i, 1.0) << "\t";
-  //     out << b.computeFluxUnm(E_i, 3.0) << "\t";
-  //     out << "\n";
-  //   }
+}
+
+void testNeutrinoSpectrum() {
+  solutions::Beniamino b(true);
+  // utils::OutputFile out("SimProp_neutrino_spectrum.txt");
+  // const double units = 1. / SI::eV / SI::m2 / SI::sr / SI::sec;
+  // auto E = utils::LogAxis(1e17 * SI::eV, 1e19 * SI::eV, 4 * 2);
+  // for (const auto &E_i : E) {
+  //   out << std::scientific << E_i / SI::eV << "\t";
+  //   out << b.computeNeutrinoFlux(E_i, 6.) / units << "\t";
+  //   out << "\n";
   // }
 }
 
@@ -125,7 +125,8 @@ int main() {
     // makeEnergyLossesTables();
     // testCharacteristics();
     // testJacobian();
-    testSpectrum();
+    // testSpectrum();
+    testNeutrinoSpectrum();
   } catch (const std::exception &e) {
     LOGE << "exception caught with message: " << e.what();
   }
