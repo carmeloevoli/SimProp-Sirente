@@ -54,6 +54,7 @@ double SecondarySpectrum::delta(double rho) const {
 }
 
 double SecondarySpectrum::Phi(double eta, double x) const {
+  if (x > 1.) return 0.;
   const auto rho = eta / m_eta_0;
   const auto _B = B(rho);
   const auto _s = s(rho);
@@ -139,11 +140,6 @@ double AntiNuElectronSpectrum::xPrimePlus(double eta) const {
   double value = 1. / 2. / (1. + eta);
   value *= eta - 2. * m_r + std::sqrt(eta * (eta - 4. * m_r * (1. + m_r)));
   return value;
-}
-
-double NeutrinoSpectrum::get(double eta, double x) const {
-  return (x < 1.) ? numu.Phi(eta, x) + antiNumu.Phi(eta, x) + nue.Phi(eta, x) + antiNue.Phi(eta, x)
-                  : 0.;
 }
 
 }  // namespace KelnerAharonian2008

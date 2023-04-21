@@ -80,16 +80,15 @@ class NuElectronSpectrum final : public SecondarySpectrum {
   double xPrimePlus(double eta) const override;
 };
 
-class NeutrinoSpectrum {
- protected:
+struct NeutrinoProductionSpectrum {
   NuMuSpectrum numu;
   AntiNuMuSpectrum antiNumu;
   NuElectronSpectrum nue;
   AntiNuElectronSpectrum antiNue;
 
- public:
-  NeutrinoSpectrum() {}
-  double get(double eta, double x) const;
+  double Phi(double eta, double x) {
+    return numu.Phi(eta, x) + antiNumu.Phi(eta, x) + nue.Phi(eta, x) + antiNue.Phi(eta, x);
+  }
 };
 
 }  // namespace KelnerAharonian2008
