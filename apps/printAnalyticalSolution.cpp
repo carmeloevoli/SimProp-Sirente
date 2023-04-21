@@ -106,27 +106,14 @@ void testSpectrum() {
   }
 }
 
-void testNeutrinoSpectrum() {
-  solutions::Beniamino b(true);
-  // utils::OutputFile out("SimProp_neutrino_spectrum.txt");
-  // const double units = 1. / SI::eV / SI::m2 / SI::sr / SI::sec;
-  // auto E = utils::LogAxis(1e17 * SI::eV, 1e19 * SI::eV, 4 * 2);
-  // for (const auto &E_i : E) {
-  //   out << std::scientific << E_i / SI::eV << "\t";
-  //   out << b.computeNeutrinoFlux(E_i, 6.) / units << "\t";
-  //   out << "\n";
-  // }
-}
-
 int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer for analytical solution");
-    // makeEnergyLossesTables();
-    // testCharacteristics();
-    // testJacobian();
-    // testSpectrum();
-    testNeutrinoSpectrum();
+    makeEnergyLossesTables();
+    testCharacteristics();
+    testJacobian();
+    testSpectrum();
   } catch (const std::exception &e) {
     LOGE << "exception caught with message: " << e.what();
   }
