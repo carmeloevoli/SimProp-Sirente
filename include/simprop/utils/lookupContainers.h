@@ -57,50 +57,69 @@ class LookupArray {
   std::vector<double> m_array;
 };
 
-// template <size_t xSize, size_t ySize>
-// class LookupTable {
-//  public:
-//   explicit LookupTable(std::string filePath) : m_filePath(filePath) {
-//     if (!utils::fileExists(filePath))
-//       throw std::runtime_error("file data for lookup table does not exist");
-//     if (xSize < 2) throw std::runtime_error("x-axis size must be > 1");
-//     if (ySize < 2) throw std::runtime_error("y-axis size must be > 1");
-//     m_xAxis.reserve(xSize);
-//     m_yAxis.reserve(ySize);
-//     m_table.reserve(xSize * ySize);
-//     loadTable();
-//   }
+template <size_t xSize, size_t ySize>
+class LookupTable {
+ public:
+  LookupTable() {
+    if (xSize < 2) throw std::runtime_error("x-axis size must be > 1");
+    if (ySize < 2) throw std::runtime_error("y-axis size must be > 1");
+    m_xAxis.reserve(xSize);
+    m_yAxis.reserve(ySize);
+    m_table.reserve(xSize * ySize);
+  }
 
-//   double get(double x, double y) const {
-//     return utils::interpolate2d(x, y, m_xAxis, m_yAxis, m_table);
-//   }
+  inline double get(double x, double y) const {
+    return utils::interpolate2d(x, y, m_xAxis, m_yAxis, m_table);
+  }
 
-//   bool xIsInside(double x) const { return x >= m_xAxis.front() && x <= m_xAxis.back(); }
-//   bool yIsInside(double y) const { return y >= m_yAxis.front() && y <= m_yAxis.back(); }
+  bool xIsInside(double x) const { return x >= m_xAxis.front() && x <= m_xAxis.back(); }
+  bool yIsInside(double y) const { return y >= m_yAxis.front() && y <= m_yAxis.back(); }
 
-//  protected:
-//   void loadTable() {
-//     auto v = utils::loadFileByRow(m_filePath, ",");
-//     size_t counter = 0;
-//     for (size_t i = 0; i < xSize; ++i) {
-//       for (size_t j = 0; j < ySize; ++j) {
-//         auto line = v.at(counter);
-//         if (line.size() != 3) throw std::runtime_error("error in reading table values");
-//         if (j == 0) m_xAxis.emplace_back(line[0]);
-//         if (i == 0) m_yAxis.emplace_back(line[1]);
-//         m_table.emplace_back(line[2]);
-//         counter++;
-//       }
-//     }
-//     assert(m_xAxis.size() == xSize && m_yAxis.size() == ySize);
-//   }
+ public:
+  //    void loadTable() {
+  //     auto v = utils::loadFileByRow(m_filePath, ",");
+  //     size_t counter = 0;
+  //     for (size_t i = 0; i < xSize; ++i) {
+  //       for (size_t j = 0; j < ySize; ++j) {
+  //         auto line = v.at(counter);
+  //         if (line.size() != 3) throw std::runtime_error("error in reading table values");
+  //         if (j == 0) m_xAxis.emplace_back(line[0]);
+  //         if (i == 0) m_yAxis.emplace_back(line[1]);
+  //         m_table.emplace_back(line[2]);
+  //         counter++;
+  //       }
+  //     }
+  //     assert(m_xAxis.size() == xSize && m_yAxis.size() == ySize);
+  //   }
 
-//  protected:
-//   std::vector<double> m_xAxis;
-//   std::vector<double> m_yAxis;
-//   std::vector<double> m_table;
-//   std::string m_filePath;
-// };
+  void cacheTable(const std::function<double(double, double)>& func,
+                  const std::pair<double, double>& xRange,
+                  const std::pair<double, double>& yRange) {
+    const double dx = (xRange.second - xRange.first) / (double)(xSize - 1);
+    const double dy = (yRange.second - yRange.first) / (double)(ySize - 1);
+    utils::Timer timer("time for caching");
+    for (size_t i = 0; i < xSize; ++i) {
+      auto x = (double)i * dx + xRange.first;
+      m_xAxis.emplace_back(x);
+      for (size_t j = 0; j < ySize; ++j) {
+        auto y = (double)j * dy + yRange.first;
+        if (i == 0) {
+          m_yAxis.emplace_back(y);
+        }
+        std::cout << x << " " << y << "\n";
+        auto f_xy = func(x, y);
+        m_table.emplace_back(f_xy);
+      }
+    }
+    assert(m_xAxis.size() == xSize && m_yAxis.size() == ySize);
+    assert(m_table.size() == xSize * ySize);
+  }
+
+ protected:
+  std::vector<double> m_xAxis;
+  std::vector<double> m_yAxis;
+  std::vector<double> m_table;
+};
 
 }  // namespace utils
 }  // namespace simprop
