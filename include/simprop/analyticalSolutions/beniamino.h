@@ -19,14 +19,13 @@ struct BeniaminoParams {
 class Beniamino {
  protected:
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
-  std::shared_ptr<photonfields::CMB> m_cmb;
-  utils::LookupArray<4000> m_losses;
+  utils::LookupArray<1000> m_losses;
 
-  const double m_sourceEmissivity = 1e46 * SI::erg / SI::Mpc3 / SI::year;
+  const double m_sourceEmissivity = 0.4e46 * SI::erg / SI::Mpc3 / SI::year;
   const double m_maxEnergy = 1e23 * SI::eV;
   const double m_minEnergy = 1e17 * SI::eV;
 
-  double m_slope = 2.7;
+  double m_slope = 2.6;
   double m_sourceEvolution = 0.;
   double m_sourceCutoff = -1.;
 

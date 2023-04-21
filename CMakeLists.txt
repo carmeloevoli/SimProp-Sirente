@@ -130,7 +130,7 @@ include_directories(include ${SIMPROP_EXTRA_INCLUDES})
 
 add_library(simprop SHARED
     src/analyticalSolutions/beniamino.cpp
-    #src/analyticalSolutions/neutrinos.cpp
+    src/analyticalSolutions/BzNeutrinos.cpp
     src/core/common.cpp
     src/core/cosmology.cpp
     src/core/opticalDepth.cpp

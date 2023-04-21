@@ -1,6 +1,7 @@
 #ifndef INCLUDE_SIMPROP_H
 #define INCLUDE_SIMPROP_H
 
+#include "simprop/analyticalSolutions/BzNeutrinos.h"
 #include "simprop/analyticalSolutions/beniamino.h"
 #include "simprop/core/common.h"
 #include "simprop/core/cosmology.h"
@@ -27,7 +28,7 @@
 #include "simprop/photonFields/Saldana2021PhotonField.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/logging.h"
-// #include "simprop/utils/lookupContainers.h"
+#include "simprop/utils/lookupContainers.h"
 #include "simprop/utils/numeric.h"
 #include "simprop/utils/random.h"
 #include "simprop/utils/timer.h"

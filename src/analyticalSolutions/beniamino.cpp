@@ -2,31 +2,37 @@
 
 #include <limits>
 
+#include "simprop/utils/logging.h"
+
 namespace simprop {
 namespace solutions {
 
 #define INTSTEPS 1000
 
-#define VERYLARGEENERGY (1e26 * SI::eV)
+#define VERYLARGEENERGY (1e25 * SI::eV)
 #define VERYLARGEJACOBIAN (1e6)
 
 Beniamino::Beniamino(bool doPhotoPion) {
   m_cosmology = std::make_shared<cosmo::Cosmology>();
-  m_cmb = std::make_shared<photonfields::CMB>();
-  auto pair = std::make_shared<losses::PairProductionLosses>(m_cmb);
-  auto pion = std::make_shared<losses::PhotoPionContinuousLosses>(m_cmb);
-  m_losses.cacheTable(
-      [doPhotoPion, pair, pion](double lnE) {
-        auto Gamma = std::exp(lnE) / SI::protonMassC2;
-        return pair->beta(proton, Gamma) + ((doPhotoPion) ? pion->beta(proton, Gamma) : 0.);
-      },
-      {std::log(1e16 * SI::eV), std::log(VERYLARGEENERGY)});
+  {
+    auto cmb = std::make_shared<photonfields::CMB>();
+    auto pair = std::make_shared<losses::PairProductionLosses>(cmb);
+    auto pion = std::make_shared<losses::PhotoPionContinuousLosses>(cmb);
+    m_losses.cacheTable(
+        [doPhotoPion, pair, pion](double lnE) {
+          auto Gamma = std::exp(lnE) / SI::protonMassC2;
+          return pair->beta(proton, Gamma) + ((doPhotoPion) ? pion->beta(proton, Gamma) : 0.);
+        },
+        {std::log(1e16 * SI::eV), std::log(VERYLARGEENERGY)});
+  }
+  LOGD << "calling " << __func__ << " constructor";
 }
 
 Beniamino::Beniamino(bool doPhotoPion, BeniaminoParams params) : Beniamino(doPhotoPion) {
   m_slope = params.slope;
   m_sourceEvolution = params.sourceEvolution;
   m_sourceCutoff = params.sourceCutoff;
+  LOGD << "calling " << __func__ << " constructor";
 }
 
 double Beniamino::dbdE(double E) const {
@@ -76,16 +82,6 @@ double Beniamino::dilationFactor(double E, double zNow, double zMax, double relE
 //   }; auto I = utils::QAGIntegration<double>(integrand, 0., zMax, INTSTEPS, relError);
 
 //   return factor * I;
-// }
-
-// double Beniamino::findMaxRedshiftIntegral(double E, double zMax) const {
-//   double zNow = 1e-2;
-//   double J = 0;
-//   while (J < 1e3 && zNow < zMax) {
-//     J = dilationFactor(E, zNow, 1e-3);
-//     zNow *= 1.1;
-//   }
-//   return std::min(zNow, zMax);
 // }
 
 double Beniamino::computeFlux(double E, double zObs, double zMax, double relError) const {
