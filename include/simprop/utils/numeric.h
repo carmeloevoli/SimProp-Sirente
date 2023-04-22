@@ -129,6 +129,30 @@ T QAGSIntegration(std::function<T(T)> f, T start, T stop, int LIMIT, double rel_
 }
 
 template <typename T>
+T RombergIntegration(std::function<T(T)> f, T start, T stop, int N, double rel_error = 1e-4) {
+  assert(N < 30);
+
+  double a = static_cast<double>(start);
+  double b = static_cast<double>(stop);
+  const double abs_error = 0.0;  // disabled
+  double result;
+  size_t neval;
+
+  gsl_function F;
+  F.function = [](double x, void *vf) -> double {
+    auto &func = *static_cast<std::function<double(double)> *>(vf);
+    return func(x);
+  };
+  F.params = &f;
+
+  gsl_integration_romberg_workspace *workspace_ptr = gsl_integration_romberg_alloc(N);
+  gsl_integration_romberg(&F, a, b, abs_error, rel_error, &result, &neval, workspace_ptr);
+  gsl_integration_romberg_free(workspace_ptr);
+
+  return T(result);
+}
+
+template <typename T>
 T simpsonIntegration(std::function<T(T)> f, T start, T stop, int N = 100) {
   const T a = start;
   const T b = stop;
