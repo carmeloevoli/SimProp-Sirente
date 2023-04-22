@@ -36,7 +36,7 @@ Beniamino::Beniamino(bool doPhotoPion, BeniaminoParams params) : Beniamino(doPho
 }
 
 double Beniamino::dbdE(double E) const {
-  if (E < 1e17 * SI::eV || E > VERYLARGEENERGY) return 0;
+  if (E < 1e6 * SI::eV || E > VERYLARGEENERGY) return 0;
   auto dbetadE =
       utils::deriv5pt<double>([this](double x) { return m_losses.get(std::log(x)); }, E, 1e-1 * E);
 

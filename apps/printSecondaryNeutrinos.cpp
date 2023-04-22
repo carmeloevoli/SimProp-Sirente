@@ -3,36 +3,34 @@
 using namespace simprop;
 
 void testProductionSpectrum() {
-  const double r = SI::pionMassC2 / SI::protonMassC2;
-  const double eta_0 = 2. * r + r * r;
-  auto numu = KelnerAharonian2008::NuMuSpectrum();
-  auto antiNumu = KelnerAharonian2008::AntiNuMuSpectrum();
-  auto nue = KelnerAharonian2008::NuElectronSpectrum();
-  auto antiNue = KelnerAharonian2008::AntiNuElectronSpectrum();
-
-  // KelnerAharonian2008::NeutrinoProductionSpectrum nuSpec;
-
-  auto xAxis = utils::LogAxis<double>(1e-4, 1, 50);
+  KelnerAharonian2008::NeutrinoProductionSpectrum nuSpec;
   utils::OutputFile out("test_neutrino_production_spectrum.txt");
   out << "# x - spectrum\n";
   out << std::scientific;
   const auto units = SI::cm3 / SI::sec;
-  for (auto x : xAxis) {
-    out << x << "\t";
-    out << numu.Phi(1.5 * eta_0, x) / units << "\t";
-    out << antiNumu.Phi(1.5 * eta_0, x) / units << "\t";
-    out << nue.Phi(1.5 * eta_0, x) / units << "\t";
-    out << antiNue.Phi(1.5 * eta_0, x) / units << "\t";
-    out << numu.Phi(30. * eta_0, x) / units << "\t";
-    out << antiNumu.Phi(30. * eta_0, x) / units << "\t";
-    out << nue.Phi(30. * eta_0, x) / units << "\t";
-    out << antiNue.Phi(30. * eta_0, x) / units << "\t";
-    out << "\n";
+  const auto epsCmb = 6.3e-4 * SI::eV;
+  const auto epsIr = 1e-2 * SI::eV;
+  auto EpAxis = utils::LogAxis<double>(1e18 * SI::eV, 1e22 * SI::eV, 201);
+  auto EnuAxis = utils::LogAxis<double>(1e15 * SI::eV, 1e22 * SI::eV, 201);
+  for (auto Enu : EnuAxis) {
+    for (auto Ep : EpAxis) {
+      auto x = Enu / Ep;
+      {
+        auto eta = 4. * epsCmb * Ep / pow2(SI::protonMassC2);
+        out << std::scientific << x << " " << eta << " ";
+        out << x * x * nuSpec.Phi(eta, x) / units << " ";
+      }
+      {
+        auto eta = 4. * epsIr * Ep / pow2(SI::protonMassC2);
+        out << x * x * nuSpec.Phi(eta, x) / units << " ";
+      }
+      out << "\n";
+    }
   }
 }
 
 void testNeutrinoSpectrum() {
-  solutions::BzNeutrinos nu;
+  solutions::CosmoNeutrinos nu;
   {
     utils::OutputFile out("SimProp_proton_spectrum.txt");
     const double units = pow2(SI::eV) / SI::m2 / SI::sr / SI::sec;

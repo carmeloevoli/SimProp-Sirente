@@ -130,7 +130,7 @@ include_directories(include ${SIMPROP_EXTRA_INCLUDES})
 
 add_library(simprop SHARED
     src/analyticalSolutions/beniamino.cpp
-    src/analyticalSolutions/BzNeutrinos.cpp
+    src/analyticalSolutions/cosmoNus.cpp
     src/core/common.cpp
     src/core/cosmology.cpp
     src/core/opticalDepth.cpp
@@ -155,6 +155,7 @@ add_library(simprop SHARED
 	src/utils/io.cpp
 	src/utils/logging.cpp
     src/utils/numeric.cpp
+    src/utils/progressbar.cpp
     src/utils/timer.cpp
     "${git_revision_cpp}"
     )

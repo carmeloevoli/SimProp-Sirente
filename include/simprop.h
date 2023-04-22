@@ -1,8 +1,8 @@
 #ifndef INCLUDE_SIMPROP_H
 #define INCLUDE_SIMPROP_H
 
-#include "simprop/analyticalSolutions/BzNeutrinos.h"
 #include "simprop/analyticalSolutions/beniamino.h"
+#include "simprop/analyticalSolutions/cosmoNus.h"
 #include "simprop/core/common.h"
 #include "simprop/core/cosmology.h"
 #include "simprop/core/opticalDepth.h"
@@ -30,6 +30,7 @@
 #include "simprop/utils/logging.h"
 #include "simprop/utils/lookupContainers.h"
 #include "simprop/utils/numeric.h"
+#include "simprop/utils/progressbar.h"
 #include "simprop/utils/random.h"
 #include "simprop/utils/timer.h"
 
