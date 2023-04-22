@@ -1,4 +1,4 @@
-#include "simprop/analyticalSolutions/BzNeutrinos.h"
+#include "simprop/analyticalSolutions/cosmoNus.h"
 
 #include <limits>
 
@@ -8,24 +8,24 @@
 namespace simprop {
 namespace solutions {
 
-BzNeutrinos::BzNeutrinos() {
+CosmoNeutrinos::CosmoNeutrinos() {
   m_cosmology = std::make_shared<cosmo::Cosmology>();
   m_nuSpec = std::make_shared<KelnerAharonian2008::NeutrinoProductionSpectrum>();
   m_cmb = std::make_shared<photonfields::CMB>();
-
-  using std::exp;
-  using std::log;
   {
+    using std::exp;
+    using std::log;
     solutions::Beniamino b(true);
-    const auto zMax = 6.;
+    const auto zMax = 5.;
     auto f = [&b, zMax](double logEp, double z) -> double {
-      return log(b.computeFlux(exp(logEp), z, zMax, 1e-2));
+      auto value = b.computeFlux(exp(logEp), z, zMax, 1e-2);
+      return log(std::max(value, 1e-30));
     };
     m_Jp.cacheTable(f, {log(1e16 * SI::eV), log(1e23 * SI::eV)}, {0., zMax});
   }
 }
 
-double BzNeutrinos::I_deps(double Enu, double Ep, double z) const {
+double CosmoNeutrinos::I_deps(double Enu, double Ep, double z, size_t N) const {
   const auto epsMin = m_cmb->getMinPhotonEnergy();
   const auto epsMax = m_cmb->getMaxPhotonEnergy();
   auto integrand = [this, Ep, Enu, z](double lnEpsilon) {
@@ -34,33 +34,39 @@ double BzNeutrinos::I_deps(double Enu, double Ep, double z) const {
     auto value = m_cmb->density(epsilon, z) * m_nuSpec->Phi(eta, Enu / Ep);
     return epsilon * value;
   };
-  auto I = utils::simpsonIntegration<double>(integrand, std::log(epsMin), std::log(epsMax), 300);
+  auto a = std::log(epsMin);
+  auto b = std::log(epsMax);
+  auto I = utils::RombergIntegration<double>(integrand, a, b, N, 1e-2);
+
   return I;
 }
 
-double BzNeutrinos::I_dEp(double Enu, double z) const {
+double CosmoNeutrinos::I_dEp(double Enu, double z, size_t N) const {
   auto integrand = [this, Enu, z](double lnEp) {
     const auto Ep = std::exp(lnEp);
-    auto value = m_Jp.get(lnEp, z);
+    auto value = std::exp(m_Jp.get(lnEp, z));
     value *= I_deps(Enu, Ep, z);
     return value;
   };
+  auto a = std::log(Enu);
+  auto b = std::log(std::min(1e4 * Enu, 1e23 * SI::eV));
+  auto I = utils::RombergIntegration<double>(integrand, a, b, N, 1e-2);
 
-  return utils::QAGIntegration<double>(integrand, std::log(Enu), std::log(1e5 * Enu), 1000, 1e-2);
+  return I;
 }
 
-double BzNeutrinos::computeNeutrinoFlux(double EnuObs, double zMax, double relError) const {
+double CosmoNeutrinos::computeNeutrinoFlux(double EnuObs, double zMax, size_t N) const {
   const auto factor = 1.;
   auto integrand = [this, EnuObs](double z) {
     auto dtdz = m_cosmology->dtdz(z);
     return dtdz / pow2(1. + z) * I_dEp(EnuObs * (1. + z), z);
   };
-  auto I = utils::simpsonIntegration<double>(integrand, 0., zMax, 100);
+  auto I = utils::RombergIntegration<double>(integrand, 0., zMax, N, 1e-2);
 
   return factor * I;
 }
 
-double BzNeutrinos::getProtonFlux(double Ep, double z) const {
+double CosmoNeutrinos::getProtonFlux(double Ep, double z) const {
   auto lnEp = std::log(Ep);
   return std::exp(m_Jp.get(lnEp, z));
 }
