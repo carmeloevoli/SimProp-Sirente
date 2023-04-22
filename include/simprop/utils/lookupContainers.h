@@ -6,6 +6,7 @@
 #include "simprop/core/units.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/numeric.h"
+#include "simprop/utils/progressbar.h"
 #include "simprop/utils/timer.h"
 
 namespace simprop {
@@ -42,8 +43,13 @@ class LookupArray {
   void cacheTable(const std::function<double(double)>& func,
                   const std::pair<double, double>& range) {
     const double dx = (range.second - range.first) / (double)(xSize - 1);
-    utils::Timer timer("time for caching");
+    // Progressbar init
+    auto progressbar = std::make_shared<ProgressBar>(xSize);
+    auto progressbar_mutex = std::make_shared<std::mutex>();
+    progressbar->setMutex(progressbar_mutex);
+    progressbar->start("Start caching vector");
     for (size_t i = 0; i < xSize; ++i) {
+      progressbar->update();
       auto x = (double)i * dx + range.first;
       auto f_x = func(x);
       m_xAxis.emplace_back(x);
@@ -97,16 +103,19 @@ class LookupTable {
                   const std::pair<double, double>& yRange) {
     const double dx = (xRange.second - xRange.first) / (double)(xSize - 1);
     const double dy = (yRange.second - yRange.first) / (double)(ySize - 1);
-    utils::Timer timer("time for caching");
+    // Progressbar init
+    auto progressbar = std::make_shared<ProgressBar>(xSize * ySize);
+    auto progressbar_mutex = std::make_shared<std::mutex>();
+    progressbar->setMutex(progressbar_mutex);
+    progressbar->start("Start caching table");
+
     for (size_t i = 0; i < xSize; ++i) {
       auto x = (double)i * dx + xRange.first;
       m_xAxis.emplace_back(x);
       for (size_t j = 0; j < ySize; ++j) {
+        progressbar->update();
         auto y = (double)j * dy + yRange.first;
-        if (i == 0) {
-          m_yAxis.emplace_back(y);
-        }
-        std::cout << x << " " << y << "\n";
+        if (i == 0) m_yAxis.emplace_back(y);
         auto f_xy = func(x, y);
         m_table.emplace_back(f_xy);
       }
