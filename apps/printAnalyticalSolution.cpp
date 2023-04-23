@@ -27,11 +27,11 @@ void testCharacteristics() {
     out << "# z - 10^17 eV - 10^18 eV - 10^19 eV - 10^20 eV - 10^21 eV\n";
     for (const auto &z_i : z) {
       out << std::scientific << z_i << "\t";
-      out << b.generationEnergy(1e17 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(1e18 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(1e19 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(1e20 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(1e21 * SI::eV, 0., z_i, 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(1e17 * SI::eV, 0., z_i, 1e-5) / SI::eV << "\t";
+      out << b.generationEnergy(1e18 * SI::eV, 0., z_i, 1e-5) / SI::eV << "\t";
+      out << b.generationEnergy(1e19 * SI::eV, 0., z_i, 1e-5) / SI::eV << "\t";
+      out << b.generationEnergy(1e20 * SI::eV, 0., z_i, 1e-5) / SI::eV << "\t";
+      out << b.generationEnergy(1e21 * SI::eV, 0., z_i, 1e-5) / SI::eV << "\t";
       out << "\n";
     }
   }
@@ -41,12 +41,12 @@ void testCharacteristics() {
     out << "# E - 0.05 - 0.5 - 1 - 2 - 3 - 5\n";
     for (const auto &E_i : E) {
       out << std::scientific << E_i / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0., 0.05, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0., 0.5, 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0., 1., 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0., 2., 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0., 3., 1e-6) / SI::eV << "\t";
-      out << b.generationEnergy(E_i, 0., 5., 1e-6) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 0.05, 1e-5) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 0.5, 1e-5) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 1., 1e-5) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 2., 1e-5) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 3., 1e-5) / SI::eV << "\t";
+      out << b.generationEnergy(E_i, 0., 5., 1e-5) / SI::eV << "\t";
       out << "\n";
     }
   }
@@ -111,9 +111,9 @@ int main() {
     utils::startup_information();
     utils::Timer timer("main timer for analytical solution");
     // makeEnergyLossesTables();
-    // testCharacteristics();
+    testCharacteristics();
     // testJacobian();
-    testSpectrum();
+    // testSpectrum();
   } catch (const std::exception &e) {
     LOGE << "exception caught with message: " << e.what();
   }
