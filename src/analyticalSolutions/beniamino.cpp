@@ -13,7 +13,7 @@ namespace solutions {
 #define VERYLARGEJACOBIAN (1e6)
 
 Beniamino::Beniamino(bool doPhotoPion) {
-  m_cosmology = std::make_shared<cosmo::Cosmology>();
+  m_cosmology = std::make_shared<cosmo::Planck2018>();
   {
     auto cmb = std::make_shared<photonfields::CMB>();
     auto pair = std::make_shared<losses::PairProductionLosses>(cmb);
@@ -21,7 +21,8 @@ Beniamino::Beniamino(bool doPhotoPion) {
     m_losses.cacheTable(
         [doPhotoPion, pair, pion](double lnE) {
           auto Gamma = std::exp(lnE) / SI::protonMassC2;
-          return pair->beta(proton, Gamma) + ((doPhotoPion) ? pion->beta(proton, Gamma) : 0.);
+          auto beta = pair->beta(proton, Gamma) + ((doPhotoPion) ? pion->beta(proton, Gamma) : 0.);
+          return beta;
         },
         {std::log(1e16 * SI::eV), std::log(VERYLARGEENERGY)});
   }
@@ -55,6 +56,7 @@ double Beniamino::generationEnergy(double E, double zNow, double zMax, double re
     return E_g * (1. / (1. + z) + dtdz * pow3(1. + z) * beta);
   };
   auto value = utils::odeiv<double>(dEdz, E, zNow, zMax, relError);
+  assert(value > 0.);
 
   return std::min(value, VERYLARGEENERGY);
 }
@@ -70,6 +72,7 @@ double Beniamino::dilationFactor(double E, double zNow, double zMax, double relE
     return y * (1. / (1. + z) + dtdz * pow3(1. + z) * dbdE);
   };
   auto value = utils::odeiv<double>(dydz, 1., zNow, zMax, relError);
+  assert(value > 0.);
 
   return std::min(value, VERYLARGEJACOBIAN);
 }

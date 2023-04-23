@@ -19,7 +19,7 @@ struct BeniaminoParams {
 class Beniamino {
  protected:
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
-  utils::LookupArray<1000> m_losses;
+  utils::LookupArray<2000> m_losses;
 
   const double m_sourceEmissivity = 0.4e46 * SI::erg / SI::Mpc3 / SI::year;
   const double m_maxEnergy = 1e23 * SI::eV;
