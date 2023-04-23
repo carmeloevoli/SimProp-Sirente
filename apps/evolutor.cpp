@@ -12,7 +12,7 @@ auto IsActive = [](const Particle& p) {
 
 class Evolutor {
  protected:
-  const double deltaGammaCritical = 0.03;
+  const double deltaGammaCritical = 0.1;
   RandomNumberGenerator& m_rng;
   ParticleStack m_stack;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
@@ -47,7 +47,8 @@ class Evolutor {
   void buildContinuousLosses(bool doPionLosses = false) {
     m_continuousLosses = std::vector<std::shared_ptr<losses::ContinuousLosses> >{
         std::make_shared<losses::AdiabaticContinuousLosses>(m_cosmology),
-        std::make_shared<losses::PairProductionLosses>(m_cmb),
+        std::make_shared<losses::PairProductionLosses>(
+            losses::PairProductionLosses(m_cmb).doCaching()),
     };
     if (doPionLosses)
       m_continuousLosses.push_back(std::make_shared<losses::PhotoPionContinuousLosses>(m_cmb));
@@ -199,7 +200,7 @@ void testSpectrum() {
     for (const auto& E_i : E) {
       std::cout << E_i / SI::eV << "\n";
       out << std::scientific << E_i / SI::eV << "\t";
-      out << b.computeFlux(E_i, 0., zMax) / units << "\t";
+      out << b.computeFlux(E_i, 0., zMax, 1e-2) / units << "\t";
       out << "\n";
     }
   }
@@ -210,7 +211,7 @@ int main() {
     utils::startup_information();
     utils::Timer timer("main timer");
     testSpectrum();
-    evolvePopulation();
+    // evolvePopulation();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
