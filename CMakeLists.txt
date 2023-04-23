@@ -206,8 +206,8 @@ target_link_libraries (single_particle simprop ${SIMPROP_EXTRA_LIBRARIES})
 add_executable(secondary_neutrinos apps/printSecondaryNeutrinos.cpp)
 target_link_libraries (secondary_neutrinos simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-# add_executable(evolve examples/evolveContinuousLosses.cpp)
-# target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(evolve apps/evolutor.cpp)
+target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # testing
 if(ENABLE_TESTING)

@@ -2,15 +2,17 @@
 
 using namespace simprop;
 
+#define VERYLARGEENERGY (1e25 * SI::eV)
+
 auto IsActive = [](const Particle& p) {
-  constexpr double minPropagatingGamma = 1e7;
+  constexpr double minPropagatingGamma = 1e6;
   return (p.isNucleus() && p.isActive() && p.getRedshift() > 1e-20 &&
           p.getGamma() > minPropagatingGamma);
 };
 
 class Evolutor {
  protected:
-  const double deltaGammaCritical = 0.1;
+  const double deltaGammaCritical = 0.03;
   RandomNumberGenerator& m_rng;
   ParticleStack m_stack;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
@@ -35,8 +37,9 @@ class Evolutor {
 
   void buildContinuousLosses(bool doPionLosses = false) {
     m_continuousLosses = std::vector<std::shared_ptr<losses::ContinuousLosses> >{
+        std::make_shared<losses::AdiabaticContinuousLosses>(m_cosmology),
         std::make_shared<losses::PairProductionLosses>(m_cmb),
-        std::make_shared<losses::AdiabaticContinuousLosses>(m_cosmology)};
+    };
     if (doPionLosses)
       m_continuousLosses.push_back(std::make_shared<losses::PhotoPionContinuousLosses>(m_cmb));
   }
@@ -78,7 +81,6 @@ class Evolutor {
     while (it != m_stack.end()) {
       const auto nowRedshift = it->getRedshift();
       const auto Gamma = it->getGamma();
-      // std::cout << nowRedshift << " " << Gamma << "\n";
       const auto dz_c = computeLossesRedshiftInterval(*it);
       assert(dz_c > 0. && dz_c <= nowRedshift);
       const auto deltaGamma = computeDeltaGamma(*it, dz_c);
@@ -89,7 +91,7 @@ class Evolutor {
   }  // run()
 
   double getObservedEnergy() {
-    assert(m_stack.size() == 1 && m_stack[0].getRedshift() < 1e-20);
+    assert(m_stack.size() == 1);  // && m_stack[0].getRedshift() < 1e-20);
     return m_stack[0].getGamma() * SI::protonMassC2;
   }
 };
@@ -102,7 +104,7 @@ void testSingleParticleEvolution(double zMax, std::string filename) {
   evolutor.buildPhotonFields();
   evolutor.buildContinuousLosses(true);
   const auto eFactor = std::pow(10., 1. / 4.);
-  for (double E = 1e17 * SI::eV; E < 1e23 * SI::eV; E *= eFactor) {
+  for (double E = 1e16 * SI::eV; E < 1e23 * SI::eV; E *= eFactor) {
     evolutor.buildParticleStack(zMax, E / SI::protonMassC2, 1);
     evolutor.run();
     out << std::scientific << E / SI::eV << " " << evolutor.getObservedEnergy() / SI::eV << "\n";
@@ -114,6 +116,7 @@ int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer");
+    testSingleParticleEvolution(5.0, "test_traj_z5.0.txt");
     testSingleParticleEvolution(3.0, "test_traj_z3.0.txt");
     testSingleParticleEvolution(2.0, "test_traj_z2.0.txt");
     testSingleParticleEvolution(1.0, "test_traj_z1.0.txt");

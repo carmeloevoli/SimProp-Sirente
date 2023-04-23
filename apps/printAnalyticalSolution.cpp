@@ -87,7 +87,7 @@ void testJacobian() {
 
 void testSpectrum() {
   solutions::Beniamino b(true);
-  auto E = utils::LogAxis(1e17 * SI::eV, 1e23 * SI::eV, 4 * 4);
+  auto E = utils::LogAxis(1e17 * SI::eV, 1e23 * SI::eV, 8 * 4);
   {
     utils::OutputFile out("SimProp_proton_spectrum.txt");
     const double zMax = 6.;
@@ -111,9 +111,9 @@ int main() {
     utils::startup_information();
     utils::Timer timer("main timer for analytical solution");
     // makeEnergyLossesTables();
-    testCharacteristics();
+    // testCharacteristics();
     // testJacobian();
-    // testSpectrum();
+    testSpectrum();
   } catch (const std::exception &e) {
     LOGE << "exception caught with message: " << e.what();
   }

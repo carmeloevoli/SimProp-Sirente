@@ -42,15 +42,26 @@ double phi(double k) {
   }
 }
 
+void PairProductionLosses::doCaching() {
+  m_betaProtons.cacheTable(
+      [this](double lnGamma, double z) {
+        auto Gamma = std::exp(lnGamma);
+        return computeProtonBeta(Gamma, z);
+      },
+      {std::log(1e7), std::log(1e14)}, {0., 10.});
+}
+
 PairProductionLosses::PairProductionLosses(
     const std::shared_ptr<photonfields::PhotonField>& photonField)
     : ContinuousLosses() {
   m_photonFields.push_back(photonField);
+  doCaching();
   LOGD << "calling " << __func__ << " constructor";
 }
 
 PairProductionLosses::PairProductionLosses(const photonfields::PhotonFields& photonFields)
     : ContinuousLosses(), m_photonFields(photonFields) {
+  doCaching();
   LOGD << "calling " << __func__ << " constructor";
 }
 
@@ -62,12 +73,12 @@ double PairProductionLosses::computeProtonBeta(double Gamma, double z) const {
     const auto epsmax = phField->getMaxPhotonEnergy();
     const auto lkmin = std::log(TwoGamma_mec2 * epsmin);
     const auto lkmax = std::log(TwoGamma_mec2 * epsmax);
-    value += utils::simpsonIntegration<double>(
+    value += utils::RombergIntegration<double>(
         [TwoGamma_mec2, phField, z](double lnk) {
           auto k = std::exp(lnk);
           return phi(k) / k * phField->density(k / TwoGamma_mec2, z);
         },
-        lkmin, lkmax, 1000);
+        lkmin, lkmax, 8, 1e-3);
   }
   constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::cLight * SI::electronMassC2 *
                           (SI::electronMass / SI::protonMass);
@@ -75,7 +86,8 @@ double PairProductionLosses::computeProtonBeta(double Gamma, double z) const {
 }
 
 double PairProductionLosses::beta(PID pid, double Gamma, double z) const {
-  auto b_l = computeProtonBeta(Gamma, z);
+  // auto b_l_true = computeProtonBeta(Gamma, z);
+  auto b_l = m_betaProtons.get(std::log(Gamma), z);
   auto Z = (double)getPidNucleusCharge(pid);
   auto A = (double)getPidNucleusMassNumber(pid);
   b_l *= pow2(Z) / A;

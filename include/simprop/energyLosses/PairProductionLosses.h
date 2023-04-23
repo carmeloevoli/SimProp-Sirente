@@ -3,6 +3,7 @@
 
 #include "simprop/energyLosses/ContinuousLosses.h"
 #include "simprop/photonFields/PhotonField.h"
+#include "simprop/utils/lookupContainers.h"
 
 namespace simprop {
 namespace losses {
@@ -10,6 +11,7 @@ namespace losses {
 class PairProductionLosses final : public ContinuousLosses {
  protected:
   photonfields::PhotonFields m_photonFields;
+  utils::LookupTable<2000, 100> m_betaProtons;
 
  public:
   PairProductionLosses(const std::shared_ptr<photonfields::PhotonField>& photonField);
@@ -17,7 +19,8 @@ class PairProductionLosses final : public ContinuousLosses {
   virtual ~PairProductionLosses() = default;
   double beta(PID pid, double Gamma, double z = 0) const override;
 
- public:
+ protected:
+  void doCaching();
   double computeProtonBeta(double Gamma, double z) const;
 };
 
