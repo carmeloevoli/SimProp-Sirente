@@ -7,14 +7,14 @@
 namespace simprop {
 namespace solutions {
 
-CosmoNeutrinos::CosmoNeutrinos(BeniaminoParams params) {
+CosmoNeutrinos::CosmoNeutrinos(double injSlope, double sourceEvolution, double sourceCutoff) {
   m_cosmology = std::make_shared<cosmo::Cosmology>();
   m_nuSpec = std::make_shared<KelnerAharonian2008::NeutrinoProductionSpectrum>();
   m_cmb = std::make_shared<photonfields::CMB>();
   {
     using std::exp;
     using std::log;
-    auto b = solutions::Beniamino(params).doCaching();
+    auto b = solutions::Beniamino(injSlope, sourceEvolution, sourceCutoff, true).doCaching();
     const auto zMax = 5.;
     auto f = [&b, zMax](double logEp, double z) -> double {
       auto value = b.computeFlux(exp(logEp), z, zMax, 1e-2);

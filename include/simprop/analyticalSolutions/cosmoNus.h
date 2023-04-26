@@ -15,7 +15,7 @@ namespace solutions {
 
 class CosmoNeutrinos {
  public:
-  CosmoNeutrinos(BeniaminoParams params);
+  CosmoNeutrinos(double injSlope, double sourceEvolution, double sourceCutoff);
   virtual ~CosmoNeutrinos() = default;
 
   double computeNeutrinoFlux(double Enu, double zMax, size_t N = 8) const;

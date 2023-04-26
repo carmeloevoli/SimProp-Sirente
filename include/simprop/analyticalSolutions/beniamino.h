@@ -8,27 +8,20 @@
 namespace simprop {
 namespace solutions {
 
-struct BeniaminoParams {
-  double slope;
-  double sourceEvolution;
-  double sourceCutoff;
-  bool doPhotoPion;
-};
-
 class Beniamino {
  public:
-  Beniamino();
-  Beniamino(BeniaminoParams params);
+  Beniamino(bool doPhotoPion = false);
+  Beniamino(double injSlope, double sourceEvolution, double sourceCutoff, bool doPhotoPion = false);
   Beniamino& doCaching();
 
   virtual ~Beniamino() = default;
 
   double generationEnergy(double E, double zNow, double zMax, double relError = 1e-3) const;
   double dilationFactor(double E, double zNow, double zMax, double relError = 1e-3) const;
-  double computeFlux(double E, double zObs, double zMax, double relError = 1e-3) const;
+  double computeFlux(double E, double zObs, double zMax, double relError = 1e-2) const;
   // double computeFluxUnm(double E, double zMax, double relError = 1e-3) const;
 
- protected:
+ public:
   double dbdE(double E) const;
   double beta(double E) const;
 
