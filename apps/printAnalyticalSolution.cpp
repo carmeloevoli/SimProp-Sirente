@@ -3,7 +3,7 @@
 using namespace simprop;
 
 void makeEnergyLossesTables() {
-  solutions::Beniamino b(true);
+  solutions::Beniamino b;
   auto cosmology = std::make_shared<cosmo::Planck2018>();
   auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
 
@@ -20,7 +20,7 @@ void makeEnergyLossesTables() {
 }
 
 void testCharacteristics() {
-  solutions::Beniamino b(true);
+  solutions::Beniamino b;
   {
     utils::OutputFile out("SimProp_characteristics_vs_redshift.txt");
     auto z = utils::LogAxis(1e-4, 5., 1000);
@@ -53,7 +53,7 @@ void testCharacteristics() {
 }
 
 void testJacobian() {
-  solutions::Beniamino b(true);
+  solutions::Beniamino b;
   {
     utils::OutputFile out("SimProp_jacobian_vs_redshift.txt");
     auto z = utils::LogAxis(1e-4, 5., 1000);
@@ -86,7 +86,7 @@ void testJacobian() {
 }
 
 void testSpectrum() {
-  solutions::Beniamino b(true);
+  solutions::Beniamino b;
   auto E = utils::LogAxis(1e17 * SI::eV, 1e23 * SI::eV, 8 * 4);
   {
     utils::OutputFile out("SimProp_proton_spectrum.txt");

@@ -2,20 +2,19 @@
 
 #include <limits>
 
-#include "simprop/analyticalSolutions/beniamino.h"
 #include "simprop/utils/logging.h"
 
 namespace simprop {
 namespace solutions {
 
-CosmoNeutrinos::CosmoNeutrinos() {
+CosmoNeutrinos::CosmoNeutrinos(BeniaminoParams params) {
   m_cosmology = std::make_shared<cosmo::Cosmology>();
   m_nuSpec = std::make_shared<KelnerAharonian2008::NeutrinoProductionSpectrum>();
   m_cmb = std::make_shared<photonfields::CMB>();
   {
     using std::exp;
     using std::log;
-    solutions::Beniamino b(true);
+    auto b = solutions::Beniamino(params).doCaching();
     const auto zMax = 5.;
     auto f = [&b, zMax](double logEp, double z) -> double {
       auto value = b.computeFlux(exp(logEp), z, zMax, 1e-2);

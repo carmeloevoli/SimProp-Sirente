@@ -2,38 +2,41 @@
 
 #include <limits>
 
+#include "simprop/photonFields/CmbPhotonField.h"
 #include "simprop/utils/logging.h"
 
 namespace simprop {
 namespace solutions {
 
 #define INTSTEPS 1000
-
 #define VERYLARGEENERGY (1e25 * SI::eV)
 #define VERYLARGEJACOBIAN (1e6)
 
-Beniamino::Beniamino(bool doPhotoPion) {
+Beniamino::Beniamino() {
   m_cosmology = std::make_shared<cosmo::Planck2018>();
-  {
-    auto cmb = std::make_shared<photonfields::CMB>();
-    auto pair = std::make_shared<losses::PairProductionLosses>(cmb);
-    auto pion = std::make_shared<losses::PhotoPionContinuousLosses>(cmb);
-    m_losses.cacheTable(
-        [doPhotoPion, pair, pion](double lnE) {
-          auto Gamma = std::exp(lnE) / SI::protonMassC2;
-          auto beta = pair->beta(proton, Gamma) + ((doPhotoPion) ? pion->beta(proton, Gamma) : 0.);
-          return beta;
-        },
-        {std::log(1e16 * SI::eV), std::log(VERYLARGEENERGY)});
-  }
+  auto cmb = std::make_shared<photonfields::CMB>();
+  m_pair = std::make_shared<losses::PairProductionLosses>(cmb);
+  m_pion = std::make_shared<losses::PhotoPionContinuousLosses>(cmb);
   LOGD << "calling " << __func__ << " constructor";
 }
 
-Beniamino::Beniamino(bool doPhotoPion, BeniaminoParams params) : Beniamino(doPhotoPion) {
+Beniamino::Beniamino(BeniaminoParams params) : Beniamino() {
   m_slope = params.slope;
   m_sourceEvolution = params.sourceEvolution;
   m_sourceCutoff = params.sourceCutoff;
+  m_doPhotoPion = params.doPhotoPion;
   LOGD << "calling " << __func__ << " constructor";
+}
+
+Beniamino& Beniamino::doCaching() {
+  m_losses.cacheTable(
+      [this](double lnE) {
+        auto Gamma = std::exp(lnE) / SI::protonMassC2;
+        return m_pair->beta(proton, Gamma) + ((m_doPhotoPion) ? m_pion->beta(proton, Gamma) : 0.);
+      },
+      {std::log(1e16 * SI::eV), std::log(VERYLARGEENERGY)});
+  m_doCaching = true;
+  return *this;
 }
 
 double Beniamino::dbdE(double E) const {

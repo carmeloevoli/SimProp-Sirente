@@ -191,7 +191,7 @@ void evolvePopulation() {
 }
 
 void testSpectrum() {
-  solutions::Beniamino b(true);
+  solutions::Beniamino b;
   auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 16 * 5);
   {
     utils::OutputFile out("test_analytical_spectrum.txt");

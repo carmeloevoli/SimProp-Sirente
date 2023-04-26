@@ -30,7 +30,7 @@ void testProductionSpectrum() {
 }
 
 void testNeutrinoSpectrum() {
-  solutions::CosmoNeutrinos nu;
+  solutions::CosmoNeutrinos nu({2.6, 0., -1., true});
   {
     utils::OutputFile out("SimProp_proton_spectrum.txt");
     const double units = pow2(SI::eV) / SI::m2 / SI::sr / SI::sec;
