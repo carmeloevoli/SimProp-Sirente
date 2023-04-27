@@ -85,17 +85,6 @@ double Beniamino::dilationFactor(double E, double zNow, double zMax, double relE
   return std::min(value, VERYLARGEJACOBIAN);
 }
 
-// double Beniamino::computeFluxUnm(double E, double zMax, double relError) const {
-//   const auto K = m_slope - 2;
-//   const auto L_0 = m_sourceEmissivity;
-//   const auto factor = SI::cLight / 4. / M_PI * K * L_0 * std::pow(E / E_0, -m_slope);
-//   auto integrand = [&](double z) { return m_cosmology->dtdz(z) * std::pow(1. + z, -m_slope
-//   + 1.);
-//   }; auto I = utils::QAGIntegration<double>(integrand, 0., zMax, INTSTEPS, relError);
-
-//   return factor * I;
-// }
-
 double Beniamino::computeFlux(double E, double zObs, double zMax, double relError) const {
   const auto K = (m_slope - 2.) / pow2(m_minEnergy);
   const auto L_0 = m_sourceEmissivity;
@@ -114,6 +103,17 @@ double Beniamino::computeFlux(double E, double zObs, double zMax, double relErro
 
   return factor * I;
 }
+
+// double Beniamino::computeFluxUnm(double E, double zMax, double relError) const {
+//   const auto K = m_slope - 2;
+//   const auto L_0 = m_sourceEmissivity;
+//   const auto factor = SI::cLight / 4. / M_PI * K * L_0 * std::pow(E / E_0, -m_slope);
+//   auto integrand = [&](double z) { return m_cosmology->dtdz(z) * std::pow(1. + z, -m_slope
+//   + 1.);
+//   }; auto I = utils::QAGIntegration<double>(integrand, 0., zMax, INTSTEPS, relError);
+
+//   return factor * I;
+// }
 
 }  // namespace solutions
 }  // namespace simprop
