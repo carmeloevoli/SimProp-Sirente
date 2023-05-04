@@ -16,6 +16,7 @@ Beniamino::Beniamino(bool doPhotoPion) : m_doPhotoPion(doPhotoPion) {
   m_cosmology = std::make_shared<cosmo::Planck2018>();
   auto cmb = std::make_shared<photonfields::CMB>();
   m_pair = std::make_shared<losses::PairProductionLosses>(cmb);
+  if (m_doPhotoPion) m_pion = std::make_shared<losses::PhotoPionContinuousLosses>(cmb);
   LOGD << "calling " << __func__ << " constructor";
 }
 
@@ -64,7 +65,7 @@ double Beniamino::generationEnergy(double E, double zNow, double zMax, double re
 
 double Beniamino::dbdE(double E) const {
   if (E < 1e6 * SI::eV || E > VERYLARGEENERGY) return 0;
-  auto dbetadE = utils::deriv5pt<double>([this](double x) { return beta(x); }, E, 1e-1 * E);
+  auto dbetadE = utils::deriv5pt<double>([this](double x) { return beta(x); }, E, 0.1 * E);
   return beta(E) + E * dbetadE;
 }
 

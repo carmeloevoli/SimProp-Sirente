@@ -29,7 +29,7 @@ class Beniamino {
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
   std::shared_ptr<losses::PairProductionLosses> m_pair;
   std::shared_ptr<losses::PhotoPionContinuousLosses> m_pion;
-  utils::LookupArray<5000> m_losses;
+  utils::LookupArray<8000> m_losses;
 
   const double m_sourceEmissivity{1e45 * SI::erg / SI::Mpc3 / SI::year};
   const double m_maxEnergy{1e23 * SI::eV};
