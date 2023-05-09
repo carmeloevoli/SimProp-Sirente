@@ -191,19 +191,19 @@ void evolvePopulation() {
 }
 
 void testSpectrum() {
-  solutions::Beniamino b;
-  auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 16 * 5);
-  {
-    utils::OutputFile out("test_analytical_spectrum.txt");
-    const double zMax = 1.;
-    const double units = 1. / SI::eV / SI::m2 / SI::sr / SI::sec;
-    for (const auto& E_i : E) {
-      std::cout << E_i / SI::eV << "\n";
-      out << std::scientific << E_i / SI::eV << "\t";
-      out << b.computeFlux(E_i, 0., zMax, 1e-2) / units << "\t";
-      out << "\n";
-    }
-  }
+  // solutions::Beniamino b;
+  // auto E = utils::LogAxis(1e17 * SI::eV, 1e22 * SI::eV, 16 * 5);
+  // {
+  //   utils::OutputFile out("test_analytical_spectrum.txt");
+  //   const double zMax = 1.;
+  //   const double units = 1. / SI::eV / SI::m2 / SI::sr / SI::sec;
+  //   for (const auto& E_i : E) {
+  //     std::cout << E_i / SI::eV << "\n";
+  //     out << std::scientific << E_i / SI::eV << "\t";
+  //     out << b.computeFlux(E_i, 0., zMax, 1e-2) / units << "\t";
+  //     out << "\n";
+  //   }
+  // }
 }
 
 int main() {

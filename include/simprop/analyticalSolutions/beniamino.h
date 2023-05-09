@@ -2,16 +2,22 @@
 #define SIMPROP_ANALYTICALSOLUTIONS_BENIAMINO_H
 
 #include "simprop/core/cosmology.h"
-#include "simprop/energyLosses/PairProductionLosses.h"
-#include "simprop/energyLosses/PhotoPionContinuousLosses.h"
+#include "simprop/energyLosses/ContinuousLosses.h"
+#include "simprop/utils/lookupContainers.h"
 
 namespace simprop {
 namespace solutions {
 
+struct SourceParams {
+  double injSlope;
+  double evolutionIndex;
+  double expCutoff;
+};
+
 class Beniamino {
  public:
-  Beniamino(bool doPhotoPion = false);
-  Beniamino(double injSlope, double sourceEvolution, double sourceCutoff, bool doPhotoPion = false);
+  Beniamino(const SourceParams& params, const std::shared_ptr<cosmo::Cosmology>& cosmology,
+            const std::vector<std::shared_ptr<losses::ContinuousLosses>>& losses);
   Beniamino& doCaching();
 
   virtual ~Beniamino() = default;
@@ -27,18 +33,16 @@ class Beniamino {
 
  protected:
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
-  std::shared_ptr<losses::PairProductionLosses> m_pair;
-  std::shared_ptr<losses::PhotoPionContinuousLosses> m_pion;
-  utils::LookupArray<8000> m_losses;
+  std::vector<std::shared_ptr<losses::ContinuousLosses>> m_losses;
+  utils::LookupArray<10000> m_lossesLookup;
 
   const double m_sourceEmissivity{1e45 * SI::erg / SI::Mpc3 / SI::year};
   const double m_maxEnergy{1e23 * SI::eV};
   const double m_minEnergy{1e17 * SI::eV};
 
-  double m_slope{2.6};
-  double m_sourceEvolution{0.};
-  double m_sourceCutoff{-1.};
-  bool m_doPhotoPion{false};
+  double m_injSlope{2.6};
+  double m_evolutionIndex{0.};
+  double m_expCutoff{-1.};
   bool m_doCaching{false};
 };
 
