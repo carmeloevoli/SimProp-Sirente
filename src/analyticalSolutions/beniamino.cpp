@@ -9,6 +9,7 @@ namespace simprop {
 namespace solutions {
 
 #define INTSTEPS 1000
+#define VERYSMALLENERGY (1e15 * SI::eV)
 #define VERYLARGEENERGY (1e25 * SI::eV)
 #define VERYLARGEJACOBIAN (1e6)
 
@@ -18,6 +19,7 @@ Beniamino::Beniamino(const SourceParams& params, const std::shared_ptr<cosmo::Co
   m_injSlope = params.injSlope;
   m_evolutionIndex = params.evolutionIndex;
   m_expCutoff = params.expCutoff;
+  m_zMax = params.zMax;
   LOGD << "calling " << __func__ << " constructor";
 }
 
@@ -31,13 +33,13 @@ Beniamino& Beniamino::doCaching() {
               return sum + l->beta(proton, Gamma);
             });
       },
-      {std::log(1e16 * SI::eV), std::log(VERYLARGEENERGY)});
+      {std::log(VERYSMALLENERGY), std::log(VERYLARGEENERGY)});
   m_doCaching = true;
   return *this;
 }
 
 double Beniamino::beta(double E) const {
-  if (E < 1e16 * SI::eV || E > VERYLARGEENERGY) return 0;
+  if (E < VERYSMALLENERGY || E > VERYLARGEENERGY) return 0;
   if (m_doCaching)
     return m_lossesLookup.get(std::log(E));
   else {
@@ -49,15 +51,15 @@ double Beniamino::beta(double E) const {
   }
 }
 
-double Beniamino::generationEnergy(double E, double zNow, double zMax, double relError) const {
-  assert(zMax >= zNow);
+double Beniamino::generationEnergy(double E, double zInit, double zFinal, double relError) const {
+  assert(zFinal >= zInit);
   assert(E > 0);
   auto dEdz = [this](double z, double E_g) {
     auto dtdz = m_cosmology->dtdz(z);
     auto E = std::min(E_g * (1. + z), VERYLARGEENERGY);
     return E_g * (1. / (1. + z) + dtdz * pow3(1. + z) * beta(E));
   };
-  auto value = utils::odeiv<double>(dEdz, E, zNow, zMax, relError);
+  auto value = utils::odeiv<double>(dEdz, E, zInit, zFinal, relError);
   assert(value > 0.);
 
   return std::min(value, VERYLARGEENERGY);
@@ -75,24 +77,24 @@ double Beniamino::dbdE(double E) const {
   return beta(E) * factor;
 }
 
-double Beniamino::dilationFactor(double E, double zNow, double zMax, double relError) const {
-  assert(zMax >= zNow);
+double Beniamino::dilationFactor(double E, double zInit, double zFinal, double relError) const {
+  assert(zFinal >= zInit);
   assert(E > 0);
-  if (generationEnergy(E, zNow, zMax, 1e-2) > 0.2 * VERYLARGEENERGY) return VERYLARGEJACOBIAN;
-  auto dydz = [this, E, zNow](double z, double y) {
+  if (generationEnergy(E, zInit, zFinal, 1e-2) > 0.2 * VERYLARGEENERGY) return VERYLARGEJACOBIAN;
+  auto dydz = [this, E, zInit](double z, double y) {
     auto dtdz = m_cosmology->dtdz(z);
-    auto E_g = generationEnergy(E, zNow, z, 1e-5);
+    auto E_g = generationEnergy(E, zInit, z, 1e-5);
     auto E_prime = std::min(E_g * (1. + z), VERYLARGEENERGY);
     auto dbdE = std::max(this->dbdE(E_prime), 0.);
     return y * (1. / (1. + z) + dtdz * pow3(1. + z) * dbdE);
   };
-  auto value = utils::odeiv<double>(dydz, 1., zNow, zMax, relError);
+  auto value = utils::odeiv<double>(dydz, 1., zInit, zFinal, relError);
   assert(value > 0.);
 
   return std::min(value, VERYLARGEJACOBIAN);
 }
 
-double Beniamino::computeFlux(double E, double zObs, double zMax, double relError) const {
+double Beniamino::computeFlux(double E, double zObs, double relError) const {
   const auto K = (m_injSlope - 2.) / pow2(m_minEnergy);
   const auto L_0 = m_sourceEmissivity;
   const auto factor = SI::cLight / 4. / M_PI * K * L_0;
@@ -106,7 +108,7 @@ double Beniamino::computeFlux(double E, double zObs, double zMax, double relErro
     auto dtdz = m_cosmology->dtdz(z);
     return dtdz * sourceEvolution * inj * dEgdE;
   };
-  auto I = utils::QAGIntegration<double>(integrand, zObs, zMax, INTSTEPS, relError);
+  auto I = utils::QAGIntegration<double>(integrand, zObs, m_zMax, INTSTEPS, relError);
 
   return factor * I;
 }

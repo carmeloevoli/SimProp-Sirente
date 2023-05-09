@@ -29,38 +29,47 @@ void testProductionSpectrum() {
   }
 }
 
-void testNeutrinoSpectrum() {
-  solutions::CosmoNeutrinos nu(2.6, 0., -1.);
+void testNeutrinoSpectrum(const solutions::CosmoNeutrinos& nus) {
   {
     utils::OutputFile out("SimProp_proton_spectrum.txt");
     const double units = pow2(SI::eV) / SI::m2 / SI::sr / SI::sec;
     auto E = utils::LogAxis(1e16 * SI::eV, 1e21 * SI::eV, 100);
     for (const auto& E_p : E) {
       out << std::scientific << E_p / SI::eV << "\t";
-      out << pow3(E_p) * nu.getProtonFlux(E_p, 0.) / units << "\t";
-      out << pow3(E_p) * nu.getProtonFlux(E_p, 3.) / units << "\t";
-      out << pow3(E_p) * nu.getProtonFlux(E_p, 6.) / units << "\t";
+      out << pow3(E_p) * nus.getProtonFlux(E_p, 0.) / units << "\t";
+      out << pow3(E_p) * nus.getProtonFlux(E_p, 3.) / units << "\t";
+      out << pow3(E_p) * nus.getProtonFlux(E_p, 6.) / units << "\t";
       out << "\n";
     }
   }
-  // {
-  //   utils::OutputFile out("SimProp_neutrino_spectrum.txt");
-  //   const double units = SI::GeV / SI::cm2 / SI::sr / SI::sec;
-  //   auto E = utils::LogAxis(1e16 * SI::eV, 1e20 * SI::eV, 8 * 4);
-  //   for (const auto& E_nu : E) {
-  //     out << std::scientific << E_nu / SI::eV << "\t";
-  //     out << E_nu * E_nu * nu.computeNeutrinoFlux(E_nu, 5.) / units << "\t";
-  //     out << "\n";
-  //   }
-  // }
+  {
+    utils::OutputFile out("SimProp_neutrino_spectrum.txt");
+    const double units = SI::GeV / SI::cm2 / SI::sr / SI::sec;
+    auto E = utils::LogAxis(1e16 * SI::eV, 1e20 * SI::eV, 8 * 4);
+    for (const auto& E_nu : E) {
+      out << std::scientific << E_nu / SI::eV << "\t";
+      out << pow2(E_nu) * nus.computeNeutrinoFlux(E_nu, 5.) / units << "\t";
+      out << "\n";
+    }
+  }
 }
 
 int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer");
-    // testProductionSpectrum();
-    testNeutrinoSpectrum();
+
+    auto cosmology = std::make_shared<cosmo::Planck2018>();
+    auto cmb = std::make_shared<photonfields::CMB>();
+    std::vector<std::shared_ptr<losses::ContinuousLosses>> losses{
+        std::make_shared<losses::PairProductionLosses>(cmb),
+        std::make_shared<losses::PhotoPionContinuousLosses>(cmb)};
+    auto b = solutions::Beniamino({2.6, 0, -1}, cosmology, losses);  // .doCaching();
+
+    auto nus = solutions::CosmoNeutrinos(b, cmb);
+
+    testProductionSpectrum();
+    testNeutrinoSpectrum(nus);
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }

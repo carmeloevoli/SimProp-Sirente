@@ -7,30 +7,28 @@
 namespace simprop {
 namespace solutions {
 
-CosmoNeutrinos::CosmoNeutrinos(double injSlope, double sourceEvolution, double sourceCutoff) {
-  m_cosmology = std::make_shared<cosmo::Cosmology>();
+CosmoNeutrinos::CosmoNeutrinos(const solutions::Beniamino& b,
+                               const std::shared_ptr<photonfields::PhotonField>& ebl)
+    : m_ebl(ebl) {
   m_nuSpec = std::make_shared<KelnerAharonian2008::NeutrinoProductionSpectrum>();
-  m_cmb = std::make_shared<photonfields::CMB>();
+  m_cosmology = b.getCosmology();
   {
-    using std::exp;
-    using std::log;
-    auto b = solutions::Beniamino(injSlope, sourceEvolution, sourceCutoff, true).doCaching();
-    const auto zMax = 5.;
-    auto f = [&b, zMax](double logEp, double z) -> double {
-      auto value = b.computeFlux(exp(logEp), z, zMax, 1e-2);
-      return log(std::max(value, 1e-30));
+    auto f = [&b](double logEp, double z) -> double {
+      auto value = b.computeFlux(std::exp(logEp), z, 1e-2);
+      return std::log(std::max(value, 1e-30));
     };
+    const auto zMax = b.getMaxRedshift();
     m_Jp.cacheTable(f, {log(1e16 * SI::eV), log(1e23 * SI::eV)}, {0., zMax});
   }
 }
 
 double CosmoNeutrinos::I_deps(double Enu, double Ep, double z, size_t N) const {
-  const auto epsMin = m_cmb->getMinPhotonEnergy();
-  const auto epsMax = m_cmb->getMaxPhotonEnergy();
+  const auto epsMin = m_ebl->getMinPhotonEnergy();
+  const auto epsMax = m_ebl->getMaxPhotonEnergy();
   auto integrand = [this, Ep, Enu, z](double lnEpsilon) {
     const auto epsilon = std::exp(lnEpsilon);
     const auto eta = 4. * epsilon * Ep / pow2(SI::protonMassC2);
-    auto value = m_cmb->density(epsilon, z) * m_nuSpec->Phi(eta, Enu / Ep);
+    auto value = m_ebl->density(epsilon, z) * m_nuSpec->Phi(eta, Enu / Ep);
     return epsilon * value;
   };
   auto a = std::log(epsMin);

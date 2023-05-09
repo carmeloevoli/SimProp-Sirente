@@ -12,6 +12,7 @@ struct SourceParams {
   double injSlope;
   double evolutionIndex;
   double expCutoff;
+  double zMax;
 };
 
 class Beniamino {
@@ -22,14 +23,16 @@ class Beniamino {
 
   virtual ~Beniamino() = default;
 
-  double generationEnergy(double E, double zNow, double zMax, double relError = 1e-3) const;
-  double dilationFactor(double E, double zNow, double zMax, double relError = 1e-3) const;
-  double computeFlux(double E, double zObs, double zMax, double relError = 1e-2) const;
+  double generationEnergy(double E, double zInit, double zFinal, double relError = 1e-3) const;
+  double dilationFactor(double E, double zInit, double zFinal, double relError = 1e-3) const;
+  double computeFlux(double E, double zObs, double relError = 1e-2) const;
   // double computeFluxUnm(double E, double zMax, double relError = 1e-3) const;
 
  public:
   double dbdE(double E) const;
   double beta(double E) const;
+  double getMaxRedshift() const { return m_zMax; }
+  const std::shared_ptr<cosmo::Cosmology>& getCosmology() const { return m_cosmology; }
 
  protected:
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
@@ -40,6 +43,7 @@ class Beniamino {
   const double m_maxEnergy{1e23 * SI::eV};
   const double m_minEnergy{1e17 * SI::eV};
 
+  double m_zMax{3.};
   double m_injSlope{2.6};
   double m_evolutionIndex{0.};
   double m_expCutoff{-1.};

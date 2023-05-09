@@ -4,10 +4,8 @@
 #include <memory>
 
 #include "simprop/analyticalSolutions/beniamino.h"
-#include "simprop/core/cosmology.h"
 #include "simprop/crossSections/KelnerAharonian2008.h"
-#include "simprop/photonFields/CmbPhotonField.h"
-#include "simprop/photonFields/Saldana2021PhotonField.h"
+#include "simprop/photonFields/PhotonField.h"
 #include "simprop/utils/lookupContainers.h"
 
 namespace simprop {
@@ -15,7 +13,8 @@ namespace solutions {
 
 class CosmoNeutrinos {
  public:
-  CosmoNeutrinos(double injSlope, double sourceEvolution, double sourceCutoff);
+  CosmoNeutrinos(const solutions::Beniamino& b,
+                 const std::shared_ptr<photonfields::PhotonField>& ebl);
   virtual ~CosmoNeutrinos() = default;
 
   double computeNeutrinoFlux(double Enu, double zMax, size_t N = 8) const;
@@ -26,8 +25,8 @@ class CosmoNeutrinos {
   double I_dEp(double EnuObs, double z, size_t N = 10) const;
 
  protected:
+  std::shared_ptr<photonfields::PhotonField> m_ebl;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
-  std::shared_ptr<photonfields::PhotonField> m_cmb;
   std::shared_ptr<KelnerAharonian2008::NeutrinoProductionSpectrum> m_nuSpec;
   utils::LookupTable<50, 11> m_Jp;
 };
