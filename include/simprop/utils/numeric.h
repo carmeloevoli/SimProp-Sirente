@@ -77,11 +77,11 @@ T deriv(std::function<T(T)> f, T x, double rel_error = 1e-4) {
   return T(result);
 }
 
-template <typename T>
-T deriv5pt(std::function<T(T)> f, T x, T h) {
-  auto result = -f(x + 2 * h) + 8 * f(x + h) - 8 * f(x - h) + f(x - 2 * h);
-  return T(result) / 12 / h;
-}
+// template <typename T>
+// T deriv5pt(std::function<T(T)> f, T x, T h) {
+//   auto result = -f(x + 2 * h) + 8 * f(x + h) - 8 * f(x - h) + f(x - 2 * h);
+//   return T(result) / 12 / h;
+// }
 
 template <typename T>
 T QAGIntegration(std::function<T(T)> f, T start, T stop, int LIMIT, double rel_error = 1e-4) {
