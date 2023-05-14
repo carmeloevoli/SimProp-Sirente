@@ -67,14 +67,13 @@ double Beniamino::generationEnergy(double E, double zInit, double zFinal, double
 
 double Beniamino::dbdE(double E) const {
   if (E < 1e16 * SI::eV || E > VERYLARGEENERGY) return 0;
-  auto factor = utils::deriv<double>(
+  auto dbetadlnE = utils::deriv<double>(
       [this](double lnx) {
         auto x = std::exp(lnx);
-        auto betax = std::max(beta(x), 1e-50 / SI::year);
-        return std::log(x * betax);
+        return beta(x);
       },
       std::log(E), 1e-2);
-  return beta(E) * factor;
+  return beta(E) + dbetadlnE;
 }
 
 double Beniamino::dilationFactor(double E, double zInit, double zFinal, double relError) const {

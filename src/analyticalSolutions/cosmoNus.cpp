@@ -15,6 +15,7 @@ CosmoNeutrinos::CosmoNeutrinos(const solutions::Beniamino& b,
   {
     auto f = [&b](double logEp, double z) -> double {
       auto value = b.computeFlux(std::exp(logEp), z, 1e-2);
+      assert(value >= 0.);
       return std::log(std::max(value, 1e-30));
     };
     const auto zMax = b.getMaxRedshift();
