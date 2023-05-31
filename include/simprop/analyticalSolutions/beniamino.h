@@ -40,7 +40,7 @@ class Beniamino {
   utils::LookupArray<10000> m_lossesLookup;
 
   const double m_sourceEmissivity{1e45 * SI::erg / SI::Mpc3 / SI::year};
-  const double m_maxEnergy{1e23 * SI::eV};
+  const double m_maxEnergy{1e24 * SI::eV};
   const double m_minEnergy{1e17 * SI::eV};
 
   double m_zMax{3.};

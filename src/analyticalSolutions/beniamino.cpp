@@ -11,7 +11,7 @@ namespace solutions {
 #define INTSTEPS 1000
 #define VERYSMALLENERGY (1e15 * SI::eV)
 #define VERYLARGEENERGY (1e25 * SI::eV)
-#define VERYLARGEJACOBIAN (1e6)
+#define VERYLARGEJACOBIAN (1e8)
 
 Beniamino::Beniamino(const SourceParams& params, const std::shared_ptr<cosmo::Cosmology>& cosmology,
                      const std::vector<std::shared_ptr<losses::ContinuousLosses>>& losses)
