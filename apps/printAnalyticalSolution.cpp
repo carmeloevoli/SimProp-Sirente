@@ -2,6 +2,27 @@
 
 using namespace simprop;
 
+void printLosses() {
+  auto cosmology = std::make_shared<cosmo::Planck2018>();
+  auto adiabatic = losses::AdiabaticContinuousLosses(cosmology);
+
+  auto cmb = std::make_shared<photonfields::CMB>();
+  auto pair_cmb = losses::PairProductionLosses(cmb);
+  auto phpion_cmb = losses::PhotoPionContinuousLosses(cmb);
+
+  const auto gammaAxis = utils::LogAxis<double>(1e7, 1e13, 6 * 32);
+
+  utils::OutputFile out("SimProp_proton_lambda.txt");
+  out << std::scientific;
+  for (auto Gamma : gammaAxis) {
+    out << Gamma * SI::protonMassC2 / SI::eV << "\t";
+    out << SI::cLight / adiabatic.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / pair_cmb.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << SI::cLight / phpion_cmb.beta(proton, Gamma) / SI::Mpc << "\t";
+    out << "\n";
+  }
+}
+
 void makeEnergyLossesTables(const solutions::Beniamino &b) {
   auto E = utils::LogAxis(1e15 * SI::eV, 1e24 * SI::eV, 71);
   utils::OutputFile out("SimProp_proton_losses.txt");
@@ -78,10 +99,10 @@ void testJacobian(const solutions::Beniamino &b) {
   }
 }
 
-void testSpectrum(const solutions::Beniamino &b) {
+void testSpectrum(const solutions::Beniamino &b, const std::string &filename) {
   auto E = utils::LogAxis(1e17 * SI::eV, 1e21 * SI::eV, 16 * 4);
   {
-    utils::OutputFile out("SimProp_proton_spectrum.txt");
+    utils::OutputFile out(filename);
     const double units = 1. / SI::eV / SI::m2 / SI::sr / SI::sec;
     for (const auto &E_i : E) {
       std::cout << E_i / SI::eV << "\n";
@@ -101,6 +122,7 @@ int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer for analytical solution");
+    printLosses();
 
     auto cosmology = std::make_shared<cosmo::Planck2018>();
     auto cmb = std::make_shared<photonfields::CMB>();
@@ -108,12 +130,29 @@ int main() {
         std::make_shared<losses::PairProductionLosses>(cmb),
         std::make_shared<losses::PhotoPionContinuousLosses>(cmb)};
 
-    auto b = solutions::Beniamino({2.6, 0, -1, 10.}, cosmology, losses).doCaching();
-
-    makeEnergyLossesTables(b);
-    testCharacteristics(b);
-    testJacobian(b);
-    testSpectrum(b);
+    {
+      auto b = solutions::Beniamino({2.01, 0, -1, 10.}, cosmology, losses).doCaching();
+      testSpectrum(b, "SimProp_proton_spectrum_2.0_0.txt");
+    }
+    {
+      auto b = solutions::Beniamino({2.3, -3, -1, 10.}, cosmology, losses).doCaching();
+      testSpectrum(b, "SimProp_proton_spectrum_2.3_-3.txt");
+    }
+    {
+      auto b = solutions::Beniamino({2.3, 3, -1, 10.}, cosmology, losses).doCaching();
+      testSpectrum(b, "SimProp_proton_spectrum_2.3_3.txt");
+    }
+    {
+      auto b = solutions::Beniamino({2.6, 0, -1, 10.}, cosmology, losses).doCaching();
+      testSpectrum(b, "SimProp_proton_spectrum_2.6_0.txt");
+    }
+    {
+      auto b = solutions::Beniamino({2.3, 0, -1, 10.}, cosmology, losses).doCaching();
+      testSpectrum(b, "SimProp_proton_spectrum_2.3_0.txt");
+    }
+    // testCharacteristics(b);
+    // testJacobian(b);
+    // testSpectrum(b);
   } catch (const std::exception &e) {
     LOGE << "exception caught with message: " << e.what();
   }
