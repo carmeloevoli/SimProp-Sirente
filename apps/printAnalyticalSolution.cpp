@@ -130,26 +130,28 @@ int main() {
         std::make_shared<losses::PairProductionLosses>(cmb),
         std::make_shared<losses::PhotoPionContinuousLosses>(cmb)};
 
-    {
-      auto b = solutions::Beniamino({2.01, 0, -1, 10.}, cosmology, losses).doCaching();
-      testSpectrum(b, "SimProp_proton_spectrum_2.0_0.txt");
-    }
-    {
-      auto b = solutions::Beniamino({2.3, -3, -1, 10.}, cosmology, losses).doCaching();
-      testSpectrum(b, "SimProp_proton_spectrum_2.3_-3.txt");
-    }
-    {
-      auto b = solutions::Beniamino({2.3, 3, -1, 10.}, cosmology, losses).doCaching();
-      testSpectrum(b, "SimProp_proton_spectrum_2.3_3.txt");
-    }
-    {
-      auto b = solutions::Beniamino({2.6, 0, -1, 10.}, cosmology, losses).doCaching();
-      testSpectrum(b, "SimProp_proton_spectrum_2.6_0.txt");
-    }
-    {
-      auto b = solutions::Beniamino({2.3, 0, -1, 10.}, cosmology, losses).doCaching();
-      testSpectrum(b, "SimProp_proton_spectrum_2.3_0.txt");
-    }
+    // {
+    //   auto b = solutions::Beniamino({2.4, 0, 5e19 * SI::eV, 10.}, cosmology, losses).doCaching();
+    //   testSpectrum(b, "SimProp_proton_spectrum_2.4_0_10.txt");
+    // }
+    // {
+    //   auto b = solutions::Beniamino({2.2, 0, 5e19 * SI::eV, 10.}, cosmology, losses).doCaching();
+    //   testSpectrum(b, "SimProp_proton_spectrum_2.2_0_10.txt");
+    // }
+    // {
+    //   auto b = solutions::Beniamino({2.6, 0, 5e19 * SI::eV, 10.}, cosmology, losses).doCaching();
+    //   testSpectrum(b, "SimProp_proton_spectrum_2.6_0_10.txt");
+    // }
+
+    // {
+    //   auto b = solutions::Beniamino({2.4, -3, 5e19 * SI::eV, 10.}, cosmology,
+    //   losses).doCaching(); testSpectrum(b, "SimProp_proton_spectrum_2.4_-3_10.txt");
+    // }
+    // {
+    //   auto b = solutions::Beniamino({2.4, 3, 5e19 * SI::eV, 10.}, cosmology, losses).doCaching();
+    //   testSpectrum(b, "SimProp_proton_spectrum_2.4_3_10.txt");
+    // }
+
     // testCharacteristics(b);
     // testJacobian(b);
     // testSpectrum(b);

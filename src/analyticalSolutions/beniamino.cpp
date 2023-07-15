@@ -24,6 +24,7 @@ Beniamino::Beniamino(const SourceParams& params, const std::shared_ptr<cosmo::Co
 }
 
 Beniamino& Beniamino::doCaching() {
+  LOGD << "Start Beniamino chaching...";
   m_lossesLookup.cacheTable(
       [this](double lnE) {
         const auto Gamma = std::exp(lnE) / SI::protonMassC2;
@@ -107,8 +108,8 @@ double Beniamino::computeFlux(double E, double zObs, double relError) const {
     auto dtdz = m_cosmology->dtdz(z);
     return dtdz * sourceEvolution * inj * dEgdE;
   };
-  auto I = utils::QAGIntegration<double>(integrand, zObs, m_zMax, INTSTEPS, relError);
-
+  // auto I = utils::QAGIntegration<double>(integrand, zObs, m_zMax, INTSTEPS, relError);
+  auto I = utils::RombergIntegration<double>(integrand, zObs, m_zMax, 8, 0.01);  // TODO check this
   return factor * I;
 }
 
