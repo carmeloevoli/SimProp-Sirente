@@ -19,7 +19,7 @@ CosmoNeutrinos::CosmoNeutrinos(const solutions::Beniamino& b,
       return std::log(std::max(value, 1e-30));
     };
     const auto zMax = b.getMaxRedshift();
-    m_Jp.cacheTable(f, {log(1e16 * SI::eV), log(1e23 * SI::eV)}, {0., zMax});
+    m_Jp.cacheTable(f, {log(1e15 * SI::eV), log(1e22 * SI::eV)}, {0., zMax});
   }
 }
 
@@ -42,12 +42,14 @@ double CosmoNeutrinos::I_deps(double Enu, double Ep, double z, size_t N) const {
 double CosmoNeutrinos::I_dEp(double Enu, double z, size_t N) const {
   auto integrand = [this, Enu, z](double lnEp) {
     const auto Ep = std::exp(lnEp);
+    auto lgJp = m_Jp.get(lnEp, z);
+    if (lgJp < -80) return 0.;
     auto value = std::exp(m_Jp.get(lnEp, z));
     value *= I_deps(Enu, Ep, z);
     return value;
   };
   auto a = std::log(Enu);
-  auto b = std::log(std::min(1e4 * Enu, 1e23 * SI::eV));
+  auto b = std::log(std::min(1e4 * Enu, 1e21 * SI::eV));
   auto I = utils::RombergIntegration<double>(integrand, a, b, N, 1e-2);
 
   return I;

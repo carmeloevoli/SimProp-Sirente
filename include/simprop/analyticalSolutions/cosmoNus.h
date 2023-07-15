@@ -17,7 +17,7 @@ class CosmoNeutrinos {
                  const std::shared_ptr<photonfields::PhotonField>& ebl);
   virtual ~CosmoNeutrinos() = default;
 
-  double computeNeutrinoFlux(double Enu, double zMax, size_t N = 8) const;
+  double computeNeutrinoFlux(double Enu, double zMax, size_t N = 9) const;
   double getProtonFlux(double Ep, double z) const;
 
  protected:
@@ -28,7 +28,7 @@ class CosmoNeutrinos {
   std::shared_ptr<photonfields::PhotonField> m_ebl;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
   std::shared_ptr<KelnerAharonian2008::NeutrinoProductionSpectrum> m_nuSpec;
-  utils::LookupTable<50, 11> m_Jp;
+  utils::LookupTable<200, 101> m_Jp;
 };
 
 }  // namespace solutions
