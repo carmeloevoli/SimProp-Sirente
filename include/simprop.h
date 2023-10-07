@@ -1,8 +1,6 @@
 #ifndef INCLUDE_SIMPROP_H
 #define INCLUDE_SIMPROP_H
 
-#include "simprop/analyticalSolutions/beniamino.h"
-#include "simprop/analyticalSolutions/cosmoNus.h"
 #include "simprop/core/common.h"
 #include "simprop/core/cosmology.h"
 #include "simprop/core/opticalDepth.h"
@@ -10,7 +8,6 @@
 #include "simprop/core/pid.h"
 #include "simprop/core/units.h"
 #include "simprop/crossSections/BreitWheeler.h"
-#include "simprop/crossSections/KelnerAharonian2008.h"
 #include "simprop/crossSections/PhotoDisintegrationTalysXsecs.h"
 #include "simprop/crossSections/PhotoPionXsecs.h"
 #include "simprop/energyLosses/AdiabaticContinuousLosses.h"
