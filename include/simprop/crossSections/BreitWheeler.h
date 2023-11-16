@@ -4,6 +4,7 @@
 namespace simprop {
 namespace BreitWheeler {
 
+double sigmaInCoMFrame(const double &s);
 double sigma(const double &eGamma, const double &eBkg, const double &mu);
 
 }  // namespace BreitWheeler
