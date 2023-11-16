@@ -86,6 +86,7 @@ static constexpr double m2 = meter * meter;
 static constexpr double m3 = meter * meter * meter;
 static constexpr double km = kilo * meter;
 static constexpr double Hz = hertz;
+static constexpr double MHz = mega * hertz;
 static constexpr double GHz = giga * hertz;
 static constexpr double nW = nano * watt;
 static constexpr double sr = steradian;

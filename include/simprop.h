@@ -22,6 +22,7 @@
 #include "simprop/photonFields/CmbPhotonField.h"
 #include "simprop/photonFields/Dominguez2011PhotonField.h"
 #include "simprop/photonFields/Gilmore2012PhotonField.h"
+#include "simprop/photonFields/Nitu2021RadioPhotonField.h"
 #include "simprop/photonFields/Saldana2021PhotonField.h"
 #include "simprop/utils/io.h"
 #include "simprop/utils/logging.h"

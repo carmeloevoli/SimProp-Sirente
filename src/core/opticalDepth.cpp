@@ -51,8 +51,35 @@ double OpticalDepth::get(double eGamma, double zSource) const {
   auto integrand = [this, eGamma](double z) {
     return m_cosmology->dtdz(z) * integrateOverAngle(eGamma, z);
   };
-  auto value = utils::QAGIntegration<double>(integrand, 0., zSource, 1000, 1e-3);
+  auto value = utils::QAGIntegration<double>(integrand, 0., zSource, 1000, 1e-2);
   return 0.5 * SI::cLight * value;
+}
+
+double OpticalDepth::integrateXsec(double eGamma, double eps) const {
+  const auto sMin = 4. * pow2(SI::electronMassC2);
+  const auto sMax = 4. * eps * eGamma;
+  auto integrand = [](double s) { return s * BreitWheeler::sigmaInCoMFrame(s); };
+  auto value = utils::QAGIntegration<double>(integrand, sMin, sMax, 1000, 1e-3);
+  return value;
+}
+
+double OpticalDepth::interactionLength(double eGamma) const {
+  const auto eps_th = pow2(SI::electronMassC2) / eGamma;
+  double value = 0;
+  for (auto phField : m_photonFields) {
+    auto epsMin = std::max(eps_th, phField->getMinPhotonEnergy());
+    auto epsMax = phField->getMaxPhotonEnergy();
+    if (epsMax > epsMin) {
+      value += utils::QAGIntegration<double>(
+          [this, eGamma, phField](double lnEps) {
+            auto eps = std::exp(lnEps);
+            auto n_gamma = phField->density(eps);
+            return n_gamma / eps * integrateXsec(eGamma, eps);
+          },
+          std::log(epsMin), std::log(epsMax), 1000, 1e-3);
+    }
+  }
+  return 8. * pow2(eGamma) / value;
 }
 
 }  // namespace core

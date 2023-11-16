@@ -28,7 +28,7 @@ double PhotoPionProduction::epsPdfIntegral(double photonEnergy, PID nucleon, dou
                                            double z) const {
   auto integrand = [&](double eps) {
     const auto s_max = pow2(SI::protonMassC2) + 4. * nucleonEnergy * eps;
-    return m_phField->density(eps / (1. + z), z) / pow2(eps) * m_xs.getPhiAtS(nucleon, s_max);
+    return m_phField->density(eps, z) / pow2(eps) * m_xs.getPhiAtS(nucleon, s_max);
   };
   auto minPhEnergy = pickMinPhotonEnergy(m_phField->getMinPhotonEnergy(), nucleonEnergy);
   auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000, 4e-4);
@@ -46,29 +46,13 @@ double PhotoPionProduction::sampleEps(double r, PID nucleon, double nucleonEnerg
   return value;
 }
 
-double angleCoMintegral(double mu, double s) {
-  constexpr auto b = 12. / SI::GeV2;
-  auto integrand = [b, s](double mu) { return std::exp(b * mu2t(mu, s)); };
-  auto value = utils::QAGIntegration<double>(integrand, -1., mu, 1000, 1e-5);
-  return value;
-}
-
-double sampleAngleCoM(double r, double s) {
-  auto rIntegralMax = r * angleCoMintegral(1., s);
-  auto value = utils::rootFinder<double>(
-      [s, rIntegralMax](double mu) { return angleCoMintegral(mu, s) - rIntegralMax; }, -1., 1.,
-      1000, 1e-3);
-  return value;
-}
-
 double samplePionInelasticity(double r, double s) {
   auto sqrt_s = std::sqrt(s);
   auto E_star = 0.5 * (s - pow2(SI::protonMassC2) + pow2(SI::pionMassC2)) / sqrt_s;
   auto p_star = 0.5 / sqrt_s;
   p_star *= std::sqrt((s - pow2(SI::pionMassC2 + SI::protonMassC2)) *
                       (s - pow2(SI::pionMassC2 - SI::protonMassC2)));
-  // auto mu_star = 2. * r - 1.;
-  auto mu_star = sampleAngleCoM(r, s);
+  auto mu_star = 2. * r - 1.;
   return 1. / sqrt_s * (E_star + p_star * mu_star);
 }
 
@@ -100,13 +84,13 @@ double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
   auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_phField->getMinPhotonEnergy()));
   auto lnEpsPrimeMax = std::log(2. * Gamma * m_phField->getMaxPhotonEnergy());
   if (lnEpsPrimeMax > lnEpsPrimeMin) {
-    value = utils::simpsonIntegration<double>(
+    value = utils::RombergIntegration<double>(
         [&](double lnEpsPrime) {
           auto epsPrime = std::exp(lnEpsPrime);
           return epsPrime * epsPrime * m_xs.getAtEpsPrime(pid, epsPrime) *
                  m_phField->I_gamma(epsPrime / 2. / Gamma, z);
         },
-        lnEpsPrimeMin, lnEpsPrimeMax, 500);
+        lnEpsPrimeMin, lnEpsPrimeMax, 10, 1e-4);
     value *= SI::cLight / 2. / pow2(Gamma);
   }
   return std::max(value, 0.);

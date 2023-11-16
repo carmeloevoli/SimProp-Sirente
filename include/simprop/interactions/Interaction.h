@@ -15,6 +15,7 @@ class Interaction {
   std::shared_ptr<photonfields::PhotonField> m_phField;
 
  public:
+  Interaction() {}
   Interaction(const std::shared_ptr<photonfields::PhotonField>& phField) : m_phField(phField) {}
   virtual ~Interaction() = default;
   virtual double rate(PID pid, double Gamma, double z = 0) const = 0;

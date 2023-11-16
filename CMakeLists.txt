@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5)
 project(simprop CXX)
 set(VERSION 3.0)
 
@@ -148,6 +148,7 @@ add_library(simprop SHARED
     src/particleStacks/SourceEvolutionBuilder.cpp
     src/photonFields/CmbPhotonField.cpp
     src/photonFields/LookupTablePhotonField.cpp
+    src/photonFields/Nitu2021RadioPhotonField.cpp
     src/photonFields/PhotonField.cpp
 	src/utils/io.cpp
 	src/utils/logging.cpp
@@ -173,32 +174,36 @@ file(COPY ${SIMPROP_DATA} DESTINATION ${PROJECT_BINARY_DIR}/data)
 add_executable(sandbox apps/sandbox.cpp)
 target_link_libraries (sandbox simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_cosmology apps/printCosmology.cpp)
+# make examples
+add_executable(print_cosmology examples/printCosmology.cpp)
 target_link_libraries (print_cosmology simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_photons apps/printPhotonFields.cpp)
-target_link_libraries (print_photons simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(print_photonfields examples/printPhotonFields.cpp)
+target_link_libraries (print_photonfields simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_initial apps/printInitialState.cpp)
-target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(print_tau examples/printOpticalDepth.cpp)
+target_link_libraries (print_tau simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_xsecs apps/printCrossSections.cpp)
-target_link_libraries (print_xsecs simprop ${SIMPROP_EXTRA_LIBRARIES})
-
-add_executable(print_losses apps/printLosses.cpp)
+add_executable(print_losses examples/printContinuousLosses.cpp)
 target_link_libraries (print_losses simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_money apps/printMoneyPlot.cpp)
-target_link_libraries (print_money simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(print_xsecs examples/printCrossSections.cpp)
+target_link_libraries (print_xsecs simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(print_rates apps/printRates.cpp)
-target_link_libraries (print_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(print_ppp_rates examples/printPhotoPionRates.cpp)
+target_link_libraries (print_ppp_rates simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(single_particle apps/singleProtonEvolutor.cpp)
-target_link_libraries (single_particle simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(print_initial examples/printInitialState.cpp)
+target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-add_executable(evolve apps/evolutor.cpp)
-target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
+# add_executable(print_money apps/printMoneyPlot.cpp)
+# target_link_libraries (print_money simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+# add_executable(single_particle apps/singleProtonEvolutor.cpp)
+# target_link_libraries (single_particle simprop ${SIMPROP_EXTRA_LIBRARIES})
+
+# add_executable(evolve apps/evolutor.cpp)
+# target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # testing
 if(ENABLE_TESTING)
@@ -223,6 +228,16 @@ if(ENABLE_TESTING)
     target_link_libraries(test_photonFields simprop gtest gtest_main ${SIMPROP_EXTRA_LIBRARIES})
     add_test(test_photonFields test_photonFields)
 endif(ENABLE_TESTING)
+
+# make install
+add_definitions(-DSIMPROP_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
+install(TARGETS simprop DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY ${CMAKE_BINARY_DIR}/include/ DESTINATION include FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY ${CMAKE_BINARY_DIR}/data/ DESTINATION share/simprop/data PATTERN ".git" EXCLUDE)
+# install(DIRECTORY lib/cparamlib/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN ".git" EXCLUDE)
+# install(DIRECTORY lib/kiss/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN ".git" EXCLUDE)
+
 
 # Show summary.
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")

@@ -46,7 +46,7 @@ double PhotoPionContinuousLosses::beta(PID pid, double Gamma, double z) const {
             return epsPrime * epsPrime * m_xs.getAtEpsPrime(pid, epsPrime) *
                    inelasticity(epsPrime) * phField->I_gamma(epsPrime / 2. / Gamma, z);
           },
-          lnEpsPrimeMin, lnEpsPrimeMax, 9, 1e-3);
+          lnEpsPrimeMin, lnEpsPrimeMax, 15, 1e-3);
     }
   }
   return SI::cLight / 2. / pow2(Gamma) * std::max(value, 0.);

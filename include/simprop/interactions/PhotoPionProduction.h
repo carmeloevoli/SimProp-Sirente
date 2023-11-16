@@ -1,6 +1,8 @@
 #ifndef SIMPROP_INTERACTIONS_PHOTOPIONPRODUCTION_H
 #define SIMPROP_INTERACTIONS_PHOTOPIONPRODUCTION_H
 
+#include <fstream>
+#include <iostream>
 #include <memory>
 
 #include "simprop/core/units.h"
@@ -20,14 +22,14 @@ class PhotoPionProduction final : public Interaction {
   PhotoPionProduction(const std::shared_ptr<photonfields::PhotonField>& phField);
   virtual ~PhotoPionProduction() = default;
   double rate(PID pid, double Gamma, double z = 0) const override;
+  double sampleS(double r, PID pid, double sMax) const;
+  double sampleEps(double r, PID nucleon, double nucleonEnergy, double z) const;
 
   std::vector<Particle> finalState(const Particle& particle, double zInteractionPoint,
                                    RandomNumberGenerator& rng) const override;
 
- public:  // TODO to be changed in private
-  double sampleS(double r, PID pid, double sMax) const;
+ protected:
   double epsPdfIntegral(double photonEnergy, PID nucleon, double nucleonEnergy, double z) const;
-  double sampleEps(double r, PID nucleon, double nucleonEnergy, double z) const;
 };
 
 }  // namespace interactions
