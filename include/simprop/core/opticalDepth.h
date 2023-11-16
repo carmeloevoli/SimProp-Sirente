@@ -23,10 +23,12 @@ class OpticalDepth {
                const photonfields::PhotonFields& photonFields);
 
   double get(double eGamma, double zSource) const;
+  double interactionLength(double eGamma) const;
 
   virtual ~OpticalDepth() = default;
 
  protected:
+  double integrateXsec(double eGamma, double eps) const;
   double integrateOverAngle(double eGamma, double z) const;
   double integrateOverPhField(double eGamma, double z, double mu) const;
 };
