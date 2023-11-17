@@ -16,6 +16,10 @@ bool pidIsNucleus(const PID& pid) { return (pid.get() >= 1000009990); }
 
 bool pidIsNucleon(const PID& pid) { return (pid == proton || pid == neutron); }
 
+bool pidIsPion(const PID& pid) {
+  return (pid == pionNeutral || pid == pionMinus || pid == pionPlus);
+}
+
 int getPidNucleusMassNumber(const PID& pid) {
   if (!pidIsNucleus(pid)) throw std::invalid_argument(getPidName(pid) + " is not a nucleus");
   if (pid == neutron || pid == antiproton)
