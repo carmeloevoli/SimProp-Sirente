@@ -87,9 +87,8 @@ std::vector<Particle> PhotoPionProductionSophia::finalState(const Particle& inco
     PID pid = ID_sophia_to_SimProp(seo.outPartID[i]);
     auto mass = getPidMass(pid);
     auto E = seo.outPartP[3][i] * SI::GeV;
-    outgoingParticle.push_back({pid, zInteractionPoint, E / mass, w});
+    if (mass > 0.) outgoingParticle.push_back({pid, zInteractionPoint, E / mass, w});
   }
-
   return outgoingParticle;
 }
 

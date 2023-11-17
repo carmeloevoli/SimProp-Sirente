@@ -75,6 +75,11 @@ double getPidMass(const PID& pid) {
     return SI::electronMassC2;
   else if (pid == pionNeutral || pid == pionMinus || pid == pionPlus)
     return SI::pionMassC2;
+  else if (pid == photon)
+    return 0.;
+  else if (pid == neutrino_e || pid == neutrino_mu || pid == antineutrino_e ||
+           pid == antineutrino_mu)
+    return 0.;
   else
     throw std::invalid_argument("mass not available for this pid");
 }
