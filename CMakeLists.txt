@@ -41,6 +41,11 @@ include_directories(external/plog/include)
 # NamedType (provided)
 include_directories(external/NamedType/include)
 
+# sophianext (provided)
+add_subdirectory(external/sophianext)
+list(APPEND SIMPROP_EXTRA_LIBRARIES sophianext)
+list(APPEND SIMPROP_EXTRA_INCLUDES external/sophianext/include)
+
 # C++ Threads required
 #find_package(Threads REQUIRED)
 #list(APPEND SIMPROP_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
@@ -143,6 +148,7 @@ add_library(simprop SHARED
     src/energyLosses/PhotoPionContinuousLosses.cpp
     src/interactions/PhotoDisintegration.cpp
     src/interactions/PhotoPionProduction.cpp
+    src/interactions/PhotoPionProductionSophia.cpp
     src/particleStacks/SingleParticleBuilder.cpp
     src/particleStacks/SingleSourceBuilder.cpp
     src/particleStacks/SourceEvolutionBuilder.cpp

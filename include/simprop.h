@@ -16,6 +16,7 @@
 #include "simprop/energyLosses/PhotoPionContinuousLosses.h"
 #include "simprop/interactions/PhotoDisintegration.h"
 #include "simprop/interactions/PhotoPionProduction.h"
+#include "simprop/interactions/PhotoPionProductionSophia.h"
 #include "simprop/particleStacks/SingleParticleBuilder.h"
 #include "simprop/particleStacks/SingleSourceBuilder.h"
 #include "simprop/particleStacks/SourceEvolutionBuilder.h"

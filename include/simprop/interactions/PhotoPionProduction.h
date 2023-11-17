@@ -13,7 +13,9 @@
 namespace simprop {
 namespace interactions {
 
-class PhotoPionProduction final : public Interaction {
+PID pickNucleon(double r, PID pid);
+
+class PhotoPionProduction : public Interaction {
  protected:
   const double m_sThreshold = pow2(SI::protonMassC2 + SI::pionMassC2);
   xsecs::PhotoPionXsec m_xs;
