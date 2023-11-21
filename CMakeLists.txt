@@ -146,6 +146,7 @@ add_library(simprop SHARED
     src/energyLosses/BGG2006ContinuousLosses.cpp
     src/energyLosses/PairProductionLosses.cpp
     src/energyLosses/PhotoPionContinuousLosses.cpp
+    src/evolutors/SingleProtonEvolutor.cpp
     src/interactions/PhotoDisintegration.cpp
     src/interactions/PhotoPionProduction.cpp
     src/interactions/PhotoPionProductionSophia.cpp
@@ -180,6 +181,9 @@ file(COPY ${SIMPROP_DATA} DESTINATION ${PROJECT_BINARY_DIR}/data)
 add_executable(sandbox apps/sandbox.cpp)
 target_link_libraries (sandbox simprop ${SIMPROP_EXTRA_LIBRARIES})
 
+add_executable(proton apps/singleProton.cpp)
+target_link_libraries (proton simprop ${SIMPROP_EXTRA_LIBRARIES})
+
 # make examples
 add_executable(print_cosmology examples/printCosmology.cpp)
 target_link_libraries (print_cosmology simprop ${SIMPROP_EXTRA_LIBRARIES})
@@ -204,9 +208,6 @@ target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(print_money apps/printMoneyPlot.cpp)
 # target_link_libraries (print_money simprop ${SIMPROP_EXTRA_LIBRARIES})
-
-# add_executable(single_particle apps/singleProtonEvolutor.cpp)
-# target_link_libraries (single_particle simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # add_executable(evolve apps/evolutor.cpp)
 # target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})

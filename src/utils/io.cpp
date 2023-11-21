@@ -88,7 +88,7 @@ std::vector<std::vector<double> > loadFileByRow(std::string filePath, std::strin
 }
 
 OutputFile::OutputFile(const std::string& name) : filename(name), out("output/" + name) {}
-OutputFile::~OutputFile() { LOGD << "created output file " << filename; }
+OutputFile::~OutputFile() { LOGI << "created output file " << filename; }
 
 }  // namespace utils
 }  // namespace simprop

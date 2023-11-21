@@ -14,6 +14,7 @@
 #include "simprop/energyLosses/BGG2006ContinuousLosses.h"
 #include "simprop/energyLosses/PairProductionLosses.h"
 #include "simprop/energyLosses/PhotoPionContinuousLosses.h"
+#include "simprop/evolutors/SingleProtonEvolutor.h"
 #include "simprop/interactions/PhotoDisintegration.h"
 #include "simprop/interactions/PhotoPionProduction.h"
 #include "simprop/interactions/PhotoPionProductionSophia.h"
