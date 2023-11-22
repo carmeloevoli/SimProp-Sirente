@@ -209,8 +209,8 @@ target_link_libraries (print_initial simprop ${SIMPROP_EXTRA_LIBRARIES})
 # add_executable(print_money apps/printMoneyPlot.cpp)
 # target_link_libraries (print_money simprop ${SIMPROP_EXTRA_LIBRARIES})
 
-# add_executable(evolve apps/evolutor.cpp)
-# target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
+add_executable(evolve apps/evolutor.cpp)
+target_link_libraries (evolve simprop ${SIMPROP_EXTRA_LIBRARIES})
 
 # testing
 if(ENABLE_TESTING)

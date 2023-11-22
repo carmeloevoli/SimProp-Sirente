@@ -9,8 +9,8 @@ void testSingleParticleEvolution(double zMax, std::string filename) {
   auto sim = evolutors::SingleProtonEvolutor(rng);
   sim.addCosmology(cosmo);
   sim.addLosses({std::make_shared<losses::AdiabaticContinuousLosses>(cosmo),
-                 std::make_shared<losses::PairProductionLosses>(cmb),
-                 std::make_shared<losses::PhotoPionContinuousLosses>(cmb)});
+                 std::make_shared<losses::PairProductionLosses>(cmb)});
+  sim.addInteractions({std::make_shared<interactions::PhotoPionProduction>(cmb)});
   utils::OutputFile out(filename);
   auto energyAxis = utils::LogAxis(1e16 * SI::eV, 1e23 * SI::eV, 7 * 4);
   size_t N = 1;
@@ -18,8 +18,11 @@ void testSingleParticleEvolution(double zMax, std::string filename) {
     auto builder = SingleParticleBuilder(proton, {E / SI::protonMassC2, zMax}, N);
     auto stack = builder.build();
     sim.run(stack);
+    auto it = std::find_if(stack.begin(), stack.end(),
+                           [](const Particle& p) { return p.getPid() == proton && p.isActive(); });
+    assert(it != stack.end());
     out << std::scientific << E / SI::eV << " ";
-    out << stack[0].getGamma() * SI::protonMassC2 / SI::eV << " ";
+    out << it->getGamma() * SI::protonMassC2 / SI::eV << " ";
     out << "\n";
   }
 }

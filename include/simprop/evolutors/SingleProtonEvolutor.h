@@ -6,6 +6,7 @@
 
 #include "simprop/core/cosmology.h"
 #include "simprop/energyLosses/ContinuousLosses.h"
+#include "simprop/interactions/Interaction.h"
 #include "simprop/particleStacks/Builder.h"
 #include "simprop/utils/random.h"
 
@@ -21,17 +22,24 @@ class SingleProtonEvolutor {
   void addLosses(std::vector<std::shared_ptr<losses::ContinuousLosses>> losses) {
     m_continuousLosses = losses;
   }
+  void addInteractions(std::vector<std::shared_ptr<interactions::Interaction>> interactions) {
+    m_interactions = interactions;
+  }
   void run(ParticleStack& stack);
 
  protected:
   double computeDeltaGamma(const Particle& particle, double deltaRedshift) const;
   double computeLossesRedshiftInterval(const Particle& particle) const;
+  double computeInteractionRedshiftInterval(const Particle& particle) const;
+  double totalLosses(PID pid, double Gamma, double z) const;
+  double totalRate(PID pid, double Gamma, double z) const;
 
  protected:
   const double deltaGammaCritical = 0.05;
   RandomNumberGenerator& m_rng;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
   std::vector<std::shared_ptr<losses::ContinuousLosses>> m_continuousLosses;
+  std::vector<std::shared_ptr<interactions::Interaction>> m_interactions;
 };
 
 }  // namespace evolutors
