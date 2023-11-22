@@ -54,7 +54,7 @@ PairProductionLosses::PairProductionLosses(const photonfields::PhotonFields& pho
   LOGD << "calling " << __func__ << " constructor";
 }
 
-PairProductionLosses& PairProductionLosses::doCaching() {
+void PairProductionLosses::doCaching() {
   m_betaProtons.cacheTable(
       [this](double lnGamma, double z) {
         auto Gamma = std::exp(lnGamma);
@@ -62,11 +62,10 @@ PairProductionLosses& PairProductionLosses::doCaching() {
       },
       {std::log(1e7), std::log(1e14)}, {0., 10.});
   m_doCaching = true;
-  return *this;
 }
 
-double PairProductionLosses::computeProtonBeta(double Gamma,
-                                               double z) const {  // TODO write threshold here
+double PairProductionLosses::computeProtonBeta(double Gamma, double z,
+                                               size_t N) const {  // TODO write threshold here
   auto TwoGamma_mec2 = 2. * Gamma / SI::electronMassC2;
   double value = 0;
   for (auto phField : m_photonFields) {
@@ -79,7 +78,7 @@ double PairProductionLosses::computeProtonBeta(double Gamma,
           auto k = std::exp(lnk);
           return phi(k) / k * phField->density(k / TwoGamma_mec2, z);
         },
-        lkmin, lkmax, 9, 1e-3);
+        lkmin, lkmax, N, 1e-3);
   }
   constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::cLight * SI::electronMassC2 *
                           (SI::electronMass / SI::protonMass);

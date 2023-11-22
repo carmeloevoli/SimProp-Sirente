@@ -47,13 +47,6 @@ double SingleProtonEvolutor::computeDeltaGamma(const Particle& particle,
   const auto betaHalf = totalLosses(pid, Gamma, zHalf);
   const auto betaNext = totalLosses(pid, Gamma, zNext);
 
-  // double betaNow = 0, betaHalf = 0, betaNext = 0;
-  // for (auto losses : m_continuousLosses) {
-  //   betaNow += losses->beta(pid, Gamma, zNow);
-  //   betaHalf += losses->beta(pid, Gamma, zHalf);
-  //   betaNext += losses->beta(pid, Gamma, zNext);
-  // }
-
   double value = deltaRedshift / 6.;
   value *= betaNow * m_cosmology->dtdz(zNow) + 4. * betaHalf * m_cosmology->dtdz(zHalf) +
            betaNext * m_cosmology->dtdz(zNext);

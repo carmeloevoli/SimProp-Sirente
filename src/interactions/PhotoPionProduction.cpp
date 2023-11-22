@@ -31,8 +31,7 @@ double PhotoPionProduction::epsPdfIntegral(double photonEnergy, PID nucleon, dou
     return m_phField->density(eps, z) / pow2(eps) * m_xs.getPhiAtS(nucleon, s_max);
   };
   auto minPhEnergy = pickMinPhotonEnergy(m_phField->getMinPhotonEnergy(), nucleonEnergy);
-  auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000, 4e-4);
-  // TODO how to improve the precision here?
+  auto value = utils::QAGIntegration<double>(integrand, minPhEnergy, photonEnergy, 1000, 1e-3);
   return value;
 }
 
@@ -77,12 +76,27 @@ PhotoPionProduction::PhotoPionProduction(const std::shared_ptr<photonfields::Pho
   LOGD << "calling " << __func__ << " constructor";
 }
 
-double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
-  auto value = double(0);
+void PhotoPionProduction::doCaching() {
+  m_rateProtons.cacheTable(
+      [this](double lnGamma, double z) {
+        auto Gamma = std::exp(lnGamma);
+        return computeNucleusRate(proton, Gamma, z);
+      },
+      {std::log(1e7), std::log(1e14)}, {0., 10.});
+  m_rateNeutrons.cacheTable(
+      [this](double lnGamma, double z) {
+        auto Gamma = std::exp(lnGamma);
+        return computeNucleusRate(neutron, Gamma, z);
+      },
+      {std::log(1e7), std::log(1e14)}, {0., 10.});
+  m_doCaching = true;
+}
 
+double PhotoPionProduction::computeNucleusRate(PID pid, double Gamma, double z, size_t N) const {
   auto threshold = m_xs.getEpsPrimeThreshold();
   auto lnEpsPrimeMin = std::log(std::max(threshold, 2. * Gamma * m_phField->getMinPhotonEnergy()));
   auto lnEpsPrimeMax = std::log(2. * Gamma * m_phField->getMaxPhotonEnergy());
+  auto value = double(0);
   if (lnEpsPrimeMax > lnEpsPrimeMin) {
     value = utils::RombergIntegration<double>(
         [&](double lnEpsPrime) {
@@ -90,10 +104,21 @@ double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
           return epsPrime * epsPrime * m_xs.getAtEpsPrime(pid, epsPrime) *
                  m_phField->I_gamma(epsPrime / 2. / Gamma, z);
         },
-        lnEpsPrimeMin, lnEpsPrimeMax, 10, 1e-4);
+        lnEpsPrimeMin, lnEpsPrimeMax, N, 1e-4);
     value *= SI::cLight / 2. / pow2(Gamma);
   }
   return std::max(value, 0.);
+}
+
+double PhotoPionProduction::rate(PID pid, double Gamma, double z) const {
+  if (m_doCaching) {
+    auto Z = getPidNucleusCharge(pid);
+    auto A = getPidNucleusMassNumber(pid);
+    return Z * m_rateProtons.get(std::log(Gamma), z) +
+           (A - Z) * m_rateNeutrons.get(std::log(Gamma), z);
+  } else {
+    return computeNucleusRate(pid, Gamma, z);
+  }
 }
 
 std::vector<Particle> PhotoPionProduction::finalState(const Particle& incomingParticle,

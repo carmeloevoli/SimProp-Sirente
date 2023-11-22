@@ -11,19 +11,19 @@ namespace losses {
 class PairProductionLosses final : public ContinuousLosses {
  protected:
   photonfields::PhotonFields m_photonFields;
-  utils::LookupTable<2000, 100> m_betaProtons;
+  utils::LookupTable<2000, 200> m_betaProtons;
   bool m_doCaching = false;
 
  public:
   PairProductionLosses(const std::shared_ptr<photonfields::PhotonField>& photonField);
   PairProductionLosses(const photonfields::PhotonFields& photonFields);
-  PairProductionLosses& doCaching();
+  void doCaching();
 
   virtual ~PairProductionLosses() = default;
   double beta(PID pid, double Gamma, double z = 0) const override;
 
  protected:
-  double computeProtonBeta(double Gamma, double z) const;
+  double computeProtonBeta(double Gamma, double z, size_t N = 10) const;
 };
 
 }  // namespace losses
