@@ -31,7 +31,7 @@ PID ID_sophia_to_SimProp(int sophiaID) {
     case 13:
       return proton;
     case 14:
-      return neutron;
+      return proton;  // TODO neutron -> proton?
     case -13:
       return antiproton;
     case -14:  // TODO antineutron == neutron?
