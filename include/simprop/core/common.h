@@ -14,6 +14,8 @@ inline double energyToFrequency(double energy) { return energy / SI::hPlanck; }
 inline double energyToWavelenght(double energy) { return SI::hPlanck * SI::cLight / energy; }
 
 double getRndLogUniform(Range range, double r);
+double getRndLinUniform(Range range, double r);
+
 Range getRedshiftRange(const ParticleStack& stack);
 Range getGammaRange(const ParticleStack& stack);
 
