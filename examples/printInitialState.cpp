@@ -3,9 +3,9 @@
 using namespace simprop;
 
 void plot_initial_redshift() {
-  auto cosmology = std::make_shared<cosmo::Planck2018>();
+  auto cosmology = std::make_shared<cosmo::Cosmology>();
   RandomNumberGenerator rng = utils::RNG<double>(69);
-  auto builder = SourceEvolutionBuilder(proton, {{1e10, 1e10}, {0., 3.0}, 2.2, 2.}, cosmology, 1e6);
+  auto builder = SourceEvolutionBuilder(proton, {{1e8, 1e8}, {0., 6.0}, 2.2, 3.}, cosmology, 1e6);
   auto particles = builder.build(rng);
   utils::OutputFile out("SimProp_stack_redshift.txt");
   out << "#\n";
@@ -15,9 +15,9 @@ void plot_initial_redshift() {
 }
 
 void plot_initial_energy() {
-  auto cosmology = std::make_shared<cosmo::Planck2018>();
+  auto cosmology = std::make_shared<cosmo::Cosmology>();
   RandomNumberGenerator rng = utils::RNG<double>(96);
-  auto builder = SourceEvolutionBuilder(proton, {{1e8, 1e13}, {0., 0.}, 2.2, 2.}, cosmology, 1e6);
+  auto builder = SourceEvolutionBuilder(proton, {{1e8, 1e13}, {0., 0.}, 2.2, 3.}, cosmology, 1e6);
   auto particles = builder.build(rng);
   utils::OutputFile out("SimProp_stack_energy.txt");
   out << "#\n";

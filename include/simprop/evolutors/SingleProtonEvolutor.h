@@ -35,7 +35,7 @@ class SingleProtonEvolutor {
   double totalRate(PID pid, double Gamma, double z) const;
 
  protected:
-  const double deltaGammaCritical = 0.05;
+  const double deltaGammaCritical = 0.01;
   RandomNumberGenerator& m_rng;
   std::shared_ptr<cosmo::Cosmology> m_cosmology;
   std::vector<std::shared_ptr<losses::ContinuousLosses>> m_continuousLosses;

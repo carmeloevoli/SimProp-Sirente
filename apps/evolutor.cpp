@@ -12,7 +12,7 @@ void testSpectrumEvolution(double zMax, std::string filename, size_t N = 100) {
   auto pp = std::make_shared<losses::PairProductionLosses>(cmb);
   pp->doCaching();
   sim.addLosses({adiabatic, pp});
-  auto ppp = std::make_shared<interactions::PhotoPionProductionSophia>(cmb);
+  auto ppp = std::make_shared<interactions::PhotoPionProduction>(cmb);
   ppp->doCaching();
   sim.addInteractions({ppp});
 
@@ -36,7 +36,7 @@ int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer");
-    testSpectrumEvolution(3.0, "SimProp_spectrum_z3.0_sophia.txt", 1000000);
+    testSpectrumEvolution(3.0, "SimProp_spectrum_a2.6_z3.0_m0.txt", 1000000);
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
