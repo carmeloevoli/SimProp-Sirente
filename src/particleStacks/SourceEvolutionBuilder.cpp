@@ -20,13 +20,11 @@ SourceEvolutionBuilder::SourceEvolutionBuilder(PID pid, SourceEvolutionParams pa
 ParticleStack SourceEvolutionBuilder::build(RandomNumberGenerator& rng) const {
   ParticleStack stack;
   stack.reserve(m_size);
-  const auto y_min = (1. + m_zRange.first);
-  const auto y_max = (1. + m_zRange.second);
   for (size_t i = 0; i < m_size; ++i) {
-    const auto z_i = getRndLogUniform({y_min, y_max}, rng()) - 1.;
+    const auto z_i = getRndLinUniform(m_zRange, rng());
     const auto Gamma_i = getRndLogUniform(m_GammaRange, rng());
     auto w_i = std::pow(Gamma_i / 1e8, 1. - m_slope);
-    w_i *= std::pow(1. + z_i, m_evolutionIndex + 1.) / m_cosmology->E(z_i);
+    w_i *= std::pow(1. + z_i, m_evolutionIndex - 1.) / m_cosmology->E(z_i);
     stack.emplace_back(Particle{m_pid, z_i, Gamma_i, w_i});
   }
   assert(stack.size() == m_size);
