@@ -76,7 +76,7 @@ std::vector<Particle> PhotoPionProductionSophia::finalState(const Particle& inco
   const bool onProton = (nucleon == proton);
   const double Ein = nucleonEnergy / SI::GeV;
   const double eps = photonEnergy / SI::GeV;
-  const bool declareChargedPionsStable = true;
+  const bool declareChargedPionsStable = false;
 
   sophia_interface SI;
   sophiaevent_output seo = SI.sophiaevent(onProton, Ein, eps, declareChargedPionsStable);
@@ -87,7 +87,11 @@ std::vector<Particle> PhotoPionProductionSophia::finalState(const Particle& inco
     PID pid = ID_sophia_to_SimProp(seo.outPartID[i]);
     auto mass = getPidMass(pid);
     auto E = seo.outPartP[3][i] * SI::GeV;
-    if (mass > 0.) outgoingParticle.push_back({pid, zInteractionPoint, E / mass, w});
+    if (mass > 0.) {
+      outgoingParticle.push_back({pid, zInteractionPoint, E / mass, w});
+    } else {
+      outgoingParticle.push_back({pid, zInteractionPoint, E, w});  // TODO terrible patch :(
+    }
   }
   return outgoingParticle;
 }
