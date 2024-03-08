@@ -86,23 +86,22 @@ void plot_photonfields_radio() {
 int main() {
   try {
     utils::startup_information();
-    // std::vector<std::shared_ptr<photonfields::PhotonField> > phFields;
     photonfields::PhotonFields phFields;
 
-    // phFields.push_back(std::make_shared<photonfields::CMB>());
-    // phFields.push_back(std::make_shared<photonfields::Dominguez2011PhotonField>());
-    // phFields.push_back(std::make_shared<photonfields::Dominguez2011LowerPhotonField>());
-    // phFields.push_back(std::make_shared<photonfields::Dominguez2011UpperPhotonField>());
-    // phFields.push_back(std::make_shared<photonfields::Saldana2021PhotonField>());
-    // phFields.push_back(std::make_shared<photonfields::Saldana2021LowerPhotonField>());
-    // phFields.push_back(std::make_shared<photonfields::Saldana2021UpperPhotonField>());
-    // phFields.push_back(std::make_shared<photonfields::Gilmore2012PhotonField>());
+    phFields.push_back(std::make_shared<photonfields::CMB>());
+    phFields.push_back(std::make_shared<photonfields::Dominguez2011PhotonField>());
+    phFields.push_back(std::make_shared<photonfields::Dominguez2011LowerPhotonField>());
+    phFields.push_back(std::make_shared<photonfields::Dominguez2011UpperPhotonField>());
+    phFields.push_back(std::make_shared<photonfields::Saldana2021PhotonField>());
+    phFields.push_back(std::make_shared<photonfields::Saldana2021LowerPhotonField>());
+    phFields.push_back(std::make_shared<photonfields::Saldana2021UpperPhotonField>());
+    phFields.push_back(std::make_shared<photonfields::Gilmore2012PhotonField>());
 
-    // plot_photonfields_local(phFields);
-    // plot_photonfields_Igamma(phFields);
-    // plot_photonfields_density(phFields);
-    // plot_photonfields_redshifts(phFields);
-    plot_photonfields_radio();
+    plot_photonfields_local(phFields);
+    plot_photonfields_Igamma(phFields);
+    plot_photonfields_density(phFields);
+    plot_photonfields_redshifts(phFields);
+    // plot_photonfields_radio();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();
   }
