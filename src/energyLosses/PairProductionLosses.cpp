@@ -78,7 +78,7 @@ double PairProductionLosses::computeProtonBeta(double Gamma, double z,
           auto k = std::exp(lnk);
           return phi(k) / k * phField->density(k / TwoGamma_mec2, z);
         },
-        lkmin, lkmax, N, 1e-3);
+        lkmin, lkmax, N, 1e-4);
   }
   constexpr auto factor = SI::alpha * pow2(SI::electronRadius) * SI::cLight * SI::electronMassC2 *
                           (SI::electronMass / SI::protonMass);
