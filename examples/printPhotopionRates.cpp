@@ -143,9 +143,9 @@ int main() {
   try {
     utils::startup_information();
     utils::Timer timer("main timer");
-    plot_rates();
-    plot_sampled_s();
-    plot_sampled_epsilon();
+    // plot_rates();
+    // plot_sampled_s();
+    // plot_sampled_epsilon();
     plot_pion_energies();
   } catch (const std::exception& e) {
     LOGE << "exception caught with message: " << e.what();

@@ -76,7 +76,7 @@ std::vector<Particle> PhotoPionProductionSophia::finalState(const Particle& inco
   const bool onProton = (nucleon == proton);
   const double Ein = nucleonEnergy / SI::GeV;
   const double eps = photonEnergy / SI::GeV;
-  const bool declareChargedPionsStable = false;
+  const bool declareChargedPionsStable = true;
 
   sophia_interface SI;
   sophiaevent_output seo = SI.sophiaevent(onProton, Ein, eps, declareChargedPionsStable);
